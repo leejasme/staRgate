@@ -14,7 +14,7 @@ get_density_gates(
 )
 }
 \arguments{
-\item{intens_dat}{dataframe of pre-gated (compensated, biexp. transf, gated CD4/CD8) intensity values where
+\item{intens_dat}{dataframe of pre-gated (compensated, biexp. transf, openCyto steps) intensity values where
 cols = intensity value per marker,
 rows = each sample}
 
