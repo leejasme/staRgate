@@ -10,7 +10,7 @@ get_density_gates = function(intens_dat,
   #' to identify cutoff at shoulder (i.e., point of tapering off) after peak for
   #' `marker` (intensity values)
   #'
-  #' @param intens_dat dataframe of pre-gated (compensated, biexp. transf, gated CD4/CD8) intensity values where
+  #' @param intens_dat dataframe of pre-gated (compensated, biexp. transf, openCyto steps) intensity values where
   #'              cols = intensity value per marker,
   #'              rows = each sample
   #' @param marker string for the marker to gate on
@@ -89,6 +89,10 @@ get_density_gates = function(intens_dat,
     peak_detect_ratio = 10
   }
 
+  # 2023-05-19 Add a check for `subset_col`
+  if(!(subset_col %in% colnames(intens_dat))){
+    rlang::abort(message = "Error: `subset_col` must be string matching column name of `intens_dat`")
+  }
 
   # 2022-04-16 wrapped above to get_density_peaks for debug usage
   dens_binned =
