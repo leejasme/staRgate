@@ -15,3 +15,7 @@ Imports:
     janitor,
     magrittr,
     stringr
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
