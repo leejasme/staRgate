@@ -56,7 +56,7 @@ get_gated_dat = function(intens_dat = intensity_dat,
   ## use nest() to subset into separate dfs
   intens_dat %>%
     group_by(.data[[subset_col]]) %>%
-    pivot::nest() %>%
+    tidyr::nest() %>%
     # Join the cutoffs
     dplyr::mutate(
       gated_data =
@@ -89,3 +89,4 @@ get_gated_dat = function(intens_dat = intensity_dat,
     # Ungroup data
     dplyr::ungroup()
 }
+

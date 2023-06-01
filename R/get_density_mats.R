@@ -67,7 +67,7 @@ get_density_mats = function(intens_dat,
         purrr::map(dens_obj,
                    function(d){
                      get_density_derivs(d,
-                                        dens_flip = FALSE,
+                                        # dens_flip = FALSE,
                                         subset_col = subset_col,
                                         marker = marker,
                                         # bin_size = bin_size,
@@ -136,7 +136,7 @@ get_density_mats = function(intens_dat,
   # Check the peak value against threshold
   flag_peak =
     dens_binned %>%
-    dplyr::select(!!dplyr::sym(subset_col), dens_peaks, bin_width) %>%
+    dplyr::select(!!dplyr::sym(subset_col), dens_peaks) %>%
     dplyr::mutate(
       peak_loc =
         purrr::map(dens_peaks,

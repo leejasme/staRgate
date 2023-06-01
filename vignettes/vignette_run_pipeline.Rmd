@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 ```{r setup}
 # Load libraries
 library(staRgate)
+# Do we need to load the below if they are dependencies of staRgate?
 library(openCyto)
 library(tidyverse)
 library(flowCore)
@@ -28,28 +29,55 @@ library(janitor)
 
 # Set up dynamic variables 
 ## Below are examples
-## String: sample name
-pt_samp_nm = "flow_sample_1"
+# ## String: sample name
+# pt_samp_nm = "flow_sample_1"
+# 
+# ## File path to the FCS file
+# path_fcs = "./flow_sample_1.fcs"
+# 
+# ## File path to the compensation matrix csv file
+# ## Expect format to match flowJo exported version
+# path_comp_mat = "./flow_sample_1_comp_mat.csv"
+# 
+# ## File path for outputs/saving
+# path_out = "./output"
+# 
+# ## File path to gating template
+# gtFile = "./flow_tcell_gating_template.csv"
+# 
+# ## File path to biexp parameters
+# ## Expects 4 columns: full_name, ext_neg_dec, width_basis, positive_dec
+# ## full name should contain the channel/dye name
+# #3 remaining cols fill in with desired parameter values
+# path_biexp_params = "./flow_biexp_param.xlsx"
+
+# ACtual file paths
+pt_samp_nm = "Specimen_tube_001.fcs"
 
 ## File path to the FCS file
-path_fcs = "./flow_sample_1.fcs"
+path_fcs = "H:/Biostatistics/PICI/data/BMS_rela_nivo_CA2024020/CA224020_Rela Nivo_MSK FCS Files/Specimen_tube_001.fcs"
 
 ## File path to the compensation matrix csv file
 ## Expect format to match flowJo exported version
-path_comp_mat = "./flow_sample_1_comp_mat.csv"
+path_comp_mat = "H:/Biostatistics/PICI/data/BMS_rela_nivo_CA2024020/BMS Rela Nivo_Compensations/BMS Rela Nivo_Compensations/AcqDef_20220602.csv"
 
 ## File path for outputs/saving
-path_out = "./output"
+# TODO: don't save for now
+# Unsure where would one save this for a vignette?
+# path_out = "./output"
 
 ## File path to gating template
-gtFile = "./flow_tcell_gating_template.csv"
+## TODO: add gt and params to data folder
+gtFile = "G:/!GDriveMigratedData/My Documents/GitHub/Projects/PICI/flow_cytometry/flow_cytometry/automated_gating/gating_templates/x50_tcell_up_to_cd4_cd8_rela.csv"
 
 ## File path to biexp parameters
 ## Expects 4 columns: full_name, ext_neg_dec, width_basis, positive_dec
 ## full name should contain the channel/dye name
 #3 remaining cols fill in with desired parameter values
-path_biexp_params = "./flow_biexp_param.xlsx"
+path_biexp_params = "G:/!GDriveMigratedData/My Documents/GitHub/Projects/PICI/flow_cytometry/flow_cytometry/automated_gating/biexp_transformation_parameters/biexp_transf_parameters_X50_bms_rela.xlsx"
+```
 
+```{r}
 # Load gating template
 ## Modified the T cell gating template from {openCyto}
 
@@ -91,7 +119,7 @@ comp.mat = read.csv(path_comp_mat,
 ## Can remove the X col because that's the row names 
 comp.mat = 
   comp.mat %>% 
-  column_to_rownames(var = "X")
+  tibble::column_to_rownames(var = "X")
 
 ## clean up the col names of the comp.mat 
 marker_chnl_names = 
@@ -102,18 +130,18 @@ marker_chnl_names =
 comp.mat = 
   comp.mat %>% 
   dplyr::rename(stats::setNames(marker_chnl_names$colnms, gsub("\\.", "-", marker_chnl_names$chnl))) %>% 
-  {if("PE.Cy5.5.A" %in% marker_chnl_names$chnl) rename(., "PE-Cy5.5-A" = "PE-Cy5-5-A")
-    else rename(.)} %>% 
-  {if("Alexa.Fluor.700.A" %in% marker_chnl_names$chnl) rename(., "Alexa Fluor 700-A" = "Alexa-Fluor-700-A")
-    else rename(.)} %>% 
-  {if("Horizon.V450.A" %in% marker_chnl_names$chnl) rename(., "Horizon V450-A" = "Horizon-V450-A")
-    else rename(.)} %>% 
-  {if("Pacific.Orange.A" %in% marker_chnl_names$chnl) rename(., "Pacific Orange-A" = "Pacific-Orange-A")
-    else rename(.)} %>% 
-  {if("Qdot.605.A" %in% marker_chnl_names$chnl) rename(., "Qdot 605-A" = "Qdot-605-A")
-    else rename(.)} %>% 
-  {if("Qdot.655.A" %in% marker_chnl_names$chnl) rename(., "Qdot 655-A" = "Qdot-655-A")
-    else rename(.)}
+  {if("PE.Cy5.5.A" %in% marker_chnl_names$chnl) dplyr::rename(., "PE-Cy5.5-A" = "PE-Cy5-5-A")
+    else dplyr::rename(.)} %>% 
+  {if("Alexa.Fluor.700.A" %in% marker_chnl_names$chnl) dplyr::rename(., "Alexa Fluor 700-A" = "Alexa-Fluor-700-A")
+    else dplyr::rename(.)} %>% 
+  {if("Horizon.V450.A" %in% marker_chnl_names$chnl) dplyr::rename(., "Horizon V450-A" = "Horizon-V450-A")
+    else dplyr::rename(.)} %>% 
+  {if("Pacific.Orange.A" %in% marker_chnl_names$chnl) dplyr::rename(., "Pacific Orange-A" = "Pacific-Orange-A")
+    else dplyr::rename(.)} %>% 
+  {if("Qdot.605.A" %in% marker_chnl_names$chnl) dplyr::rename(., "Qdot 605-A" = "Qdot-605-A")
+    else dplyr::rename(.)} %>% 
+  {if("Qdot.655.A" %in% marker_chnl_names$chnl) dplyr::rename(., "Qdot 655-A" = "Qdot-655-A")
+    else dplyr::rename(.)}
 
 
 # ## Check col names are equal
@@ -182,36 +210,43 @@ gs = transform(gs, trans)
 ## use flowWorkspace::gh_pop_get_data() to grab the flowSet
 ## User can define where to save outputs for report from {flowai]}
 
-## If dir doesn't exist, create one
-if(!dir.exists(here::here(glue("{path_out}/flowAI_results")))){
-  dir.create(here::here(glue("{path_out}/flowAI_results")))
-}
 
-qc = flowAI::flow_auto_qc(flowWorkspace::gh_pop_get_data(gs),
-                          folder_results = here::here(glue("{path_out}/flowAI_results")))
-
-## Convert to a flowSet in order to convert back to GatingSet
-qc_fs = 
-  qc %>% 
-  # First convert to a flowSet
-  flowCore::flowSet()
-
-## Rename the sample 
-flowCore::sampleNames(qc_fs) = pt_samp_nm
-
-## convert the flowFrame obj returned in qc_fs to a GatingSet to pass to openCyto
-gs_qc =  
-  qc_fs %>% 
-  flowWorkspace::GatingSet()
-
-## Remote the qc_fs object as it's no longer needed
-rm(qc_fs)
+# TODO Add an arg to specify whether to run flowAI
+# ## If dir doesn't exist, create one
+# if(!dir.exists(here::here(glue("{path_out}/flowAI_results")))){
+#   dir.create(here::here(glue("{path_out}/flowAI_results")))
+# }
+# 
+# qc = flowAI::flow_auto_qc(flowWorkspace::gh_pop_get_data(gs),
+#                           folder_results = here::here(glue("{path_out}/flowAI_results")))
+# 
+# ## Convert to a flowSet in order to convert back to GatingSet
+# qc_fs = 
+#   qc %>% 
+#   # First convert to a flowSet
+#   flowCore::flowSet()
+# 
+# ## Rename the sample 
+# flowCore::sampleNames(qc_fs) = pt_samp_nm
+# 
+# ## convert the flowFrame obj returned in qc_fs to a GatingSet to pass to openCyto
+# gs_qc =  
+#   qc_fs %>% 
+#   flowWorkspace::GatingSet()
+# 
+# ## Remote the qc_fs object as it's no longer needed
+# rm(qc_fs)
 
 # Pre-gating up to CD3+ with {openCyto}
 ## Set seed using today's date 
 set.seed(glue::glue({format(Sys.Date(), format = "%Y%m%d")}))
 
-openCyto::gt_gating(gt_tcell, gs_qc)
+# openCyto::gt_gating(gt_tcell, gs_qc)
+openCyto::gt_gating(gt_tcell, gs)
+
+# To prevent breakage down the road
+gs_qc = gs
+rm(gs)
 
 # Extract intensity matrix from GatingSet object
 ## Grab marker names from GatingSet for labeling col names in intensity matrix
@@ -231,6 +266,14 @@ marker_chnl_names =
   # Clean up
   dplyr::mutate(marker_full = ifelse(marker_full == "FOX_P3", "FOXP3", marker_full))
 
+# For filtering out neg values below for any intensity cols
+neg_intensity_thres = -2000
+
+markers_to_gate = 
+  marker_chnl_names$marker_full %>%
+  .[!(. %in% c("CD3", "CD4", 'CD8', "LD", "CD1419"))]
+  
+
 ## Grab the intensity matrix from GatingSet
 ## the gh_pop_get_indices grabs the 0/1 for whether gated as CD3
 intensity_dat = 
@@ -240,10 +283,67 @@ intensity_dat =
           flowWorkspace::gh_pop_get_data() %>% 
           flowCore::exprs(),
         "cd3_pos" = .) %>% 
+# add on the cd4 and cd8 0/1s
+  cbind(., 
+        "cd4_pos" = gh_pop_get_indices(gs_qc, y = "cd4+")) %>% 
+  cbind(., 
+        "cd8_pos" = gh_pop_get_indices(gs_qc, y = "cd8+")) %>% 
   tibble::as_tibble() %>%
   # Rename for plotting
-  dplyr::rename(stats::setNames(marker_chnl_names$chnl, as.character(marker_chnl_names$marker_full))) 
+  dplyr::rename(stats::setNames(marker_chnl_names$chnl, as.character(marker_chnl_names$marker_full))) %>%
+  dplyr::mutate(
+    cd4_pos_cd8_pos = case_when(
+      cd3_pos == 1 & cd4_pos == 1 & cd8_pos == 1 ~ "cd4_pos_cd8_pos",
+      cd3_pos == 1 & cd4_pos == 1 & cd8_pos == 0 ~ "cd4_pos_cd8_neg",
+      cd3_pos == 1 & cd4_pos == 0 & cd8_pos == 1 ~ "cd4_neg_cd8_pos",
+      cd3_pos == 1 & cd4_pos == 0 & cd8_pos == 0 ~ "cd4_neg_cd8_neg"
+    )
+  ) %>% 
+  # additional step to remove large intensity values
+  # 2023-05-26 Filter out any extremely negative values in cols of markers_to_gate
+  dplyr::filter(!(if_any(all_of(markers_to_gate), ~.x < neg_intensity_thres)))
 
 ## Preview of intensity matrix
 head(intensity_dat)
+
+# # Check all cols of data
+# intensity_dat %>% 
+#   gtsummary::tbl_summary(statistic = gtsummary::all_continuous() ~ "{median} [{min}, {max}]")
 ```
+
+```{r}
+# Run density gating on 1 marker col
+#Plot lag3
+intensity_dat %>% 
+  dplyr::filter(cd3_pos == 1) %>% 
+  ggplot() + 
+  geom_density(aes(LAG3)) + 
+  facet_wrap(~cd4_pos_cd8_pos)
+
+test_gate = 
+  intensity_dat %>% 
+# remove the cd3- 
+  dplyr::filter(cd3_pos == 1) %>% 
+  get_density_gates(. , 
+                   "LAG3",
+                   "cd4_pos_cd8_pos",
+                   bin_n = 50,
+                   peak_detect_ratio = 10,
+                   pos_peak_threshold = 1600)
+
+# Got results back
+test_gate
+
+# try get indicator col
+test_i = 
+  get_gated_dat(intensity_dat %>% 
+                  dplyr::filter(cd3_pos == 1),
+                subset_col = "cd4_pos_cd8_pos", 
+                cutoffs = test_gate)
+
+colnames(test_i)
+
+dim(intensity_dat)
+dim(test_i)
+```
+

@@ -37,11 +37,11 @@ get_density_derivs = function(dens,
   # input data is diff- expecting the density obj for specific cd4/cd8 subset
   x = dens$x
 
-  # x every 100 or so values
+  # x every 1
   x_binned =
     x %>%
     range() %>%
-    {seq(.[[1]], .[[2]], by = bin_size)}
+    {seq(.[[1]], .[[2]], by = 1)}
 
   # Find interval?
   new_d =
