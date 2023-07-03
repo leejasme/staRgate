@@ -1,11 +1,14 @@
-run_pipelin = function(){
+run_pipeline = function(path_gate_template,
+                        path_fcs,
+                        path_comp_mat,
+                        path_biexp_params){
   # String together the steps
-  dtTemplate = data.table::fread(gtFile)
+  dtTemplate = data.table::fread(path_gate_template)
 
   ### Load
-  gt_tcell = openCyto::gatingTemplate(gtFile)
+  gt_tcell = openCyto::gatingTemplate(path_gate_template)
 
-  cs  <- flowWorkspace::load_cytoset_from_fcs(glue::glue("{path_fcs}"))
+  cs  <- flowWorkspace::load_cytoset_from_fcs(path_fcs)
 
   ## Create a GatingSet of 1 sample
   gs = flowWorkspace::GatingSet(cs)

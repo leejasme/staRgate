@@ -36,7 +36,7 @@ get_biexpTransform_gs = function(gs, path_biexp_params){
   # all(names(biexpTrans) %in% names(markernames(gs)))
 
   ## Create transformerList in order to apply to gs
-  trans = transformerList(names(biexpTrans), biexpTrans)
+  trans = flowWorkspace::transformerList(names(biexpTrans), biexpTrans)
 
   ## Optional - Check the values before transformation
   # gs %>%
@@ -44,7 +44,7 @@ get_biexpTransform_gs = function(gs, path_biexp_params){
   #   summary()
 
   ## Apply to gs
-  gs = transform(gs, trans)
+  gs = flowWorkspace::transform(gs, trans)
 
   return(gs)
 }
