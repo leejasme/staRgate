@@ -61,6 +61,10 @@ path_fcs = "H:/Biostatistics/PICI/data/BMS_rela_nivo_CA2024020/CA224020_Rela Niv
 ## Expect format to match flowJo exported version
 path_comp_mat = "H:/Biostatistics/PICI/data/BMS_rela_nivo_CA2024020/BMS Rela Nivo_Compensations/BMS Rela Nivo_Compensations/AcqDef_20220602.csv"
 
+# # The 17-162 comp mats are slightly diff convention , test itworks as well
+# path_comp_mat = "H:/Biostatistics/Ronglai-Jasme/flow/data/FCS_from_Matt/17-162 Astrolabe_MSKCC/17-162 FCS Files/comp_mat/17-162-03.csv"
+  
+
 ## File path for outputs/saving
 # TODO: don't save for now
 # Unsure where would one save this for a vignette?
@@ -74,8 +78,48 @@ gtFile = "G:/!GDriveMigratedData/My Documents/GitHub/Projects/PICI/flow_cytometr
 ## Expects 4 columns: full_name, ext_neg_dec, width_basis, positive_dec
 ## full name should contain the channel/dye name
 #3 remaining cols fill in with desired parameter values
-path_biexp_params = "G:/!GDriveMigratedData/My Documents/GitHub/Projects/PICI/flow_cytometry/flow_cytometry/automated_gating/biexp_transformation_parameters/biexp_transf_parameters_X50_bms_rela.xlsx"
+# path_biexp_params = "G:/!GDriveMigratedData/My Documents/GitHub/Projects/PICI/flow_cytometry/flow_cytometry/automated_gating/biexp_transformation_parameters/biexp_transf_parameters_X50_bms_rela.xlsx"
+
+path_biexp_params = 
+  # "G:/!GDriveMigratedData/My Documents/GitHub/Projects/PICI/flow_cytometry/flow_cytometry/automated_gating/biexp_transformation_parameters/biexp_transf_parameters_X50_bms.csv"
+  "H:/Biostatistics/Profiles/LeeJ22/flow_cytometry/biexp_transformation_parameters/biexp_transf_parameters_X50_bms_rela.csv"
 ```
+
+```{r}
+# 2023-06-19 Test if we can pass in a gating set and return a gs
+# First check that we can return a gs? Yes it worked
+  ### Read in file
+  dtTemplate = data.table::fread(gtFile)
+  
+  ### Load
+  gt_tcell = openCyto::gatingTemplate(gtFile)
+  
+  cs  <- flowWorkspace::load_cytoset_from_fcs(glue::glue("{path_fcs}"))
+  
+  ## Create a GatingSet of 1 sample
+  gs = flowWorkspace::GatingSet(cs)
+  
+  # Check no comp applied
+  flowWorkspace::gh_get_compensations(gs)
+  
+  # Apply comp 
+  gs = get_comp_gs(gs, path_comp_mat = path_comp_mat)
+  
+  # Can check that the comp was applied
+  flowWorkspace::gh_get_compensations(gs)
+
+  # Check no transformation before
+  gh_get_transformations(gs)
+  
+  # Apply biexp trans
+  gs = get_biexpTransform_gs(gs, path_biexp_params = path_biexp_params)
+  
+  # Check transformation applied
+  gh_get_transformations(gs)
+  
+    
+```
+
 
 ```{r}
 # Load gating template
@@ -153,7 +197,6 @@ comp = flowCore::compensation(comp.mat)
 ## Apply compensation to the `GatingSet` with `flowCore::compensate()`
 ### Must have the colnames in `comp.mat` match the channel names in the `cytoset` 
 gs = flowCore::compensate(gs, comp)
-
 
 # Transformation
 ## Read in the table of parameters

@@ -141,10 +141,17 @@ get_density_mats = function(intens_dat,
       peak_loc =
         purrr::map(dens_peaks,
                    function(x){
-                     x %>%
+                     temp = x %>%
                        dplyr::filter(peak == TRUE) %>%
                        dplyr::slice_min(x_avg) %>%
                        dplyr::pull(x_avg)
+
+                     # TO get around identifying 0 peaks
+                     if(length(temp) == 0){
+                       return(NA_real_)
+                     }else{
+                       return(temp)
+                     }
                    }) %>%
         unlist(),
       flag_pos_peak =
