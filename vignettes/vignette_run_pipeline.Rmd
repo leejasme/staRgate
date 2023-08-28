@@ -94,7 +94,7 @@ path_biexp_params =
   ### Load
   gt_tcell = openCyto::gatingTemplate(gtFile)
   
-  cs  <- flowWorkspace::load_cytoset_from_fcs(glue::glue("{path_fcs}"))
+  cs  <- flowWorkspace::load_cytoset_from_fcs(path_fcs)
   
   ## Create a GatingSet of 1 sample
   gs = flowWorkspace::GatingSet(cs)
@@ -111,13 +111,49 @@ path_biexp_params =
   # Check no transformation before
   gh_get_transformations(gs)
   
+  # grab the ver negative values to check what they correspond to 
+  dat_pre_transform = 
+    gs %>% 
+    flowWorkspace::gh_pop_get_data() %>% 
+    flowCore::exprs()
+  
+  
   # Apply biexp trans
   gs = get_biexpTransform_gs(gs, path_biexp_params = path_biexp_params)
-  
+
   # Check transformation applied
   gh_get_transformations(gs)
   
+  dat_post_transform = 
+    gs %>% 
+    flowWorkspace::gh_pop_get_data() %>% 
+    flowCore::exprs()
     
+  summary(dat_pre_transform)
+  
+  # Merge the pre and post transformed cols for APC_A
+  aux_var = "APC-A"
+  
+  test = 
+    tibble(
+    pre = dat_pre_transform[, aux_var], 
+    post = dat_post_transform[, aux_var] 
+  )
+  
+  test %>% 
+    dplyr::filter(post <= -1000) %>% 
+    arrange(-post) %>%
+    head(n = 10)
+  
+  test %>% 
+    dplyr::filter(post >= 1600) %>% 
+    arrange(post) %>%
+    head(n = 10)
+  # For APC-A , 
+  # -2000 corresponds to approx -5800 on original scale
+  # -1000 ~ >3300
+  # For ref, the flowJo plots usually only go up to -10^3 or -1000
+  
 ```
 
 

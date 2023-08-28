@@ -1,5 +1,5 @@
 get_comp_gs = function(gs, path_comp_mat){
-
+  #' @export
   # ## change "Viability" or "L/D" to = "L_D" for consistency with the comp mat label
   # {if(any(c("Viability", "L/D", "LD") %in% flowWorkspace::markernames(cs))){
   #   aux_log = flowWorkspace::markernames(cs) == "Viability" | flowWorkspace::markernames(cs) == "L/D" | flowWorkspace::markernames(cs) == "LD"

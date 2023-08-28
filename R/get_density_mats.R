@@ -174,7 +174,8 @@ get_density_mats = function(intens_dat,
       # 2023-04-27 try to replace the explicit column name cd4_pos_cd8_pos w
       # subset_col
       dplyr::filter(
-        !!rlang::parse_expr("{subset_col} %in% flag_peak[, subset_col]")
+        # need a glue::glue to work
+        !!rlang::parse_expr(glue::glue("{subset_col} %in% flag_peak[[subset_col]]"))
         # cd4_pos_cd8_pos %in% flag_peak$cd4_pos_cd8_pos
       ) %>%
       dplyr::mutate(
@@ -194,7 +195,7 @@ get_density_mats = function(intens_dat,
         #      }
         #      ),
         dens_peaks_flip =
-          purrr::map2(
+          purrr::map(
             # 2023-03-30 dont use a recalculated density with --1*x_avg
             # Use original density but with dens_flip = TRUE arg to search on left vs. right
             dens_binned,

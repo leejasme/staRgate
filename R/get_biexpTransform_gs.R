@@ -1,5 +1,6 @@
 get_biexpTransform_gs = function(gs, path_biexp_params){
-
+  #' @export
+  #'
   # Transformation
   ## Read in the table of parameters
   tbl_biexp_params =

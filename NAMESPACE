@@ -2,6 +2,8 @@
 
 export("%>%")
 export(clean_marker_names)
+export(get_biexpTransform_gs)
+export(get_comp_gs)
 export(get_density_derivs)
 export(get_density_gates)
 export(get_density_mats)
