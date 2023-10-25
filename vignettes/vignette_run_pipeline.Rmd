@@ -51,38 +51,10 @@ library(janitor)
 # #3 remaining cols fill in with desired parameter values
 # path_biexp_params = "./flow_biexp_param.xlsx"
 
-# ACtual file paths
-pt_samp_nm = "Specimen_tube_001.fcs"
+# After adding inst/extdata
+gtFile = system.file("extdata", "gating_template_x50_tcell.csv", package = "staRgate", mustWork = TRUE)
 
-## File path to the FCS file
-path_fcs = "H:/Biostatistics/PICI/data/BMS_rela_nivo_CA2024020/CA224020_Rela Nivo_MSK FCS Files/Specimen_tube_001.fcs"
-
-## File path to the compensation matrix csv file
-## Expect format to match flowJo exported version
-path_comp_mat = "H:/Biostatistics/PICI/data/BMS_rela_nivo_CA2024020/BMS Rela Nivo_Compensations/BMS Rela Nivo_Compensations/AcqDef_20220602.csv"
-
-# # The 17-162 comp mats are slightly diff convention , test itworks as well
-# path_comp_mat = "H:/Biostatistics/Ronglai-Jasme/flow/data/FCS_from_Matt/17-162 Astrolabe_MSKCC/17-162 FCS Files/comp_mat/17-162-03.csv"
-  
-
-## File path for outputs/saving
-# TODO: don't save for now
-# Unsure where would one save this for a vignette?
-# path_out = "./output"
-
-## File path to gating template
-## TODO: add gt and params to data folder
-gtFile = "G:/!GDriveMigratedData/My Documents/GitHub/Projects/PICI/flow_cytometry/flow_cytometry/automated_gating/gating_templates/x50_tcell_up_to_cd4_cd8_rela.csv"
-
-## File path to biexp parameters
-## Expects 4 columns: full_name, ext_neg_dec, width_basis, positive_dec
-## full name should contain the channel/dye name
-#3 remaining cols fill in with desired parameter values
-# path_biexp_params = "G:/!GDriveMigratedData/My Documents/GitHub/Projects/PICI/flow_cytometry/flow_cytometry/automated_gating/biexp_transformation_parameters/biexp_transf_parameters_X50_bms_rela.xlsx"
-
-path_biexp_params = 
-  # "G:/!GDriveMigratedData/My Documents/GitHub/Projects/PICI/flow_cytometry/flow_cytometry/automated_gating/biexp_transformation_parameters/biexp_transf_parameters_X50_bms.csv"
-  "H:/Biostatistics/Profiles/LeeJ22/flow_cytometry/biexp_transformation_parameters/biexp_transf_parameters_X50_bms_rela.csv"
+path_biexp_params = system.file("extdata", "biexp_transf_parameters_x50.xlsx", package = "staRgate", mustWork = TRUE)
 ```
 
 ```{r}

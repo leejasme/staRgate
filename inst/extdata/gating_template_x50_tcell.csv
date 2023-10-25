@@ -1,0 +1,8 @@
+alias,pop,parent,dims,gating_method,gating_args,collapseDataForGating,groupBy,preprocessing_method,preprocessing_args
+fsc_ssc_qc,+,root,"FSC-A, SSC-A",boundary,"min = c(0, 0), max = c(Inf, Inf)",,,,
+nonDebris,+,fsc_ssc_qc,"FSC-A, SSC-A",boundary,"min = c(40000, 0), max = c(Inf, Inf)",,,,
+singlets,+,nonDebris,"FSC-A,FSC-H",singletGate,,,,,
+cd14-cd19-,-,singlets,CD14 19,gate_mindensity,"gate_range = c(1600, 2500), positive = TRUE",,,,
+live,-,cd14-cd19-,L_D,gate_mindensity,"gate_range = c(1600, 2500), positive = TRUE",,,,
+cd3,+,live,CD3,gate_mindensity,,TRUE,4,,
+*,-/++/-,cd3,"cd4,cd8",gate_mindensity,,,,,
