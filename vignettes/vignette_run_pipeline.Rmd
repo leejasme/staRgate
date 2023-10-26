@@ -49,7 +49,9 @@ library(janitor)
 # ## Expects 4 columns: full_name, ext_neg_dec, width_basis, positive_dec
 # ## full name should contain the channel/dye name
 # #3 remaining cols fill in with desired parameter values
-# path_biexp_params = "./flow_biexp_param.xlsx"
+# path_biexp_params = "./flow_biexp_param.csv"
+# ## File path to positive peak thresholds
+# path_pos_peak_thresholds = "./pos_peak_thresholds.csv"
 
 # After adding inst/extdata
 pt_samp_nm = "flow_sample_1"
@@ -76,8 +78,25 @@ gtFile = system.file("extdata", "gating_template_x50_tcell.csv", package = "staR
 #3 remaining cols fill in with desired parameter values
 path_biexp_params = system.file("extdata", "biexp_transf_parameters_x50.csv", package = "staRgate", mustWork = TRUE)
 
+## File path to positive peak thresholds
+path_pos_peak_thresholds = system.file("extdata", "pos_peak_thresholds.csv", package = "staRgate", mustWork = TRUE)
 
 ```
+
+```{r}
+# Some preferred ggplot settings. 
+# Not required/relevant for gating
+
+plot_font_size = 13
+
+theme_set(theme_bw() +
+            theme(text = element_text(size = plot_font_size),
+                  axis.text = element_text(color = "black"),
+                  legend.position = 'bottom') )
+```
+
+
+# Import FCS, preprocessing (compensation and transformation) and pre-gating
 
 ```{r}
 # 2023-06-19 Test if we can pass in a gating set and return a gs
@@ -188,11 +207,11 @@ path_biexp_params = system.file("extdata", "biexp_transf_parameters_x50.csv", pa
         cd3_pos == 1 & cd4_pos == 1 & cd8_pos == 0 ~ "cd4_pos_cd8_neg",
         cd3_pos == 1 & cd4_pos == 0 & cd8_pos == 1 ~ "cd4_neg_cd8_pos",
         cd3_pos == 1 & cd4_pos == 0 & cd8_pos == 0 ~ "cd4_neg_cd8_neg"
-      )
-    ) %>% 
-    # additional step to remove large intensity values
-    # 2023-05-26 Filter out any extremely negative values in cols of markers_to_gate
-    dplyr::filter(!(if_any(all_of(markers_to_gate), ~.x < neg_intensity_thres)))
+      ),
+      # Add a subsetting col to do pooled
+      pooled_col = 
+        dplyr::case_when(cd3_pos == 1 ~ "cd3_pos")
+    ) 
   
   ## Preview of intensity matrix
   head(intensity_dat)
@@ -200,272 +219,97 @@ path_biexp_params = system.file("extdata", "biexp_transf_parameters_x50.csv", pa
 ```
 
 
-```{r, eval = FALSE}
-# Load gating template
-## Modified the T cell gating template from {openCyto}
-
-### Read in file
-dtTemplate = data.table::fread(gtFile)
-
-### Load
-gt_tcell = openCyto::gatingTemplate(gtFile)
-
-# Optional to check the template
-# gt_tcell
-# plot(gt_tcell)
+# Example of density gating
 
 
-# Import FCS, Build GatingSet
-## read in the fcs files
-cs  <- flowWorkspace::load_cytoset_from_fcs(glue::glue("{path_fcs}"))
-
-## change "Viability" or "L/D" to = "L_D" for consistency
-{if(any(c("Viability", "L/D", "LD") %in% flowWorkspace::markernames(cs))){
-  aux_log = flowWorkspace::markernames(cs) == "Viability" | flowWorkspace::markernames(cs) == "L/D" | flowWorkspace::markernames(cs) == "LD"
-  
-  markernames(cs) = replace(markernames(cs), aux_log, "L_D")}
-}
-
-## Create a GatingSet of 1 sample
-gs = flowWorkspace::GatingSet(cs)
-
-# Compensation
-## Import comp. mat. csv exported from flowJo
-comp.mat = read.csv(path_comp_mat,
-                    header = TRUE, 
-                    skip = 0) 
-
-## Optional to check comp mat
-## comp.mat %>%
-##   head
-
-## Can remove the X col because that's the row names 
-comp.mat = 
-  comp.mat %>% 
-  tibble::column_to_rownames(var = "X")
-
-## clean up the col names of the comp.mat 
-marker_chnl_names = 
-  tibble::tibble(colnms = colnames(comp.mat)) %>% 
-  tidyr::separate(colnms, c("chnl", "marker"), sep = "\\.\\.\\.\\.", remove = FALSE)
-
-## further clean up some of the col nanmes to match channel names in `gs`
-comp.mat = 
-  comp.mat %>% 
-  dplyr::rename(stats::setNames(marker_chnl_names$colnms, gsub("\\.", "-", marker_chnl_names$chnl))) %>% 
-  {if("PE.Cy5.5.A" %in% marker_chnl_names$chnl) dplyr::rename(., "PE-Cy5.5-A" = "PE-Cy5-5-A")
-    else dplyr::rename(.)} %>% 
-  {if("Alexa.Fluor.700.A" %in% marker_chnl_names$chnl) dplyr::rename(., "Alexa Fluor 700-A" = "Alexa-Fluor-700-A")
-    else dplyr::rename(.)} %>% 
-  {if("Horizon.V450.A" %in% marker_chnl_names$chnl) dplyr::rename(., "Horizon V450-A" = "Horizon-V450-A")
-    else dplyr::rename(.)} %>% 
-  {if("Pacific.Orange.A" %in% marker_chnl_names$chnl) dplyr::rename(., "Pacific Orange-A" = "Pacific-Orange-A")
-    else dplyr::rename(.)} %>% 
-  {if("Qdot.605.A" %in% marker_chnl_names$chnl) dplyr::rename(., "Qdot 605-A" = "Qdot-605-A")
-    else dplyr::rename(.)} %>% 
-  {if("Qdot.655.A" %in% marker_chnl_names$chnl) dplyr::rename(., "Qdot 655-A" = "Qdot-655-A")
-    else dplyr::rename(.)}
-
-
-# ## Check col names are equal
-# colnames(comp.mat) == (colnames(cs) %>% .[!(grepl("FSC|SSC|Time", .))])
-
-## Create the `compensation` object with `flowCore::compensation()`
-comp = flowCore::compensation(comp.mat)
-
-## Apply compensation to the `GatingSet` with `flowCore::compensate()`
-### Must have the colnames in `comp.mat` match the channel names in the `cytoset` 
-gs = flowCore::compensate(gs, comp)
-
-# Transformation
-## Read in the table of parameters
-tbl_biexp_params = 
-  readxl::read_xlsx(path_biexp_params) %>% 
-  janitor::clean_names(case = "all_caps") 
-
-## loop through all the channels and create a biexpTrans object per channel
-biexpTrans = 
-  purrr::pmap(
-    list(p = tbl_biexp_params$POSITIVE_DEC,
-         n = tbl_biexp_params$EXT_NEG_DEC, 
-         wb = tbl_biexp_params$WIDTH_BASIS),
-    function(p, n, wb, ...){
-      flowWorkspace::flowjo_biexp_trans(pos = p,
-                                        neg = n,
-                                        widthBasis = wb)
-      
-    }
-  )
-
-
-## Give names
-names(biexpTrans) = tbl_biexp_params$FULL_NAME
-
-
-## Optional - Checks that all channels have a matching biexpTrans object
-# lapply(biexpTrans, 
-#        FUN = function(x){x[["transform"]] %>% attr(., "parameters")}) %>% 
-#   dplyr::bind_rows(.id = "channel") 
-# 
-# ## Do channel names match the names of biexpTrans?
-# all(names(biexpTrans) %in% parameters(comp))
-# all(names(biexpTrans) %in% names(markernames(gs)))
-
-## Create transformerList in order to apply to gs
-trans = transformerList(names(biexpTrans), biexpTrans)
-
-## Optional - Check the values before transformation
-# gs %>% 
-#   gh_pop_get_data() %>% 
-#   summary()
-
-## Apply to gs
-gs = transform(gs, trans)
-
-## optional - Check values after transformation
-# gs %>% 
-#   gh_pop_get_data() %>% 
-#   summary()
-
-# Quality/time gate with {flowAI}
-## function expect flowSet/flowFrame as input rather than a GatingSet
-## use flowWorkspace::gh_pop_get_data() to grab the flowSet
-## User can define where to save outputs for report from {flowai]}
-
-
-# TODO Add an arg to specify whether to run flowAI
-# ## If dir doesn't exist, create one
-# if(!dir.exists(here::here(glue("{path_out}/flowAI_results")))){
-#   dir.create(here::here(glue("{path_out}/flowAI_results")))
-# }
-# 
-# qc = flowAI::flow_auto_qc(flowWorkspace::gh_pop_get_data(gs),
-#                           folder_results = here::here(glue("{path_out}/flowAI_results")))
-# 
-# ## Convert to a flowSet in order to convert back to GatingSet
-# qc_fs = 
-#   qc %>% 
-#   # First convert to a flowSet
-#   flowCore::flowSet()
-# 
-# ## Rename the sample 
-# flowCore::sampleNames(qc_fs) = pt_samp_nm
-# 
-# ## convert the flowFrame obj returned in qc_fs to a GatingSet to pass to openCyto
-# gs_qc =  
-#   qc_fs %>% 
-#   flowWorkspace::GatingSet()
-# 
-# ## Remote the qc_fs object as it's no longer needed
-# rm(qc_fs)
-
-# Pre-gating up to CD3+ with {openCyto}
-## Set seed using today's date 
-set.seed(glue::glue({format(Sys.Date(), format = "%Y%m%d")}))
-
-# openCyto::gt_gating(gt_tcell, gs_qc)
-openCyto::gt_gating(gt_tcell, gs)
-
-# To prevent breakage down the road
-gs_qc = gs
-rm(gs)
-
-# Extract intensity matrix from GatingSet object
-## Grab marker names from GatingSet for labeling col names in intensity matrix
-marker_chnl_names = 
-  flowWorkspace::gh_pop_get_data(gs_qc) %>% 
-  flowWorkspace::markernames() %>% 
-  as.data.frame() %>% 
-  tibble::rownames_to_column() %>% 
-  dplyr::rename(chnl = rowname, 
-         marker_full = ".") %>% 
-  # clean up the names 
-  dplyr::mutate(
-    marker_full = janitor::make_clean_names(marker_full, replace = c("-" = "", "_" = "", " " = "")) %>% toupper()
-  ) %>% 
-  # Reorder the marker channel names to start with CD3, CD4, CD8 then the rest
-  dplyr::arrange(match(marker_full, c("CD3", "CD4", "CD8"))) %>% 
-  # Clean up
-  dplyr::mutate(marker_full = ifelse(marker_full == "FOX_P3", "FOXP3", marker_full))
-
-# For filtering out neg values below for any intensity cols
-neg_intensity_thres = -2000
-
-markers_to_gate = 
-  marker_chnl_names$marker_full %>%
-  .[!(. %in% c("CD3", "CD4", 'CD8', "LD", "CD1419"))]
-  
-
-## Grab the intensity matrix from GatingSet
-## the gh_pop_get_indices grabs the 0/1 for whether gated as CD3
-intensity_dat = 
-  gs_qc %>% 
-  flowWorkspace::gh_pop_get_indices(y = "cd3") %>% 
-  cbind(gs_qc %>%  
-          flowWorkspace::gh_pop_get_data() %>% 
-          flowCore::exprs(),
-        "cd3_pos" = .) %>% 
-# add on the cd4 and cd8 0/1s
-  cbind(., 
-        "cd4_pos" = gh_pop_get_indices(gs_qc, y = "cd4+")) %>% 
-  cbind(., 
-        "cd8_pos" = gh_pop_get_indices(gs_qc, y = "cd8+")) %>% 
-  tibble::as_tibble() %>%
-  # Rename for plotting
-  dplyr::rename(stats::setNames(marker_chnl_names$chnl, as.character(marker_chnl_names$marker_full))) %>%
-  dplyr::mutate(
-    cd4_pos_cd8_pos = case_when(
-      cd3_pos == 1 & cd4_pos == 1 & cd8_pos == 1 ~ "cd4_pos_cd8_pos",
-      cd3_pos == 1 & cd4_pos == 1 & cd8_pos == 0 ~ "cd4_pos_cd8_neg",
-      cd3_pos == 1 & cd4_pos == 0 & cd8_pos == 1 ~ "cd4_neg_cd8_pos",
-      cd3_pos == 1 & cd4_pos == 0 & cd8_pos == 0 ~ "cd4_neg_cd8_neg"
-    )
-  ) %>% 
-  # additional step to remove large intensity values
-  # 2023-05-26 Filter out any extremely negative values in cols of markers_to_gate
-  dplyr::filter(!(if_any(all_of(markers_to_gate), ~.x < neg_intensity_thres)))
-
-## Preview of intensity matrix
-head(intensity_dat)
-
-# # Check all cols of data
-# intensity_dat %>% 
-#   gtsummary::tbl_summary(statistic = gtsummary::all_continuous() ~ "{median} [{min}, {max}]")
-```
++ Current strategy is based on all CD3+
 
 ```{r}
-# Run density gating on 1 marker col
-#Plot lag3
+# Density gating parameters
+peak_r = 10
+bin_i = 50
+
+# Read in positive peak thresholds
+pos_thres = read.csv(path_pos_peak_thresholds)
+
+# Plot lag3
 intensity_dat %>% 
   dplyr::filter(cd3_pos == 1) %>% 
+  # additional step to remove large intensity values only when density gating. 
+  # Still kept in the data
+  dplyr::filter(!(if_any(all_of(markers_to_gate), ~.x < neg_intensity_thres)))%>% 
   ggplot() + 
-  geom_density(aes(LAG3)) + 
-  facet_wrap(~cd4_pos_cd8_pos)
+  geom_density(aes(LAG3)) +
+  labs(subtitle = "Distribution of LAG3 intensity on all CD3+")
 
-test_gate = 
+example_gate = 
   intensity_dat %>% 
-# remove the cd3- 
   dplyr::filter(cd3_pos == 1) %>% 
-  get_density_gates(. , 
-                   "LAG3",
-                   "cd4_pos_cd8_pos",
-                   bin_n = 50,
-                   peak_detect_ratio = 10,
-                   pos_peak_threshold = 1600)
+  # additional step to remove large intensity values only when density gating. 
+  # Still kept in the data
+  dplyr::filter(!(if_any(all_of(markers_to_gate), ~.x < neg_intensity_thres))) %>% 
+  get_density_gates(intens_dat = . , 
+                    marker = "LAG3",
+                    subset_col = "pooled_col",
+                    bin_n = bin_i,
+                    peak_detect_ratio = peak_r,
+                    pos_peak_threshold = pos_thres %>% 
+                      dplyr::filter(marker == "LAG3") %>% 
+                      dplyr::pull(pos_peak_threshold) %>% 
+                      unname()) %>% 
+  # 2023-08-28 ad hoc add rows per cd4/cd8 subsets
+  # TODO: integrate more nicely
+  tibble::add_row() %>% 
+  tibble::add_row() %>% 
+  tibble::add_row() %>% 
+  dplyr::mutate(cd4_pos_cd8_pos = c("cd4_neg_cd8_neg", "cd4_pos_cd8_neg", "cd4_neg_cd8_pos", "cd4_pos_cd8_pos")) %>% 
+  tidyr::fill(pooled_col, c("LAG3"), .direction = "down")
+  
 
-# Got results back
-test_gate
+# View results
+example_gate
 
 # try get indicator col
-test_i = 
+example_intensity_gated_lag3 = 
   get_gated_dat(intensity_dat %>% 
                   dplyr::filter(cd3_pos == 1),
                 subset_col = "cd4_pos_cd8_pos", 
-                cutoffs = test_gate)
+                cutoffs = example_gate)
 
-colnames(test_i)
 
-dim(intensity_dat)
-dim(test_i)
+# Plot the gate for visual
+intensity_dat %>% 
+  dplyr::filter(cd3_pos == 1) %>% 
+  # additional step to remove large intensity values only when density gating. 
+  # Still kept in the data
+  dplyr::filter(!(if_any(all_of(markers_to_gate), ~.x < neg_intensity_thres)))%>% 
+  ggplot() + 
+  geom_density(aes(LAG3)) +
+  geom_vline(data = example_gate, 
+             aes(xintercept = LAG3),
+             color = "blue", 
+             linetype = "dashed") + 
+  labs(subtitle = "Distribution of LAG3 intensity on all CD3+. Gate identifed by {staRgate} in blue.")
+
+# If by CD4/CD8, 
+
+intensity_dat %>% 
+  dplyr::filter(cd3_pos == 1) %>% 
+  # additional step to remove large intensity values only when density gating. 
+  # Still kept in the data
+  dplyr::filter(!(if_any(all_of(markers_to_gate), ~.x < neg_intensity_thres)))%>% 
+  ggplot() + 
+  geom_density(aes(LAG3)) +
+  geom_vline(data = example_gate, 
+             aes(xintercept = LAG3),
+             color = "blue", 
+             linetype = "dashed") + 
+  labs(subtitle = "Distribution of LAG3 intensity on all CD3+. Gate identifed by {staRgate} in blue.") + 
+  facet_wrap(~cd4_pos_cd8_pos)
+
+```
+
+```{r}
+# TODO: add a purrr::map() example of density gating applied to all markers for a more complete example
 ```
 
