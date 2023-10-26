@@ -69,4 +69,6 @@ run_pipeline = function(path_out,
 
   openCyto::gt_gating(gt_tcell, gs)
 
+  return(gs)
+
 }

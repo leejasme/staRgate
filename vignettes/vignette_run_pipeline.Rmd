@@ -52,9 +52,31 @@ library(janitor)
 # path_biexp_params = "./flow_biexp_param.xlsx"
 
 # After adding inst/extdata
+pt_samp_nm = "flow_sample_1"
+
+## File path to the FCS file
+path_fcs = system.file("extdata", "example_fcs.fcs", package = "staRgate", mustWork = TRUE)
+
+## File path to the compensation matrix csv file
+## Expect format to match flowJo exported version
+path_comp_mat = system.file("extdata", "comp_mat_example_fcs.csv", package = "staRgate", mustWork = TRUE)
+
+## File path for outputs/saving
+# Maybe not the best sol, but create a temp dir?
+path_out = tempdir()
+# Print the path_out for user to see
+path_out
+
+## File path Gating template
 gtFile = system.file("extdata", "gating_template_x50_tcell.csv", package = "staRgate", mustWork = TRUE)
 
-path_biexp_params = system.file("extdata", "biexp_transf_parameters_x50.xlsx", package = "staRgate", mustWork = TRUE)
+## File path to biexp parameters
+## Expects 4 columns: full_name, ext_neg_dec, width_basis, positive_dec
+## full name should contain the channel/dye name
+#3 remaining cols fill in with desired parameter values
+path_biexp_params = system.file("extdata", "biexp_transf_parameters_x50.csv", package = "staRgate", mustWork = TRUE)
+
+
 ```
 
 ```{r}
@@ -102,34 +124,83 @@ path_biexp_params = system.file("extdata", "biexp_transf_parameters_x50.xlsx", p
     flowCore::exprs()
     
   summary(dat_pre_transform)
+    
+  # Pre-gating up to CD3+ with {openCyto}
+  ## Set seed using today's date 
+  set.seed(glue::glue({format(Sys.Date(), format = "%Y%m%d")}))
   
-  # Merge the pre and post transformed cols for APC_A
-  aux_var = "APC-A"
+  # openCyto::gt_gating(gt_tcell, gs_qc)
+  openCyto::gt_gating(gt_tcell, gs)
   
-  test = 
-    tibble(
-    pre = dat_pre_transform[, aux_var], 
-    post = dat_post_transform[, aux_var] 
-  )
+  ## Check autoplot
+  ggcyto::autoplot(gs[[1]])
   
-  test %>% 
-    dplyr::filter(post <= -1000) %>% 
-    arrange(-post) %>%
-    head(n = 10)
+  # To prevent breakage down the road
+  gs_qc = gs
+  rm(gs)
   
-  test %>% 
-    dplyr::filter(post >= 1600) %>% 
-    arrange(post) %>%
-    head(n = 10)
-  # For APC-A , 
-  # -2000 corresponds to approx -5800 on original scale
-  # -1000 ~ >3300
-  # For ref, the flowJo plots usually only go up to -10^3 or -1000
+  # Extract intensity matrix from GatingSet object
+  ## Grab marker names from GatingSet for labeling col names in intensity matrix
+  marker_chnl_names = 
+    flowWorkspace::gh_pop_get_data(gs_qc) %>% 
+    flowWorkspace::markernames() %>% 
+    as.data.frame() %>% 
+    tibble::rownames_to_column() %>% 
+    dplyr::rename(chnl = rowname, 
+           marker_full = ".") %>% 
+    # clean up the names 
+    dplyr::mutate(
+      marker_full = janitor::make_clean_names(marker_full, replace = c("-" = "", "_" = "", " " = "")) %>% toupper()
+    ) %>% 
+    # Reorder the marker channel names to start with CD3, CD4, CD8 then the rest
+    dplyr::arrange(match(marker_full, c("CD3", "CD4", "CD8"))) %>% 
+    # Clean up
+    dplyr::mutate(marker_full = ifelse(marker_full == "FOX_P3", "FOXP3", marker_full))
+  
+  # For filtering out neg values below for any intensity cols
+  neg_intensity_thres = -2000
+  
+  markers_to_gate = 
+    marker_chnl_names$marker_full %>%
+    .[!(. %in% c("CD3", "CD4", 'CD8', "LD", "CD1419"))]
+    
+  
+  ## Grab the intensity matrix from GatingSet
+  ## the gh_pop_get_indices grabs the 0/1 for whether gated as CD3
+  intensity_dat = 
+    gs_qc %>% 
+    flowWorkspace::gh_pop_get_indices(y = "cd3") %>% 
+    cbind(gs_qc %>%  
+            flowWorkspace::gh_pop_get_data() %>% 
+            flowCore::exprs(),
+          "cd3_pos" = .) %>% 
+  # add on the cd4 and cd8 0/1s
+    cbind(., 
+          "cd4_pos" = gh_pop_get_indices(gs_qc, y = "cd4+")) %>% 
+    cbind(., 
+          "cd8_pos" = gh_pop_get_indices(gs_qc, y = "cd8+")) %>% 
+    tibble::as_tibble() %>%
+    # Rename for plotting
+    dplyr::rename(stats::setNames(marker_chnl_names$chnl, as.character(marker_chnl_names$marker_full))) %>%
+    dplyr::mutate(
+      cd4_pos_cd8_pos = case_when(
+        cd3_pos == 1 & cd4_pos == 1 & cd8_pos == 1 ~ "cd4_pos_cd8_pos",
+        cd3_pos == 1 & cd4_pos == 1 & cd8_pos == 0 ~ "cd4_pos_cd8_neg",
+        cd3_pos == 1 & cd4_pos == 0 & cd8_pos == 1 ~ "cd4_neg_cd8_pos",
+        cd3_pos == 1 & cd4_pos == 0 & cd8_pos == 0 ~ "cd4_neg_cd8_neg"
+      )
+    ) %>% 
+    # additional step to remove large intensity values
+    # 2023-05-26 Filter out any extremely negative values in cols of markers_to_gate
+    dplyr::filter(!(if_any(all_of(markers_to_gate), ~.x < neg_intensity_thres)))
+  
+  ## Preview of intensity matrix
+  head(intensity_dat)
   
 ```
 
 
-```{r}
+```{r, eval = FALSE}
 # Load gating template
 ## Modified the T cell gating template from {openCyto}
 
