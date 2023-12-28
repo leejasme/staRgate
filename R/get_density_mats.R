@@ -4,7 +4,7 @@ get_density_mats = function(intens_dat,
                             subset_col,
                             bin_n = 512,
                             peak_detect_ratio = 10,
-                            pos_peak_threshold = 1600){
+                            pos_peak_threshold = 1800){
   #' Internal function: Matrix of calculations for density gating of intensity values in `marker` for each unique subset of `subset_col`
   #'
   #' Internal function for `get_density_gates`
@@ -27,7 +27,7 @@ get_density_mats = function(intens_dat,
   #'              a peak that is < than the highest peak by `peak_detect_ratio` times will be ignored
   #'              default = 10
   #' @param pos_peak_threshold numeric for threshold to identify a positive peak
-  #'           '  default is 1600, which is on the biexponential scale
+  #'           '  default is 1800, which is on the biexponential scale
   #'
   #' @return tibble of matrices for `marker` containing calculations for density gating
   #'         for each unique subset found in `subset_col`
