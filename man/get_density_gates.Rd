@@ -10,7 +10,8 @@ get_density_gates(
   subset_col,
   bin_n = 512,
   peak_detect_ratio = 10,
-  pos_peak_threshold = 1600
+  pos_peak_threshold = 1800,
+  neg_intensity_threshold = -1000
 )
 }
 \arguments{
@@ -18,8 +19,8 @@ get_density_gates(
 cols = intensity value per marker,
 rows = each sample}
 
-\item{marker}{string for the marker to gate on
-the name needs to match exactly the column name in \code{intens_dat}}
+\item{marker}{string for the marker(s) to gate on
+the names need to match exactly the column name in \code{intens_dat}}
 
 \item{subset_col}{string for the column name to indicate the subsets to apply density gating on
 will perform operation on subsets corresponding to each unique value in column}
@@ -32,8 +33,18 @@ default is 512, which is the default of \code{density(n = 512)}}
 a peak that is < than the highest peak by \code{peak_detect_ratio} times will be ignored
 default = 10}
 
-\item{pos_peak_threshold}{numeric for threshold to identify a positive peak
-'  default is 1600, which is on the biexponential scale}
+\item{pos_peak_threshold}{either numeric for threshold to identify a positive peak for all or
+a dataframe if supplying multiple \code{marker} to gate
+Dataframe needs to be supplied with 2 columns named \code{marker} and \code{pos_peak_threshold}
+and rows for the corresponding \code{marker} to gate
+default is 1800 (note this is on the biexponential scale)}
+
+\item{neg_intensity_threshold}{numeric for threshold to filter out any "very negatively" expressed
+cells in the density estimation to avoid over-compression and difficulty in distinguishing
+peaks and the gates
+This is only applied as a filter for the density estimation, the cells < \verb{neg_intensity_threshold`` are retained in the intensity matrix for other steps Expects the }neg_intensity_threshold\verb{is on the same scale as the transformed data in}intens_dat\verb{Default is}NULL`: no filters applied and density estimation based on all cells in
+corresponding subsets.
+Suggested for biexp. transformed data is -1000 which corresponds to ~-3300 on the original intensity scale)}
 }
 \value{
 tibble of gates/cutoffs for \code{marker} for each unique subset found in \code{subset_col}

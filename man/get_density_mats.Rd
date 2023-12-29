@@ -10,7 +10,7 @@ get_density_mats(
   subset_col,
   bin_n = 512,
   peak_detect_ratio = 10,
-  pos_peak_threshold = 1600
+  pos_peak_threshold = 1800
 )
 }
 \arguments{
@@ -33,7 +33,7 @@ a peak that is < than the highest peak by \code{peak_detect_ratio} times will be
 default = 10}
 
 \item{pos_peak_threshold}{numeric for threshold to identify a positive peak
-'  default is 1600, which is on the biexponential scale}
+'  default is 1800, which is on the biexponential scale}
 }
 \value{
 tibble of matrices for \code{marker} containing calculations for density gating
