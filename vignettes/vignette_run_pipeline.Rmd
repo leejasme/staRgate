@@ -533,3 +533,12 @@ intensity_dat %>%
   labs(subtitle = "Distribution of CD45RA intensity on all CD3+. Gate identifed by {staRgate} in blue.") + 
   facet_wrap(~cd4_pos_cd8_pos)
 ```
+
+
+## Getting percentage data
+
+We can derive percentage of positive cells for all combinations of markers. Here we will define:
+
++ `subset_col`: largest parent populations in consideration (but this wont work if it's CD4+/CD8+?)
++ can specify 2 or 3 marker-combinations within each unique value of `subset_col`
+
