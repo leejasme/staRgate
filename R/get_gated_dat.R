@@ -49,6 +49,12 @@ get_gated_dat = function(intens_dat = intensity_dat,
     rlang::abort(message = "Error: `subset_col` must be string matching column name of `intens_dat`")
   }
 
+
+  # 2024-01-05 Add a check for `subset_col` on the cutoffs
+  if(!(subset_col %in% colnames(cutoffs))){
+    rlang::abort(message = "Error: `subset_col` must be string matching column name of `cutoffs`")
+  }
+
   # 2023-05-19 should we build a capability for the subset_col to be passed in for
   # lazy eval (i.e., not string but just unquoted)
 
