@@ -122,4 +122,9 @@ get_perc = function(intens_dat,
 
     expand_denom = FALSE
   }
+
+  # List the subpopulations first
+  # Use dplyr filters with strings
+
+
 }
