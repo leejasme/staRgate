@@ -14,7 +14,9 @@ Imports:
     dplyr,
     janitor,
     magrittr,
-    stringr
+    purrr,
+    stringr,
+    tidyr
 Suggests: 
     knitr,
     rmarkdown

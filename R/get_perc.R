@@ -2,7 +2,8 @@ get_perc = function(intens_dat,
                     num_marker,
                     denom_marker,
                     expand_num = FALSE,
-                    expand_denom = FALSE) {
+                    expand_denom = FALSE,
+                    keep_indicators = TRUE){
   #' Calculate the percentage of positive cells for specific subpopulations
   #'
   #' Expects data input same as the output from `get_gated_dat` with indicator columns of specific
@@ -30,7 +31,7 @@ get_perc = function(intens_dat,
   #' @param expand_denom logical, only accepts `TRUE` or `FALSE` with default of `FALSE`
   #'                     if `expand_denom = TRUE`, currently considers up to 1 marker from the `num_marker` and
   #'                     the unique combinations of `denom_marker` to generate list of subpopulations
-  #'                     (e.g., if `denom_marker = c("CD8")`, `num_marker = c("LAG3", "KI67")`, and `expand_denom = TRUE`,
+  #'                     e.g., if `denom_marker = c("CD8")`, `num_marker = c("LAG3", "KI67")`, and `expand_denom = TRUE`,
   #'                     the subpopulations will include:
   #'                     1. LAG3+ of CD8+, LAG3- of CD8+, LAG3+ of CD8-, LAG3- of CD8-,
   #'                     2. KI67+ of CD8+, KI67- of CD8+, KI67+ of CD8-, KI67- of CD8-,
@@ -42,7 +43,7 @@ get_perc = function(intens_dat,
   #'                     denominator CD4+ and CD4- whereas
   #'                     `denom_marker = c("CD4", "CD8"` and `expand_denom = FALSE` will consider subpopulations with denominators
   #'                     (CD4- & CD8-), (CD4+ & CD8-), (CD4- & CD8+) and (CD4+ & CD8+))
-  #' @param keep_indicators logical, only accepts `TRUE` or `FALSE` with default of `FALSE`
+  #' @param keep_indicators logical, only accepts `TRUE` or `FALSE` with default of `TRUE`
   #'                        if `keep_indicators = TRUE`, will return indicator columns of 0/1 to specify which markers are considered in the
   #'                        numerator and denominators of the subpopulations. This is useful for matching to percentage data
   #'                        with potentially different naming conventions to avoid not having exact string matches for the same
@@ -51,6 +52,7 @@ get_perc = function(intens_dat,
   #' @return tibble containing the percentage of cells where
   #'         rows correspond to each subpopulation
   #' @export
+  #'
 
   ## Check inputs ---
   # Check names in num_marker and denom_marker are in the data
@@ -68,17 +70,18 @@ get_perc = function(intens_dat,
   col_nms_subset =
     paste(toupper(c(num_marker, denom_marker)), "POS", sep = "_")
 
-  if(!(inherits(intens_dat, "data.frame"))){
+  if (!(inherits(intens_dat, "data.frame"))) {
     rlang::abort(message = "Error: `intens_dat` must be of data.frame class")
   }
 
-  if(!(inherits(col_nms_subset, "character"))){
-    rlang::abort(c(message = "Error: `num_marker` and/or `denom_marker` must be of character class.",
-                   "i" = "`num_marker` and `denom_marker` must be strings containing the names of the marker(s) of interest for calculating the subpopulations.")
+  if (!(inherits(col_nms_subset, "character"))) {
+    rlang::abort(
+      c(message = "Error: `num_marker` and/or `denom_marker` must be of character class.",
+        "i" = "`num_marker` and `denom_marker` must be strings containing the names of the marker(s) of interest for calculating the subpopulations.")
     )
   }
 
-  if (!(col_nms_subset %in% col_nms)) {
+  if (!all((col_nms_subset %in% col_nms))) {
     rlang::abort(
       message = c(
         "Error: `num_marker` and `denom_marker` must have indicator columns in `intens_dat`",
@@ -89,11 +92,13 @@ get_perc = function(intens_dat,
 
   # check the cols corresponding to the num and denom markers only contain 0 and 1
   # what to do about NAs?
-  if(!all(unique(unlist(intens_dat[, col_nms_subset])) %in% c(0, 1))){
+  if (!all(unique(unlist(intens_dat[, col_nms_subset])) %in% c(0, 1))) {
     rlang::abort(
       message = c(
         "Error: Unique values in indicator columns corresponding to `num_marker` and `denom_marker` should only contain 0 and 1.",
-        "i" = glue::glue("Currently detected unique values: {paste(unique(unlist(intens_dat[, col_nms_subset])), collapse = ', ')}")
+        "i" = glue::glue(
+          "Currently detected unique values: {paste(unique(unlist(intens_dat[, col_nms_subset])), collapse = ', ')}"
+        )
       )
     )
   }
@@ -101,30 +106,261 @@ get_perc = function(intens_dat,
   # Perhaps also need to check if the 0/1 cols are numeric?
   # For now, make it an error but can consider for the future to convert it with readr::parse_number and print a warning
   # But not sure how badly that could break down if the parsing did not show the expected values?
-  if(!all(sapply(intens_dat[, col_nms_subset], class, simplify = TRUE) == "numeric")){
+  if (!all(sapply(intens_dat[, col_nms_subset], class, simplify = TRUE) == "numeric")) {
     rlang::abort(message = "Error: Not all indicator columns corresponding to `num_marker` and `denom_marker` are numeric")
   }
 
   # check expand_num and expand_denom as well
-  if(!inherits(expand_num, "logical")){
-    rlang::warn(message = c("Warning: `expand_num` not of class logical (either `TRUE` or `FALSE`)",
-                            "i" = "Default value of `FALSE` will be used"
-                            )
+  if (!inherits(expand_num, "logical")) {
+    rlang::warn(
+      message = c(
+        "Warning: `expand_num` not of class logical (either `TRUE` or `FALSE`)",
+        "i" = "Default value of `FALSE` will be used"
+      )
     )
 
     expand_num = FALSE
   }
 
-  if(!inherits(expand_denom, "logical")){
-    rlang::warn(message = c("Warning: `expand_denom` not of class logical (either `TRUE` or `FALSE`)",
-                            "i" = "Default value of `FALSE` will be used")
+  if (!inherits(expand_denom, "logical")) {
+    rlang::warn(
+      message = c(
+        "Warning: `expand_denom` not of class logical (either `TRUE` or `FALSE`)",
+        "i" = "Default value of `FALSE` will be used"
+      )
     )
 
     expand_denom = FALSE
   }
 
-  # List the subpopulations first
-  # Use dplyr filters with strings
+  # Can only expand numerator if the supplied num_marker has 2 or more markers
+  # Since we are considering pairs
+  if(expand_num == TRUE & length(num_marker) < 2){
+    rlang::warn(
+      message = c(
+        "Warning: `expand_num` only applies if multiple markers are supplied in `num_marker",
+        "i" = stringr::str_glue("`expand_num` = {expand_num}, `num_marker` length = {length(num_marker)}"),
+        "i" = "Default value of `expand_num = FALSE` will be used"
+      )
+    )
 
+    expand_num = FALSE
+  }
+
+  # Also if expand_denom == TRUE
+  if(expand_denom == TRUE & length(num_marker) < 2){
+    rlang::warn(
+      message = c(
+        "Warning: `expand_denom` only applies if multiple markers are supplied in `num_marker",
+        "i" = stringr::str_glue("`expand_denom` = {expand_denom}, `num_marker` length = {length(num_marker)}"),
+        "i" = "Default value of `expand_denom = FALSE` will be used"
+      )
+    )
+
+    expand_denom = FALSE
+  }
+
+  # List the subpopulations first -----
+  # Tag on _POS for the col names
+  denom_cols = paste(denom_marker, "POS", sep = "_")
+  num_cols = paste(num_marker, "POS", sep = "_")
+
+  # Numerator
+  # If expand_num == FALSE
+  # Only consider each marker individually (regardless of status of the other markers)
+  num_pre =
+    data.frame(num_filters = c(paste0(num_cols, " == 0"),
+                               paste0(num_cols, " == 1")))
+
+
+  # Tag on the indicators
+  num =
+    purrr::map(num_cols,
+               function(c) {
+                 num_pre %>%
+                   dplyr::mutate(!!c := ifelse(grepl(paste0(c, " == 1"), num_filters),
+                                               1,
+                                               ifelse(
+                                                 grepl(paste0(c, " == 0"), num_filters),
+                                                 0,
+                                                 NA_real_
+                                               )))
+               }) %>%
+    purrr::reduce(left_join,
+                  by = "num_filters") %>%
+    # for the numerator, only expand if expand_num = TRUE
+    # If expand_num = TRUE, then tag on the expanded.
+    {
+      if (expand_num) {
+        dplyr::bind_rows(
+          .,
+          # purrr::map_dfc(num_cols,
+          #                function(n) {
+          #                  # We expect the col to be an indicator 0/1 col
+          #                  # SetNames will ensure named col in map outcome
+          #                  stats::setNames(data.frame(c(
+          #                    paste(n, "0", sep = " == "),
+          #                    paste(n, "1", sep = " == ")
+          #                  )),
+          #                  n)
+          #                }) %>%
+          #   # This creates the combos of all length(num_marker) so not
+          #   # going to create pairs when we supply a num_marker > length 2
+          #   # use utils::combn instead
+          #   # tidyr::expand(., !!!.) %>%
+          #   # {{}else{.}} %>%
+          #   # form a col that puts together the conditions
+          #   tidyr::unite(
+          #     .,
+          #     col = num_filters,
+          #     sep = " & ",
+          #     remove = FALSE
+          #   ) %>%
+
+
+          # Using utils::combn to grab pairs of num markers
+          utils::combn(num_pre$num_filters, 2) %>%
+            # apply across cols to paste into 1 condition
+            apply(MARGIN = 2, function(x){paste(x, collapse = " & ")}) %>%
+            data.frame(num_filters = .) %>%
+            # also parse back the 0/1 from the original cols to add indicators
+            dplyr::mutate(dplyr::across(
+              dplyr::ends_with("_POS"),
+              ~grepl(paste0(dplyr::cur_column(), " == 0")
+              # ~ ifelse(grepl(paste0(dplyr::cur_column(), " == 0"), num_filters), 0,
+              #          ifelse(
+              #            grepl(paste0(dplyr::cur_column(), " == 1"), num_filters), 1
+              #          ),
+              #          NA_real_)
+            ))
+        )
+
+      } else .
+    }
+
+
+  # Use dplyr filters with strings
+  denom =
+    purrr::map_dfc(denom_cols,
+                   function(d) {
+                     # We expect the col to be an indicator 0/1 col
+                     # SetNames will ensure named col in map outcome
+                     stats::setNames(data.frame(c(
+                       paste(d, "0", sep = " == "),
+                       paste(d, "1", sep = " == ")
+                     )),
+                     d)
+                   }) %>%
+    # Can use base expand.grid instead of tidyr::expand
+    # But will do need tidyr for other functions
+    # Equivalent as tidyr::expand(denom, denom[[1]], denom[[2]],...)
+    # Except this should take care of all n cols
+    # So far have tested denom with 1-3 markers
+    tidyr::expand(.,!!!.) %>%
+    # form a col that puts together the conditions
+    tidyr::unite(.,
+                 col = denom_filters,
+                 sep = " & ",
+                 remove = FALSE) %>%
+    # also parse back the 0/1 from the original cols to add indicators
+    dplyr::mutate(dplyr::across(dplyr::ends_with("_POS"),
+                                ~ ifelse(grepl("== 0", .x), 0, 1))) %>%
+    # to identify the indicator is denominator, tag on the _D to create _POS_D cols
+    dplyr::rename_with(~ paste0(., "_D"), dplyr::ends_with("_POS")) %>%
+    # If expand_denom = TRUE then need to tag on 1 additional 0/1 for each numerator marker
+    {
+      if (expand_denom == TRUE) {
+        denom_pre_expand = .
+
+        # Tag on this expanded set to the denom
+        # expand.grid will create all combinations of the two vectors
+        dplyr::bind_rows(
+          denom_pre_expand,
+          expand.grid(denom_pre_expand$denom_filters, num_pre$num_filters) %>%
+            tidyr::unite(
+              .,
+              col = denom_filters,
+              sep = " & ",
+              remove = FALSE
+            ) %>%
+            # Use the original denom_filters to pull the 0/1 cols
+            dplyr::left_join(.,
+                             denom_pre_expand,
+                             by = c("Var1" = "denom_filters")) %>%
+            # same thing with the num 0/1s
+            dplyr::left_join(.,
+                             num,
+                             by = c("Var2" = "num_filters")) %>%
+            dplyr::select(-Var1,-Var2) %>%
+            # The numerator cols pulled from num need to be renamed with the _D
+            dplyr::rename_with(~ paste0(., "_D"), dplyr::ends_with("_POS"))
+        )
+
+      } else .
+    }
+
+  # List out all the subpops by expanding grid of num and denom filters
+  # Need to filter out any pairs that have marker in the numerator and denom
+  # This should only happen if expand_denom == TRUE
+  tbl_subpop =
+    expand.grid(num$num_filters, denom$denom_filters) %>%
+    # This is a rowwise operation
+    dplyr::rowwise() %>%
+    dplyr::filter(!grepl(
+      # Just need to detect the var name part
+      stringr::str_remove(Var1, pattern = " == [[:digit:]]"),
+      Var2)
+      ) %>%
+    dplyr::ungroup() %>%
+    dplyr::rename(
+      num_filters = Var1,
+      denom_filters = Var2
+    ) %>%
+    # Grab the indicators again
+    dplyr::left_join(.,
+                     num,
+                     by = "num_filters") %>%
+    # Grab the indicators again
+    dplyr::left_join(.,
+                     denom,
+                     by = "denom_filters")
+
+
+  # For checking the list of subpops
+  # print(denom)
+  # print(num)
+  #
+  # nrow(denom)
+  # nrow(num)
+  #
+  # dplyr::case_when(
+  #   expand_num == FALSE & expand_denom == FALSE ~ glue::glue("N denom = {2*length(denom_marker)}, N num = {2*length(num_marker)}"),
+  #   expand_num == FALSE & expand_denom == TRUE ~ glue::glue("N denom = {(2*length(denom_marker))*(1+(2*length(num_marker)))}, N num = {2*length(num_marker)}"),
+  #   expand_num == TRUE & expand_denom == FALSE ~ glue::glue("N denom = {2*length(denom_marker)}, N num = {2*length(num_marker) + 2^(length(num_marker))}"),
+  #   expand_num == TRUE & expand_denom == TRUE ~ glue::glue("N denom = {(2*length(denom_marker))*(1+(2*length(num_marker)))}, N num = {2*length(num_marker) + 2^(length(num_marker))}")
+  # )
+
+  print(tbl_subpop)
 
 }
+
+
+
+intens_dat = tibble::tibble(
+  CD3_pos = c(0, 1, 0, 1, 1, 1, 1),
+  CD4_pos = c(0, 1, 0, 0, 1, 0, 0),
+  CD8_pos = c(0, 0, 0, 0, 1, 0, 1),
+  LAG3_pos = c(0, 1, 0, 1, 0, 0, 0),
+  ctla4_pos = c(1, 1, 1, 0, 0, 0, 1),
+  PD1_pos =  c(1, 1, 0, 0, 0, 0, 0),
+  CD45RA_pos = c(0, 1, 1, 0, 0, 0, 1)
+)
+
+denom_marker = c("CD4", "CD8") # "CD3",
+num_marker = c("LAG3", "CTLA4", "PD1")
+
+get_perc(intens_dat,
+         num_marker = num_marker,
+         denom_marker = denom_marker,
+         expand_num = TRUE,
+         expand_denom = FALSE)
