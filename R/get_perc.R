@@ -222,18 +222,32 @@ get_perc = function(intens_dat,
           utils::combn(num_pre$num_filters, 2) %>%
             # apply across cols to paste into 1 condition
             apply(MARGIN = 2, function(x){paste(x, collapse = " & ")}) %>%
-            data.frame(num_filters = .) %>%
-            # also parse back the 0/1 from the original cols to add indicators
-            dplyr::mutate(dplyr::across(
-              dplyr::ends_with("_POS"),
-              ~grepl(paste0(dplyr::cur_column(), " == 0")
-              # ~ ifelse(grepl(paste0(dplyr::cur_column(), " == 0"), num_filters), 0,
-              #          ifelse(
-              #            grepl(paste0(dplyr::cur_column(), " == 1"), num_filters), 1
-              #          ),
-              #          NA_real_)
-            ))
-        )
+            data.frame(num_filters = .)
+            ) %>%
+          # also parse back the 0/1 from the original cols to add indicators
+          dplyr::mutate(dplyr::across(dplyr::ends_with("_POS"),
+                                      ~
+                                        ifelse(
+                                          grepl(paste0(dplyr::cur_column(), " == 0"),
+                                                num_filters),
+                                          0,
+                                          ifelse(
+                                            grepl(paste0(dplyr::cur_column(), " == 1"),
+                                                  num_filters),
+                                            1,
+                                            NA_real_
+                                          )
+                                        )
+
+          )
+          ) %>%
+          # filter out: there are the same markers in the two combos -
+          # such as ctla4_pos == 0 & ctla4_pos == 1
+          dplyr::rowwise() %>% # Need rowwise to work with c_across
+          dplyr::filter(
+            !(stringr::str_detect(num_filters, "&") &  sum(1*is.na(dplyr::c_across(dplyr::ends_with("_POS")))) == 2)
+          ) %>%
+          dplyr::ungroup()
 
       } else .
     }
@@ -326,7 +340,7 @@ get_perc = function(intens_dat,
                      by = "denom_filters")
 
 
-  # For checking the list of subpops
+  # # For checking the list of subpops
   # print(denom)
   # print(num)
   #
@@ -339,8 +353,8 @@ get_perc = function(intens_dat,
   #   expand_num == TRUE & expand_denom == FALSE ~ glue::glue("N denom = {2*length(denom_marker)}, N num = {2*length(num_marker) + 2^(length(num_marker))}"),
   #   expand_num == TRUE & expand_denom == TRUE ~ glue::glue("N denom = {(2*length(denom_marker))*(1+(2*length(num_marker)))}, N num = {2*length(num_marker) + 2^(length(num_marker))}")
   # )
-
-  print(tbl_subpop)
+  #
+  # print(tbl_subpop)
 
 }
 
@@ -359,8 +373,11 @@ intens_dat = tibble::tibble(
 denom_marker = c("CD4", "CD8") # "CD3",
 num_marker = c("LAG3", "CTLA4", "PD1")
 
-get_perc(intens_dat,
-         num_marker = num_marker,
-         denom_marker = denom_marker,
-         expand_num = TRUE,
-         expand_denom = FALSE)
+test =
+  get_perc(intens_dat,
+           num_marker = num_marker,
+           denom_marker = denom_marker,
+           expand_num = TRUE,
+           expand_denom = FALSE)
+
+View(test)
