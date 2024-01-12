@@ -45,12 +45,18 @@ get_perc = function(intens_dat,
   #'                     (CD4- & CD8-), (CD4+ & CD8-), (CD4- & CD8+) and (CD4+ & CD8+))
   #' @param keep_indicators logical, only accepts `TRUE` or `FALSE` with default of `TRUE`
   #'                        if `keep_indicators = TRUE`, will return indicator columns of 0/1 to specify which markers are considered in the
-  #'                        numerator and denominators of the subpopulations. This is useful for matching to percentage data
+  #'                        numerator and denominators of the subpopulations. Naming convention for the numerator cols are `<marker>_POS`
+  #'                        and for denominator cols are `<marker>_POS_D`. For both sets of columns, `0` indicates considered the negative cells,
+  #'                        `1` indicates considered the positive cells and `NA_real_` indicates not in consideration for the subpopulation.
+  #'                        This is useful for matching to percentage data
   #'                        with potentially different naming conventions to avoid not having exact string matches for the same
   #'                        subpopulation
   #'                        take note that the order also matters when matching strings: "CD4+ & CD8- of CD3+" is different from "CD8- & CD4+ of CD3+"
   #' @return tibble containing the percentage of cells where
-  #'         rows correspond to each subpopulation
+  #'         rows correspond to each subpopulation specified in the `subpopulation`,
+  #'         `n` indicates the number of cells that satisifies the numerator conditions,
+  #'         `N` indicates the number of cells that satisifies the denominator conditions,
+  #'         `perc` = `n` divided by `N` unless `N` = 0, then `perc = NA_real_`
   #' @export
   #'
 
@@ -337,26 +343,80 @@ get_perc = function(intens_dat,
     # Grab the indicators again
     dplyr::left_join(.,
                      denom,
-                     by = "denom_filters")
+                     by = "denom_filters") %>%
+    # # START HERE!
+    # # Get marker names
+    dplyr::mutate(
+      num_label =
+        stringr::str_replace_all(num_filters, pattern = c("_POS == 0" = "_NEG",
+                                                          "_POS == 1" = "_POS",
+                                                          " \\& " = "_")),
+      denom_label =
+        stringr::str_replace_all(denom_filters, pattern = c("_POS == 0" = "_NEG",
+                                                            "_POS == 1" = "_POS",
+                                                            " \\& " = "_")),
+      subpopulation =
+        paste0(num_label, "_OF_", denom_label)
 
 
-  # # For checking the list of subpops
-  # print(denom)
-  # print(num)
-  #
-  # nrow(denom)
-  # nrow(num)
-  #
-  # dplyr::case_when(
-  #   expand_num == FALSE & expand_denom == FALSE ~ glue::glue("N denom = {2*length(denom_marker)}, N num = {2*length(num_marker)}"),
-  #   expand_num == FALSE & expand_denom == TRUE ~ glue::glue("N denom = {(2*length(denom_marker))*(1+(2*length(num_marker)))}, N num = {2*length(num_marker)}"),
-  #   expand_num == TRUE & expand_denom == FALSE ~ glue::glue("N denom = {2*length(denom_marker)}, N num = {2*length(num_marker) + 2^(length(num_marker))}"),
-  #   expand_num == TRUE & expand_denom == TRUE ~ glue::glue("N denom = {(2*length(denom_marker))*(1+(2*length(num_marker)))}, N num = {2*length(num_marker) + 2^(length(num_marker))}")
-  # )
-  #
-  # print(tbl_subpop)
+    )
+
+  # Count the n and N,
+  # Is there a way to achieve n and N as a list with 1 map statement
+  tbl_counts =
+    purrr::map2_dfr(
+    tbl_subpop$num_filters,
+    tbl_subpop$denom_filters,
+    function(n_filter, d_filter){
+      current_d =
+        intens_dat %>%
+        # First get our denom
+        dplyr::filter(!!rlang::parse_expr(d_filter))
+
+        N = nrow(current_d)
+        # n cells is how many out of the denom satisfy the numerator expression
+        n = nrow(current_d %>% dplyr::filter(!!rlang::parse_expr(n_filter)))
+
+        data.frame(
+          # Keep these to merge back onto tbl_subpop
+          num_filters = n_filter,
+          denom_filters = d_filter,
+          n = n,
+          N = N,
+          perc =
+            # In anticipation of N = 0, divide by zero
+            if(N > 0){
+              (n/N)*100
+            }else{
+              NA_real_
+            }
+
+        )
+    }
+  )
+
+  # Merge on for final table
+  tbl_final =
+    dplyr::left_join(
+      tbl_subpop,
+      tbl_counts,
+      by = c("denom_filters", "num_filters")
+    ) %>%
+    # If not keep indicators, remove the POS cols
+    {
+      if(!keep_indicators){
+        dplyr::select(., -dplyr::ends_with("_POS"), -dplyr::ends_with("_POS_D"))
+      }else{
+        .
+      }
+    } %>%
+    # Move the marker col to front, and remove the num/denom label and filter columns
+    dplyr::select(subpopulation, n, N, perc, dplyr::everything(), -num_label, -denom_label, -num_filters, -denom_filters)
+
+  return(tbl_final)
 
 }
+
 
 
 
@@ -364,20 +424,47 @@ intens_dat = tibble::tibble(
   CD3_pos = c(0, 1, 0, 1, 1, 1, 1),
   CD4_pos = c(0, 1, 0, 0, 1, 0, 0),
   CD8_pos = c(0, 0, 0, 0, 1, 0, 1),
+  CD45RA_pos = c(0, 1, 1, 0, 0, 0, 1),
+  icos_pos = rep(0, times = 7),
+  cd25_pos = rep(1, times = 7),
+  tim3_pos = rep(0, times = 7),
+  cd27_pos = rep(0, times = 7),
+  Cd57_pos = rep(0, times = 7),
+  Cxcr5_pos = rep(0, times = 7),
+  CCR4_pos = rep(0, times = 7),
+  ccr7_pos = rep(0, times = 7),
+  hladr_pos = rep(0, times = 7),
+  cd28_pos = rep(0, times = 7),
+  pd1_pos = rep(0, times = 7),
   LAG3_pos = c(0, 1, 0, 1, 0, 0, 0),
+  cd127_pos = rep(0, times = 7),
+  cd38_pos = rep(0, times = 7),
+  tigit_pos = rep(0, times = 7),
+  eomes_pos = rep(0, times = 7),
   ctla4_pos = c(1, 1, 1, 0, 0, 0, 1),
-  PD1_pos =  c(1, 1, 0, 0, 0, 0, 0),
-  CD45RA_pos = c(0, 1, 1, 0, 0, 0, 1)
+  foxp3_pos = rep(0, times = 7),
+  gitr_pos =  c(1, 1, 0, 0, 0, 0, 0),
+  tbet_pos = rep(0, times = 7),
+  ki67_pos = rep(0, times = 7),
+  gzm_b_pos = rep(0, times = 7)
+
+
 )
 
 denom_marker = c("CD4", "CD8") # "CD3",
-num_marker = c("LAG3", "CTLA4", "PD1")
+num_marker = c("CD45RA", "ICOS", "CD25", "TIM3", "CD27", "CD57",
+                    "CXCR5", "CCR4", "CCR7", "HLADR", "CD28", "PD1", "LAG3",
+                    "CD127", "CD38", "TIGIT", "EOMES", "CTLA4", "FOXP3",
+                    "GITR", "TBET", "KI67", "GZM_B")
 
 test =
   get_perc(intens_dat,
            num_marker = num_marker,
            denom_marker = denom_marker,
            expand_num = TRUE,
-           expand_denom = FALSE)
+           expand_denom = TRUE,
+           keep_indicators = FALSE)
 
 View(test)
+
+dim(test)
