@@ -117,7 +117,7 @@ get_density_gates = function(intens_dat,
   if(!is.null(neg_intensity_threshold)){
     i_dat =
       intens_dat %>%
-      dplyr::filter(!(if_any(all_of(marker), ~.x < neg_intensity_threshold)))
+      dplyr::filter(!(dplyr::if_any(dplyr::all_of(marker), ~.x < neg_intensity_threshold)))
 
   }else{
     i_dat = intens_dat

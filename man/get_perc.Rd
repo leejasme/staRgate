@@ -62,9 +62,9 @@ take note that the order also matters when matching strings: "CD4+ & CD8- of CD3
 \value{
 tibble containing the percentage of cells where
 rows correspond to each subpopulation specified in the \code{subpopulation},
-\code{n} indicates the number of cells that satisifies the numerator conditions,
-\code{N} indicates the number of cells that satisifies the denominator conditions,
-\code{perc} = \code{n} divided by \code{N} unless \code{N} = 0, then \code{perc = NA_real_}
+\code{n_num} indicates the number of cells that satisifies the numerator conditions,
+\code{n_denom} indicates the number of cells that satisifies the denominator conditions,
+\code{perc} = \code{n_num} divided by \code{n_denom} unless \code{n_denom} = 0, then \code{perc = NA_real_}
 }
 \description{
 Expects data input same as the output from \code{get_gated_dat} with indicator columns of specific

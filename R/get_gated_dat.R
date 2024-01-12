@@ -13,7 +13,6 @@ get_gated_dat = function(intens_dat = intensity_dat,
   #' 1 indicates positivity or intensity > gate provided
   #'
   #' @param intens_dat dataframe of pre-gated (compensated, biexp. transf, openCyto steps) intensity values where
-  #'        cols = intensity value per marker,
   #'        rows = each sample
   #' @param cutoffs tibble of gates/cutoffs for all markers to gate
   #'        Expects `cutoffs` to match format of output from [get_density_gates()] with
@@ -61,7 +60,7 @@ get_gated_dat = function(intens_dat = intensity_dat,
 
   ## use nest() to subset into separate dfs
   intens_dat %>%
-    group_by(.data[[subset_col]]) %>%
+    dplyr::group_by(.data[[subset_col]]) %>%
     tidyr::nest() %>%
     # Join the cutoffs
     dplyr::mutate(
@@ -80,8 +79,8 @@ get_gated_dat = function(intens_dat = intensity_dat,
             # If nrow(c) == 0 then add NAs for mrk_pos
             d %>%
               dplyr::mutate(
-                dplyr::across(all_of(mrks),
-                       .fns = ~ {if(nrow(c) > 0){(.x >= c[[cur_column()]])*1}else{NA_real_}},
+                dplyr::across(dplyr::all_of(mrks),
+                       .fns = ~ {if(nrow(c) > 0){(.x >= c[[dplyr::cur_column()]])*1}else{NA_real_}},
                        # By specifying .names, we get a new col instead of overwrite
                        .names = "{tolower(.col)}_pos")
               )

@@ -192,7 +192,7 @@ get_perc = function(intens_dat,
                                                  NA_real_
                                                )))
                }) %>%
-    purrr::reduce(left_join,
+    purrr::reduce(dplyr::left_join,
                   by = "num_filters") %>%
     # for the numerator, only expand if expand_num = TRUE
     # If expand_num = TRUE, then tag on the expanded.
@@ -385,8 +385,8 @@ get_perc = function(intens_dat,
           n_denom = N,
           perc =
             # In anticipation of N = 0, divide by zero
-            if(n_denom > 0){
-              (n_num/n_denom)*100
+            if(N > 0){
+              (n/N)*100
             }else{
               NA_real_
             }

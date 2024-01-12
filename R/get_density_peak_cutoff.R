@@ -75,7 +75,7 @@ get_density_peak_cutoff = function(dens_binned_dat,
 
   new_d =
     new_d %>%
-    dplyr::mutate(peak = case_when(
+    dplyr::mutate(peak = dplyr::case_when(
       # set the aux_ind_neg_peak as peak = TRUE to correct for off-by-one error
       # original_row_num %in% (aux_ind_all_peaks - 1) ~ TRUE,
       # 2022-06-15 fixed local_peak off-by-one so no need to -1

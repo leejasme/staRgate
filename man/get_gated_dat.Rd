@@ -8,7 +8,6 @@ get_gated_dat(intens_dat = intensity_dat, cutoffs, subset_col)
 }
 \arguments{
 \item{intens_dat}{dataframe of pre-gated (compensated, biexp. transf, openCyto steps) intensity values where
-cols = intensity value per marker,
 rows = each sample}
 
 \item{cutoffs}{tibble of gates/cutoffs for all markers to gate

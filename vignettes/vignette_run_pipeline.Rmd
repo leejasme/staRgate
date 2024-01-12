@@ -10,7 +10,10 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.height = 8,
+  fig.width = 6,
+  fig.align = "center"
 )
 ```
 
@@ -38,15 +41,11 @@ A few things to keep in mind when debugging/iterating through gating:
 ```{r setup}
 # Load libraries
 library(staRgate)
-# Do we need to load the below if they are dependencies of staRgate?
 library(openCyto)
-library(tidyverse)
-library(flowCore)
-library(glue)
-library(flowAI)
 library(flowWorkspace)
-# library(readxl)
-library(janitor)
+library(flowCore)
+# Just for plotting in the vignette
+library(ggplot2)
 
 # Set up dynamic variables 
 ## Below are examples
@@ -172,18 +171,22 @@ Optional: include a `samp_metadata` for saving out some properties of the FCS fi
 
 ```{r}
   # Check no comp applied
-  flowWorkspace::gh_get_compensations(gs)
+  chk_cm = flowWorkspace::gh_get_compensations(gs)
   
+  chk_cm
+
   # Apply comp 
   gs = get_comp_gs(gs, path_comp_mat = path_comp_mat)
   
   # Can check that the comp was applied
-  flowWorkspace::gh_get_compensations(gs)
+  chk_cm = flowWorkspace::gh_get_compensations(gs)
+  
+  head(chk_cm@spillover)
   
   ## Optional- save the comp mat matrix
   # Can grab with the @spillover from the compensation object
   samp_metadata$comp_mat =
-    flowWorkspace::gh_get_compensations(gs)@spillover
+    chk_cm@spillover
 ```
 
 ## Transformation
@@ -215,7 +218,9 @@ Note that the {flowWorkspace} package also allows for an automated transformatio
 ```{r}
   ## Optional-- to check what pre-transformed data against post
   # Check no transformation before
-  gh_get_transformations(gs)
+  chk_tf = flowWorkspace::gh_get_transformations(gs)
+  
+chk_tf
   
   dat_pre_transform = 
     gs %>% 
@@ -229,7 +234,10 @@ Note that the {flowWorkspace} package also allows for an automated transformatio
   
   ## Optional-- to check what pre-transformed data against post
   # Check no transformation before
-  gh_get_transformations(gs)
+  chk_tf = flowWorkspace::gh_get_transformations(gs)
+  
+  # This is how 1 transformation specification looks like
+  chk_tf[[1]]
   
   dat_post_transform = 
     gs %>% 
@@ -241,7 +249,7 @@ Note that the {flowWorkspace} package also allows for an automated transformatio
   summary(dat_post_transform)
   
   ## Optional-- save out the transformerList 
-  samp_metadata$transformerList = gh_get_transformations(gs)
+  samp_metadata$transformerList = chk_tf
 ```
 
 ## Pre-gating
@@ -299,16 +307,23 @@ if(flowAI_yn){
 ```
 
 ```{r}
+
   # Pre-gating up to CD4/8+ with {openCyto}
   ## Set seed using today's date 
   set.seed(glue::glue({format(Sys.Date(), format = "%Y%m%d")}))
   
   openCyto::gt_gating(gt_tcell, gs_qc)
   
+```
+
+
+```{r fig.height = 10, fig.width = 8, warning = FALSE, message = FALSE}
+  
   ## Check autoplot
   ggcyto::autoplot(gs_qc[[1]])
-  
+
 ```
+
 
 ## Extract intensity matrix
 
@@ -361,7 +376,7 @@ if(flowAI_yn){
     # Rename with marker names
     dplyr::rename(stats::setNames(marker_chnl_names$chnl, as.character(marker_chnl_names$marker_full))) %>%
     dplyr::mutate(
-      cd4_pos_cd8_pos = case_when(
+      cd4_pos_cd8_pos = dplyr::case_when(
         cd3_pos == 1 & cd4_pos == 1 & cd8_pos == 1 ~ "cd4_pos_cd8_pos",
         cd3_pos == 1 & cd4_pos == 1 & cd8_pos == 0 ~ "cd4_pos_cd8_neg",
         cd3_pos == 1 & cd4_pos == 0 & cd8_pos == 1 ~ "cd4_neg_cd8_pos",
@@ -398,13 +413,6 @@ example_markers = c("LAG3", "CCR7", "CD45RA")
 
 # Read in positive peak thresholds
 pos_thres = read.csv(path_pos_peak_thresholds)
-# 
-# # Plot lag3
-# intensity_dat %>% 
-#   dplyr::filter(cd3_pos == 1) %>% 
-#   ggplot() + 
-#   geom_density(aes(LAG3)) +
-#   labs(subtitle = "Distribution of LAG3 intensity on all CD3+")
 
 # Show the exact output from the get_density_gates() function
 dens_gates_pre = 
@@ -450,7 +458,7 @@ intensity_dat %>%
   dplyr::filter(cd3_pos == 1) %>% 
   # additional step to remove large intensity values only when density gating. 
   # Still kept in the data
-  dplyr::filter(!(if_any(all_of(markers_to_gate), ~.x < neg_intensity_thres)))%>% 
+  dplyr::filter(!(dplyr::if_any(dplyr::all_of(markers_to_gate), ~.x < neg_intensity_thres)))%>% 
   ggplot() + 
   geom_density(aes(LAG3)) +
   geom_vline(data = dens_gates, 
@@ -464,7 +472,7 @@ intensity_dat %>%
   dplyr::filter(cd3_pos == 1) %>% 
   # additional step to remove large intensity values only when density gating. 
   # Still kept in the data
-  dplyr::filter(!(if_any(all_of(markers_to_gate), ~.x < neg_intensity_thres)))%>% 
+  dplyr::filter(!(dplyr::if_any(dplyr::all_of(markers_to_gate), ~.x < neg_intensity_thres)))%>% 
   ggplot() + 
   geom_density(aes(LAG3)) +
   geom_vline(data = dens_gates, 
@@ -480,7 +488,7 @@ intensity_dat %>%
   dplyr::filter(cd3_pos == 1) %>% 
   # additional step to remove large intensity values only when density gating. 
   # Still kept in the data
-  dplyr::filter(!(if_any(all_of(markers_to_gate), ~.x < neg_intensity_thres)))%>% 
+  dplyr::filter(!(dplyr::if_any(dplyr::all_of(markers_to_gate), ~.x < neg_intensity_thres)))%>% 
   ggplot() + 
   geom_density(aes(CCR7)) +
   geom_vline(data = dens_gates, 
@@ -494,7 +502,7 @@ intensity_dat %>%
   dplyr::filter(cd3_pos == 1) %>% 
   # additional step to remove large intensity values only when density gating. 
   # Still kept in the data
-  dplyr::filter(!(if_any(all_of(markers_to_gate), ~.x < neg_intensity_thres)))%>% 
+  dplyr::filter(!(dplyr::if_any(dplyr::all_of(markers_to_gate), ~.x < neg_intensity_thres)))%>% 
   ggplot() + 
   geom_density(aes(CCR7)) +
   geom_vline(data = dens_gates, 
@@ -509,7 +517,7 @@ intensity_dat %>%
   dplyr::filter(cd3_pos == 1) %>% 
   # additional step to remove large intensity values only when density gating. 
   # Still kept in the data
-  dplyr::filter(!(if_any(all_of(markers_to_gate), ~.x < neg_intensity_thres)))%>% 
+  dplyr::filter(!(dplyr::if_any(dplyr::all_of(markers_to_gate), ~.x < neg_intensity_thres)))%>% 
   ggplot() + 
   geom_density(aes(CD45RA)) +
   geom_vline(data = dens_gates, 
@@ -523,7 +531,7 @@ intensity_dat %>%
   dplyr::filter(cd3_pos == 1) %>% 
   # additional step to remove large intensity values only when density gating. 
   # Still kept in the data
-  dplyr::filter(!(if_any(all_of(markers_to_gate), ~.x < neg_intensity_thres)))%>% 
+  dplyr::filter(!(dplyr::if_any(dplyr::all_of(markers_to_gate), ~.x < neg_intensity_thres)))%>% 
   ggplot() + 
   geom_density(aes(CD45RA)) +
   geom_vline(data = dens_gates, 
@@ -592,39 +600,56 @@ example_perc1 =
            expand_denom = FALSE,
            keep_indicators = TRUE)
 
-# For display, group based on the CD4/CD8 subsets
+# For display only, group based on the denominators and 
+# simplify the names to be numerators
 example_perc1 %>% 
-  # dplyr::mutate(subset = 
-  #                 dplyr::case_when(
-  #                   grepl("_OF_CD4_POS_CD8_POS", subpopulation) ~ "CD4+/CD8+",
-  #                   grepl("_OF_CD4_POS_CD8_NEG", subpopulation) ~ "CD4+/CD8-",
-  #                   grepl("_OF_CD4_NEG_CD8_POS", subpopulation) ~ "CD4-/CD8+",
-  #                   grepl("_OF_CD4_NEG_CD8_NEG", subpopulation) ~ "CD4-/CD8-"
-  #                 )) %>% 
-  # dplyr::group_by(subset) %>% 
-  knitr::kable()
+  tidyr::separate_wider_delim(subpopulation, 
+                              delim = "_OF_", 
+                              names = c("num", "denom"),
+                              cols_remove = FALSE) %>% 
+  dplyr::mutate(denom = paste("Denom = ", denom)) %>% 
+  dplyr::group_by(denom) %>%
+  dplyr::select(-subpopulation) %>% 
+  gt::gt() %>% 
+  gt::fmt_number(columns = "perc", 
+                 decimals = 1) 
 ```
 
 
 Below is an example of when `expand_num = TRUE` and `expand_denom = FALSE` 
 
 ```{r}
-example_intensity_gated %>% 
-  # Should only count the CD3+ cells
-  dplyr::filter(cd3_pos == 1) %>% 
-  get_perc(., 
-           num_marker = example_markers, 
-           denom_marker = c("CD4", "CD8"), 
-           expand_num = TRUE, 
-           expand_denom = FALSE,
-           keep_indicators = FALSE) %>% 
-  knitr::kable()
+example_perc2 = 
+  example_intensity_gated %>% 
+    # Should only count the CD3+ cells
+    dplyr::filter(cd3_pos == 1) %>% 
+    get_perc(., 
+             num_marker = example_markers, 
+             denom_marker = c("CD4", "CD8"), 
+             expand_num = TRUE, 
+             expand_denom = FALSE,
+             keep_indicators = FALSE)
+
+# For display only, group based on the denominators and 
+# simplify the names to be numerators
+example_perc2 %>% 
+  tidyr::separate_wider_delim(subpopulation, 
+                              delim = "_OF_", 
+                              names = c("num", "denom"),
+                              cols_remove = FALSE) %>% 
+  dplyr::mutate(denom = paste("Denom = ", denom)) %>% 
+  dplyr::group_by(denom) %>%
+  dplyr::select(-subpopulation) %>% 
+  gt::gt() %>% 
+  gt::fmt_number(columns = "perc", 
+                 decimals = 1) 
 ```
 
 Below is an example of when `expand_num = FALSE` and `expand_denom = TRUE` 
 
 ```{r}
-example_intensity_gated %>% 
+example_perc3 = 
+  example_intensity_gated %>% 
   # Should only count the CD3+ cells
   dplyr::filter(cd3_pos == 1) %>% 
   get_perc(., 
@@ -632,14 +657,28 @@ example_intensity_gated %>%
            denom_marker = c("CD4", "CD8"), 
            expand_num = FALSE, 
            expand_denom = TRUE,
-           keep_indicators = FALSE) %>% 
-  knitr::kable()
+           keep_indicators = FALSE) 
+
+# For display only, group based on the denominators and 
+# simplify the names to be numerators
+example_perc3 %>% 
+  tidyr::separate_wider_delim(subpopulation, 
+                              delim = "_OF_", 
+                              names = c("num", "denom"),
+                              cols_remove = FALSE) %>% 
+  dplyr::mutate(denom = paste("Denom = ", denom)) %>% 
+  dplyr::group_by(denom) %>%
+  dplyr::select(-subpopulation) %>% 
+  gt::gt() %>% 
+  gt::fmt_number(columns = "perc", 
+                 decimals = 1) 
 ```
 
 Below is an example of when `expand_num = TRUE` and `expand_denom = TRUE` 
 
 ```{r}
-example_intensity_gated %>% 
+example_perc4 = 
+  example_intensity_gated %>% 
   # Should only count the CD3+ cells
   dplyr::filter(cd3_pos == 1) %>% 
   get_perc(., 
@@ -647,14 +686,63 @@ example_intensity_gated %>%
            denom_marker = c("CD4", "CD8"), 
            expand_num = TRUE, 
            expand_denom = TRUE,
-           keep_indicators = FALSE) %>% 
-  knitr::kable()
+           keep_indicators = FALSE) 
+
+
+# For display only, group based on the denominators and 
+# simplify the names to be numerators
+example_perc4 %>% 
+  tidyr::separate_wider_delim(subpopulation, 
+                              delim = "_OF_", 
+                              names = c("num", "denom"),
+                              cols_remove = FALSE) %>% 
+  dplyr::mutate(denom = paste("Denom = ", denom)) %>% 
+  dplyr::group_by(denom) %>%
+  dplyr::select(-subpopulation) %>% 
+  gt::gt() %>% 
+  gt::fmt_number(columns = "perc", 
+                 decimals = 1) 
 ```
 
 
 ## Optional: Adding density gates back to GatingSet
 
-```{r}
+Let's add the gate for LAG3 of CD4+ and CD8+ 
 
+```{r, warning = FALSE, message = FALSE, fig.height = 10, fig.width = 8}
+# Grab gate as a numeric
+current_gate = 
+  dens_gates %>% 
+  dplyr::filter(cd4_pos_cd8_pos == "cd4_neg_cd8_pos") %>% 
+  dplyr::pull(LAG3)
+
+# Apply using gs_add_gating-method and
+# We want a boundary gate
+openCyto::gs_add_gating_method(
+  gs_qc, 
+  alias = "lag3_cd8", 
+  pop = "+", 
+  parent = "cd4-cd8+", 
+  dims = "LAG3", 
+  gating_method = "boundary",
+  gating_args = list(min = current_gate, max = Inf)
+)
+
+current_gate = 
+  dens_gates %>% 
+  dplyr::filter(cd4_pos_cd8_pos == "cd4_pos_cd8_neg") %>% 
+  dplyr::pull(LAG3)
+
+openCyto::gs_add_gating_method(
+  gs_qc, 
+  alias = "lag3_cd4", 
+  pop = "+", 
+  parent = "cd4+cd8-", 
+  dims = "LAG3", 
+  gating_method = "boundary",
+  gating_args = list(min = current_gate, max = Inf)
+)
+
+ggcyto::autoplot(gs_qc[[1]])
 ```
 
