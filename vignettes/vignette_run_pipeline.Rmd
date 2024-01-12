@@ -537,8 +537,124 @@ intensity_dat %>%
 
 ## Getting percentage data
 
-We can derive percentage of positive cells for all combinations of markers. Here we will define:
+We can derive count and percentage of cells for all combinations of markers. 
 
-+ `subset_col`: largest parent populations in consideration (but this wont work if it's CD4+/CD8+?)
-+ can specify 2 or 3 marker-combinations within each unique value of `subset_col`
+For the subpopulations, the `denominator` is defined as the parent population and 
+`numerator` is the population of interest out of the parent population. 
+
+The `get_perc` function allows user to list the markers of interest for the `numerator` and
+`denominator`
+
+In this example, we will consider CD4 and CD8 subsets as the largest parent population (`denominator`) and the three markers we gated on using `c("LAG3", "CCR7", "CD45RA")`. 
+
+The additional arguments `expand_num` and `expand_denom` generates different lists of
+subpopulations to calculate counts/percentages for. 
+
+Currently, we support the below: 
+
++---------------+-----------------+-------------------------------------------------------------------------+
+| `expand_num`  | `expand_denom`  | List of subpopulations                                                  |
++===============+=================+=========================================================================+
+| FALSE         | FALSE           | - Positive/negative for each marker in `num_marker`                     |
+|               |                 | - Combinations of positive/negative for marker(s) in `denom_marker`     |
++---------------+-----------------+-------------------------------------------------------------------------+
+| TRUE          | FALSE           | - Combinations of positive/negative for pairs of markers in `num_marker`|
+|               |                 | - Combinations of positive/negative for marker(s) in `denom_marker`     |
++---------------+-----------------+-------------------------------------------------------------------------+
+| FALSE         | TRUE            | - Positive/negative for each marker in `num_marker`                     |
+|               |                 | - Combinations of positive/negative for marker(s) in `denom_marker` and |
+|               |                 |   combinations of positive/negative for marker(s) in `denom_marker` with|
+|               |                 |   one marker from `num_marker` positive/negative                        |
++---------------+-----------------+-------------------------------------------------------------------------+
+| TRUE          | TRUE            | - Combinations of positive/negative for pairs of markers in `num_marker`|
+|               |                 | - Combinations of positive/negative for marker(s) in `denom_marker` and |
+|               |                 |   combinations of positive/negative for marker(s) in `denom_marker` with|
+|               |                 |   one marker from `num_marker` positive/negative                        |
++---------------+-----------------+-------------------------------------------------------------------------+
+
+The `keep_indicators` argument provides the 0/1 for which marker is considered in the numerator and denominator
+for each subpopulation. This is especially useful when merging onto other data that does not have the same format.
+
+For example, when matching strings: "CD4+ & CD8- of CD3+" is different from "CD8- & CD4+ of CD3+" and "CD4+ and CD8- of CD3+"
+
+Below is an example of when `expand_num = FALSE` and `expand_denom = FALSE`, and `keep_indicators = TRUE` to illustrate
+the columns we get for the `_POS` and `_POS_D`. Other examples below demonstrate the other scenarios for combinations of `expand_num` and `expand_denom` so `keep_indicators` is set to `FALSE` for the remaining examples. 
+
+```{r}
+example_perc1 = 
+  example_intensity_gated %>% 
+  # Should only count the CD3+ cells
+  dplyr::filter(cd3_pos == 1) %>% 
+  get_perc(., 
+           num_marker = example_markers, 
+           denom_marker = c("CD4", "CD8"), 
+           expand_num = FALSE, 
+           expand_denom = FALSE,
+           keep_indicators = TRUE)
+
+# For display, group based on the CD4/CD8 subsets
+example_perc1 %>% 
+  # dplyr::mutate(subset = 
+  #                 dplyr::case_when(
+  #                   grepl("_OF_CD4_POS_CD8_POS", subpopulation) ~ "CD4+/CD8+",
+  #                   grepl("_OF_CD4_POS_CD8_NEG", subpopulation) ~ "CD4+/CD8-",
+  #                   grepl("_OF_CD4_NEG_CD8_POS", subpopulation) ~ "CD4-/CD8+",
+  #                   grepl("_OF_CD4_NEG_CD8_NEG", subpopulation) ~ "CD4-/CD8-"
+  #                 )) %>% 
+  # dplyr::group_by(subset) %>% 
+  knitr::kable()
+```
+
+
+Below is an example of when `expand_num = TRUE` and `expand_denom = FALSE` 
+
+```{r}
+example_intensity_gated %>% 
+  # Should only count the CD3+ cells
+  dplyr::filter(cd3_pos == 1) %>% 
+  get_perc(., 
+           num_marker = example_markers, 
+           denom_marker = c("CD4", "CD8"), 
+           expand_num = TRUE, 
+           expand_denom = FALSE,
+           keep_indicators = FALSE) %>% 
+  knitr::kable()
+```
+
+Below is an example of when `expand_num = FALSE` and `expand_denom = TRUE` 
+
+```{r}
+example_intensity_gated %>% 
+  # Should only count the CD3+ cells
+  dplyr::filter(cd3_pos == 1) %>% 
+  get_perc(., 
+           num_marker = example_markers, 
+           denom_marker = c("CD4", "CD8"), 
+           expand_num = FALSE, 
+           expand_denom = TRUE,
+           keep_indicators = FALSE) %>% 
+  knitr::kable()
+```
+
+Below is an example of when `expand_num = TRUE` and `expand_denom = TRUE` 
+
+```{r}
+example_intensity_gated %>% 
+  # Should only count the CD3+ cells
+  dplyr::filter(cd3_pos == 1) %>% 
+  get_perc(., 
+           num_marker = example_markers, 
+           denom_marker = c("CD4", "CD8"), 
+           expand_num = TRUE, 
+           expand_denom = TRUE,
+           keep_indicators = FALSE) %>% 
+  knitr::kable()
+```
+
+
+## Optional: Adding density gates back to GatingSet
+
+```{r}
+
+```
 

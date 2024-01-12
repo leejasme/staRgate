@@ -54,9 +54,9 @@ get_perc = function(intens_dat,
   #'                        take note that the order also matters when matching strings: "CD4+ & CD8- of CD3+" is different from "CD8- & CD4+ of CD3+"
   #' @return tibble containing the percentage of cells where
   #'         rows correspond to each subpopulation specified in the `subpopulation`,
-  #'         `n` indicates the number of cells that satisifies the numerator conditions,
-  #'         `N` indicates the number of cells that satisifies the denominator conditions,
-  #'         `perc` = `n` divided by `N` unless `N` = 0, then `perc = NA_real_`
+  #'         `n_num` indicates the number of cells that satisifies the numerator conditions,
+  #'         `n_denom` indicates the number of cells that satisifies the denominator conditions,
+  #'         `perc` = `n_num` divided by `n_denom` unless `n_denom` = 0, then `perc = NA_real_`
   #' @export
   #'
 
@@ -381,12 +381,12 @@ get_perc = function(intens_dat,
           # Keep these to merge back onto tbl_subpop
           num_filters = n_filter,
           denom_filters = d_filter,
-          n = n,
-          N = N,
+          n_num = n,
+          n_denom = N,
           perc =
             # In anticipation of N = 0, divide by zero
-            if(N > 0){
-              (n/N)*100
+            if(n_denom > 0){
+              (n_num/n_denom)*100
             }else{
               NA_real_
             }
@@ -411,7 +411,7 @@ get_perc = function(intens_dat,
       }
     } %>%
     # Move the marker col to front, and remove the num/denom label and filter columns
-    dplyr::select(subpopulation, n, N, perc, dplyr::everything(), -num_label, -denom_label, -num_filters, -denom_filters)
+    dplyr::select(subpopulation, n_num, n_denom, perc, dplyr::everything(), -num_label, -denom_label, -num_filters, -denom_filters)
 
   return(tbl_final)
 
@@ -451,20 +451,20 @@ intens_dat = tibble::tibble(
 
 )
 
-denom_marker = c("CD4", "CD8") # "CD3",
-num_marker = c("CD45RA", "ICOS", "CD25", "TIM3", "CD27", "CD57",
-                    "CXCR5", "CCR4", "CCR7", "HLADR", "CD28", "PD1", "LAG3",
-                    "CD127", "CD38", "TIGIT", "EOMES", "CTLA4", "FOXP3",
-                    "GITR", "TBET", "KI67", "GZM_B")
-
-test =
-  get_perc(intens_dat,
-           num_marker = num_marker,
-           denom_marker = denom_marker,
-           expand_num = TRUE,
-           expand_denom = TRUE,
-           keep_indicators = FALSE)
-
-View(test)
-
-dim(test)
+# denom_marker = c("CD4", "CD8") # "CD3",
+# num_marker = c("CD45RA", "ICOS", "CD25", "TIM3", "CD27", "CD57",
+#                     "CXCR5", "CCR4", "CCR7", "HLADR", "CD28", "PD1", "LAG3",
+#                     "CD127", "CD38", "TIGIT", "EOMES", "CTLA4", "FOXP3",
+#                     "GITR", "TBET", "KI67", "GZM_B")
+#
+# test =
+#   get_perc(intens_dat,
+#            num_marker = num_marker,
+#            denom_marker = denom_marker,
+#            expand_num = TRUE,
+#            expand_denom = TRUE,
+#            keep_indicators = FALSE)
+#
+# View(test)
+#
+# dim(test)

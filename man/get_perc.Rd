@@ -9,7 +9,8 @@ get_perc(
   num_marker,
   denom_marker,
   expand_num = FALSE,
-  expand_denom = FALSE
+  expand_denom = FALSE,
+  keep_indicators = TRUE
 )
 }
 \arguments{
@@ -35,7 +36,7 @@ individually in the numerator of subpopulation calculations
 \item{expand_denom}{logical, only accepts \code{TRUE} or \code{FALSE} with default of \code{FALSE}
 if \code{expand_denom = TRUE}, currently considers up to 1 marker from the \code{num_marker} and
 the unique combinations of \code{denom_marker} to generate list of subpopulations
-(e.g., if \code{denom_marker = c("CD8")}, \code{num_marker = c("LAG3", "KI67")}, and \code{expand_denom = TRUE},
+e.g., if \code{denom_marker = c("CD8")}, \code{num_marker = c("LAG3", "KI67")}, and \code{expand_denom = TRUE},
 the subpopulations will include:
 1. LAG3+ of CD8+, LAG3- of CD8+, LAG3+ of CD8-, LAG3- of CD8-,
 2. KI67+ of CD8+, KI67- of CD8+, KI67+ of CD8-, KI67- of CD8-,
@@ -48,16 +49,22 @@ denominator CD4+ and CD4- whereas
 \verb{denom_marker = c("CD4", "CD8"} and \code{expand_denom = FALSE} will consider subpopulations with denominators
 (CD4- & CD8-), (CD4+ & CD8-), (CD4- & CD8+) and (CD4+ & CD8+))}
 
-\item{keep_indicators}{logical, only accepts \code{TRUE} or \code{FALSE} with default of \code{FALSE}
+\item{keep_indicators}{logical, only accepts \code{TRUE} or \code{FALSE} with default of \code{TRUE}
 if \code{keep_indicators = TRUE}, will return indicator columns of 0/1 to specify which markers are considered in the
-numerator and denominators of the subpopulations. This is useful for matching to percentage data
+numerator and denominators of the subpopulations. Naming convention for the numerator cols are \verb{<marker>_POS}
+and for denominator cols are \verb{<marker>_POS_D}. For both sets of columns, \code{0} indicates considered the negative cells,
+\code{1} indicates considered the positive cells and \code{NA_real_} indicates not in consideration for the subpopulation.
+This is useful for matching to percentage data
 with potentially different naming conventions to avoid not having exact string matches for the same
 subpopulation
 take note that the order also matters when matching strings: "CD4+ & CD8- of CD3+" is different from "CD8- & CD4+ of CD3+"}
 }
 \value{
 tibble containing the percentage of cells where
-rows correspond to each subpopulation
+rows correspond to each subpopulation specified in the \code{subpopulation},
+\code{n} indicates the number of cells that satisifies the numerator conditions,
+\code{N} indicates the number of cells that satisifies the denominator conditions,
+\code{perc} = \code{n} divided by \code{N} unless \code{N} = 0, then \code{perc = NA_real_}
 }
 \description{
 Expects data input same as the output from \code{get_gated_dat} with indicator columns of specific
