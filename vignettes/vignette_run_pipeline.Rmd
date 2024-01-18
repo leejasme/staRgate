@@ -220,7 +220,7 @@ Note that the {flowWorkspace} package also allows for an automated transformatio
   # Check no transformation before
   chk_tf = flowWorkspace::gh_get_transformations(gs)
   
-chk_tf
+  chk_tf
   
   dat_pre_transform = 
     gs %>% 
@@ -409,7 +409,7 @@ bin_i = 40
 neg_intensity_thres = -1000
 
 # select a few markers to gate
-example_markers = c("LAG3", "CCR7", "CD45RA")
+example_markers = c("CD27", "CCR7", "CD45RA")
 
 # Read in positive peak thresholds
 pos_thres = read.csv(path_pos_peak_thresholds)
