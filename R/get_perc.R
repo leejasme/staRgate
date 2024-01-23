@@ -251,7 +251,7 @@ get_perc = function(intens_dat,
           # such as ctla4_pos == 0 & ctla4_pos == 1
           dplyr::rowwise() %>% # Need rowwise to work with c_across
           dplyr::filter(
-            !(stringr::str_detect(num_filters, "&") &  sum(1*is.na(dplyr::c_across(dplyr::ends_with("_POS")))) == 2)
+            !(stringr::str_detect(num_filters, "&") &  sum(1*is.na(dplyr::c_across(dplyr::ends_with("_POS")))) == 1)
           ) %>%
           dplyr::ungroup()
 
@@ -457,14 +457,35 @@ intens_dat = tibble::tibble(
 #                     "CD127", "CD38", "TIGIT", "EOMES", "CTLA4", "FOXP3",
 #                     "GITR", "TBET", "KI67", "GZM_B")
 #
-# test =
-#   get_perc(intens_dat,
-#            num_marker = num_marker,
-#            denom_marker = denom_marker,
-#            expand_num = TRUE,
-#            expand_denom = TRUE,
-#            keep_indicators = FALSE)
-#
-# View(test)
-#
-# dim(test)
+test =
+  get_perc(intens_dat,
+           num_marker = num_marker,
+           denom_marker = denom_marker,
+           expand_num = TRUE,
+           expand_denom = FALSE,
+           keep_indicators = FALSE)
+
+View(test)
+
+dim(test)
+
+# For each scenario, the n combinations are where n = number of markers supplied
+# subset in consideration is cd4/cd8 4 unique combos
+# expand_num = FALSE, expand_num = FALSE: 2*2*2*n = 8*n
+# expand_num = TRUE, expand_num = FALSE: ((n choose 2) * 4 )*4 = 16*(n choose 2)
+# expand_num = FALSE, expand_num = TRUE: (2*4)*n + (2*2^3*(n-1))*n = 8n + 16(n-1)(n) = 16n^2 - 8n
+# expand_num = TRUE, expand_num = TRUE: 16*(n choose 2) + 16n^2 - 8n
+
+# For a 23-marker vector, and CD4/CD8 4-combo subset
+# expand_num = FALSE, expand_num = FALSE: 2*2*2*n = 184
+# expand_num = TRUE, expand_num = FALSE: ((n choose 2) * 4 )*4 = 4048
+# expand_num = FALSE, expand_num = TRUE: (2*4)*n + (2*2^3*(n-1))*n = 8n + 16(n-1)(n) = 16n^2 - 8n = 8280
+# expand_num = TRUE, expand_num = TRUE: 16*(n choose 2) + 16n^2 - 8n = 12328
+
+# For the 11-color panel, we have 7 markers
+# expand_num = FALSE, expand_num = FALSE: 8*n = 56
+# expand_num = TRUE, expand_num = FALSE: 16*(n choose 2) = 336
+# expand_num = FALSE, expand_num = TRUE: (2*4)*n + (2*2^3*(n-1))*n = 8n + 16(n-1)(n) = 16n^2 - 8n = 728
+# expand_num = TRUE, expand_num = TRUE: 16*(n choose 2) + 16n^2 - 8n = 728+336 = 1064
+
+

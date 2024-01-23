@@ -574,7 +574,8 @@ Currently, we support the below:
 |               |                 |   combinations of positive/negative for marker(s) in `denom_marker` with|
 |               |                 |   one marker from `num_marker` positive/negative                        |
 +---------------+-----------------+-------------------------------------------------------------------------+
-| TRUE          | TRUE            | - Combinations of positive/negative for pairs of markers in `num_marker`|
+| TRUE          | TRUE            | - Combinations of positive/negative for each and pairs of markers       |
+|               |                 |   in `num_marker`                                                       |
 |               |                 | - Combinations of positive/negative for marker(s) in `denom_marker` and |
 |               |                 |   combinations of positive/negative for marker(s) in `denom_marker` with|
 |               |                 |   one marker from `num_marker` positive/negative                        |
