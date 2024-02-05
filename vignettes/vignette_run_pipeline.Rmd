@@ -360,19 +360,35 @@ if(flowAI_yn){
   
   ## Grab the intensity matrix from GatingSet
   ## the gh_pop_get_indices grabs the 0/1 for whether gated as CD3
-  intensity_dat = 
-    gs_qc %>% 
-    flowWorkspace::gh_pop_get_indices(y = "cd3") %>% 
-    cbind(gs_qc %>%  
-            flowWorkspace::gh_pop_get_data() %>% 
-            flowCore::exprs(),
-          "cd3_pos" = .) %>% 
-  # add on the cd4 and cd8 0/1s
-    cbind(., 
-          "cd4_pos" = flowWorkspace::gh_pop_get_indices(gs_qc, y = "cd4+")) %>% 
-    cbind(., 
-          "cd8_pos" = flowWorkspace::gh_pop_get_indices(gs_qc, y = "cd8+")) %>% 
-    tibble::as_tibble() %>%
+intensity_dat = 
+	gs_qc %>% 
+  # 2024-02-05 grab all indices from opencyto gating to be complete?
+	flowWorkspace::gh_pop_get_indices(y = "fsc_ssc_qc") %>% 
+	cbind(gs_qc %>%  
+			  flowWorkspace::gh_pop_get_data() %>% 
+			  flowCore::exprs(),
+		  "fsc_ssc_qc" = .) %>% 
+	# Add nondebris
+	cbind(., 
+		  "nonDebris" = flowWorkspace::gh_pop_get_indices(gs_qc, y = "nonDebris")) %>% 
+	# singlets
+	cbind(., 
+		  "singlets" = flowWorkspace::gh_pop_get_indices(gs_qc, y = "singlets")) %>% 
+	# cd14-19-
+	cbind(., 
+		  "cd14_neg_19_neg" = flowWorkspace::gh_pop_get_indices(gs_qc, y = "cd14-cd19-")) %>% 
+	# add live
+	cbind(., 
+		  "live" = flowWorkspace::gh_pop_get_indices(gs_qc, y = "live")) %>% 
+	# Add cd3+ 
+	cbind(., 
+		  "cd3_pos" = flowWorkspace::gh_pop_get_indices(gs_qc, y = "cd3")) %>% 
+	# add on the cd4 and cd8 0/1s
+	cbind(., 
+		  "cd4_pos" = flowWorkspace::gh_pop_get_indices(gs_qc, y = "cd4+")) %>% 
+	cbind(., 
+		  "cd8_pos" = flowWorkspace::gh_pop_get_indices(gs_qc, y = "cd8+")) %>% 
+	tibble::as_tibble()  %>%
     # Rename with marker names
     dplyr::rename(stats::setNames(marker_chnl_names$chnl, as.character(marker_chnl_names$marker_full))) %>%
     dplyr::mutate(
@@ -409,7 +425,7 @@ bin_i = 40
 neg_intensity_thres = -1000
 
 # select a few markers to gate
-example_markers = c("CD27", "CCR7", "CD45RA")
+example_markers = c("LAG3", "CCR7", "CD45RA", "CD28", "EOMES", "CD38", "CD127")
 
 # Read in positive peak thresholds
 pos_thres = read.csv(path_pos_peak_thresholds)
