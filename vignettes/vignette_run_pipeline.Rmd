@@ -433,7 +433,7 @@ pos_thres = read.csv(path_pos_peak_thresholds)
 # Show the exact output from the get_density_gates() function
 dens_gates_pre = 
   intensity_dat %>% 
-  dplyr::filter(cd3_pos == 1) %>% 
+  dplyr::filter(cd3_pos %in% c(0, 1)) %>% 
   get_density_gates(intens_dat = ., 
                     marker = example_markers,
                     subset_col = "pooled_col",
@@ -450,6 +450,7 @@ dens_gates_pre
 # the starting parent population, we need to add corresponding rows
 dens_gates = 
   dens_gates_pre %>% 
+  dplyr::filter(cd3_pos == 1) %>% 
   # Since we 
   tibble::add_row() %>% 
   tibble::add_row() %>% 
