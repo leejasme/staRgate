@@ -141,6 +141,23 @@ get_perc = function(intens_dat,
 
   # Can only expand numerator if the supplied num_marker has 2 or more markers
   # Since we are considering pairs
+  # Can only expand_num and expand_denom if num_marker has 3+ markers bc need to consider pairs in the numerator and 1 marker rotated
+  # Into the denom
+  if(expand_num == TRUE & expand_denom == TRUE & length(num_marker) < 3){
+
+    rlang::warn(
+      message = c(
+        "Warning: Both `expand_num` and `expand_denom` can be `TRUE` only if >= 3 markers are supplied in `num_marker",
+        "i" = stringr::str_glue("`expand_num` = {expand_num}, `num_marker` length = {length(num_marker)}"),
+        "i" = "Default values of `expand_num = FALSE` and `expand_denom = FALSE` will be used"
+      )
+    )
+
+    expand_num = FALSE
+    expand_denom = FALSE
+  }
+
+
   if(expand_num == TRUE & length(num_marker) < 2){
     rlang::warn(
       message = c(
@@ -223,7 +240,6 @@ get_perc = function(intens_dat,
           #     remove = FALSE
           #   ) %>%
 
-
           # Using utils::combn to grab pairs of num markers
           utils::combn(num_pre$num_filters, 2) %>%
             # apply across cols to paste into 1 condition
@@ -251,7 +267,7 @@ get_perc = function(intens_dat,
           # such as ctla4_pos == 0 & ctla4_pos == 1
           dplyr::rowwise() %>% # Need rowwise to work with c_across
           dplyr::filter(
-            !(stringr::str_detect(num_filters, "&") &  sum(1*is.na(dplyr::c_across(dplyr::ends_with("_POS")))) == 1)
+            !(stringr::str_detect(num_filters, "&") & (sum(1*is.na(dplyr::c_across(dplyr::ends_with("_POS")))) == (length(num_marker)-1)))
           ) %>%
           dplyr::ungroup()
 
@@ -344,7 +360,26 @@ get_perc = function(intens_dat,
     dplyr::left_join(.,
                      denom,
                      by = "denom_filters") %>%
-    # # START HERE!
+    # Drop any that have the same marker in num and denom
+    # sapply() is used to create the conditions of checking if not NA in both num and denom
+      # for each marker in num_cols,
+      # this means there are repeated markers in num and denom
+    # then use a paste() after the sapply() to collapse using collapse = "|" for OR conditions
+    # then finaly paste with a ! in front before parsing expr with rlang
+    {
+      if(expand_denom == TRUE){
+        dplyr::filter(.,
+                      !!rlang::parse_expr(sapply(num_cols,
+                                                 function(x){
+                                                   glue::glue("(!is.na({x}) & !is.na({x}_D))")
+                                                 }) %>%
+                                            paste(., collapse = "|") %>%
+                                            paste0("!(", ., ")"))
+        )
+      }else{
+        .
+      }
+    } %>%
     # # Get marker names
     dplyr::mutate(
       num_label =
@@ -357,7 +392,6 @@ get_perc = function(intens_dat,
                                                             " \\& " = "_")),
       subpopulation =
         paste0(num_label, "_OF_", denom_label)
-
 
     )
 
@@ -418,7 +452,9 @@ get_perc = function(intens_dat,
 }
 
 
-
+# Code for testing
+# four scenarios are T/F for expand_num and expand_denom
+library(tidyverse)
 
 intens_dat = tibble::tibble(
   CD3_pos = c(0, 1, 0, 1, 1, 1, 1),
@@ -451,41 +487,83 @@ intens_dat = tibble::tibble(
 
 )
 
-# denom_marker = c("CD4", "CD8") # "CD3",
-# num_marker = c("CD45RA", "ICOS", "CD25", "TIM3", "CD27", "CD57",
-#                     "CXCR5", "CCR4", "CCR7", "HLADR", "CD28", "PD1", "LAG3",
-#                     "CD127", "CD38", "TIGIT", "EOMES", "CTLA4", "FOXP3",
-#                     "GITR", "TBET", "KI67", "GZM_B")
-#
+# Some examples
+# A simpler combos
+denom_marker = c("CD4", "CD8") # "CD3",
+num_marker = c("LAG3", "PD1", "CTLa4", "ki67")
+
+# for 29-marker panel
+denom_marker = c("CD4", "CD8") # "CD3",
+num_marker = c("CD45RA", "ICOS", "CD25", "TIM3", "CD27", "CD57",
+                    "CXCR5", "CCR4", "CCR7", "HLADR", "CD28", "PD1", "LAG3",
+                    "CD127", "CD38", "TIGIT", "EOMES", "CTLA4", "FOXP3",
+                    "GITR", "TBET", "KI67", "GZM_B")
+
+# For 11-color
+denom_marker = c("CD4", "CD8") # "CD3",
+num_marker = c("ICOS", "TIM3", "PD1", "LAG3",
+               "CTLA4", "FOXP3", "KI67")
+
+# test for all 4 combos of expand_num and expand_denom
 test =
+  get_perc(intens_dat,
+           num_marker = num_marker,
+           denom_marker = denom_marker,
+           expand_num = FALSE,
+           expand_denom = FALSE,
+           keep_indicators = FALSE)
+
+# View(test)
+
+dim(test) # 184
+
+test_2 =
   get_perc(intens_dat,
            num_marker = num_marker,
            denom_marker = denom_marker,
            expand_num = TRUE,
            expand_denom = FALSE,
+           keep_indicators = TRUE)
+
+dim(test_2) # 4232
+
+test_3 =
+  get_perc(intens_dat,
+           num_marker = num_marker,
+           denom_marker = denom_marker,
+           expand_num = FALSE,
+           expand_denom = TRUE,
            keep_indicators = FALSE)
 
-View(test)
+dim(test_3) # 8280
 
-dim(test)
+test_4 =
+  get_perc(intens_dat,
+           num_marker = num_marker,
+           denom_marker = denom_marker,
+           expand_num = TRUE,
+           expand_denom = TRUE,
+           keep_indicators = FALSE)
 
-# For each scenario, the n combinations are where n = number of markers supplied
-# subset in consideration is cd4/cd8 4 unique combos
-# expand_num = FALSE, expand_num = FALSE: 2*2*2*n = 8*n
-# expand_num = TRUE, expand_num = FALSE: ((n choose 2) * 4 )*4 = 16*(n choose 2)
-# expand_num = FALSE, expand_num = TRUE: (2*4)*n + (2*2^3*(n-1))*n = 8n + 16(n-1)(n) = 16n^2 - 8n
-# expand_num = TRUE, expand_num = TRUE: 16*(n choose 2) + 16n^2 - 8n
+dim(test_4) # 182344
+
+# For each scenario, the n combinations are where n = number of markers supplied in num_marker
+# n_d = number of markers for denom in denom_markers
+# expand_num = FALSE, expand_num = FALSE: (2*(2^(n_d)))*n
+# expand_num = TRUE, expand_num = FALSE: [2*(2^(n_d ) )]*n + 2^(n_d )*(n choose 2)*(2^2)
+# expand_num = FALSE, expand_num = TRUE: [2*(2^(n_d ) )]*n + 4*(2^(n_d))*(n)(n-1)
+# expand_num = TRUE, expand_num = TRUE: [2*(2^(n_d ) )]*n + 2^(n_d )*(n choose 2)*(2^2) + 4*(2^(n_d))*(n)(n-1) + (2^(n_d + 1))((2^2)*n*((n-1) choose 2))
 
 # For a 23-marker vector, and CD4/CD8 4-combo subset
 # expand_num = FALSE, expand_num = FALSE: 2*2*2*n = 184
-# expand_num = TRUE, expand_num = FALSE: ((n choose 2) * 4 )*4 = 4048
-# expand_num = FALSE, expand_num = TRUE: (2*4)*n + (2*2^3*(n-1))*n = 8n + 16(n-1)(n) = 16n^2 - 8n = 8280
-# expand_num = TRUE, expand_num = TRUE: 16*(n choose 2) + 16n^2 - 8n = 12328
+# expand_num = TRUE, expand_num = FALSE: 4232
+# expand_num = FALSE, expand_num = TRUE: 8280
+# expand_num = TRUE, expand_num = TRUE: 182344
 
 # For the 11-color panel, we have 7 markers
-# expand_num = FALSE, expand_num = FALSE: 8*n = 56
-# expand_num = TRUE, expand_num = FALSE: 16*(n choose 2) = 336
-# expand_num = FALSE, expand_num = TRUE: (2*4)*n + (2*2^3*(n-1))*n = 8n + 16(n-1)(n) = 16n^2 - 8n = 728
-# expand_num = TRUE, expand_num = TRUE: 16*(n choose 2) + 16n^2 - 8n = 728+336 = 1064
+# expand_num = FALSE, expand_num = FALSE:  56
+# expand_num = TRUE, expand_num = FALSE: 392
+# expand_num = FALSE, expand_num = TRUE: 728
+# expand_num = TRUE, expand_num = TRUE: 4424
 
 
