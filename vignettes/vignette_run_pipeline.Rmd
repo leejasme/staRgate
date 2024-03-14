@@ -436,7 +436,7 @@ dens_gates_pre =
   dplyr::filter(cd3_pos %in% c(0, 1)) %>% 
   get_density_gates(intens_dat = ., 
                     marker = example_markers,
-                    subset_col = "pooled_col",
+                    subset_col = "cd3_pos",
                     bin_n = bin_i,
                     peak_detect_ratio = peak_r,
                     pos_peak_threshold = pos_thres %>% dplyr::select(marker, pos_peak_threshold),
@@ -456,7 +456,7 @@ dens_gates =
   tibble::add_row() %>% 
   tibble::add_row() %>% 
   dplyr::mutate(cd4_pos_cd8_pos = c("cd4_neg_cd8_neg", "cd4_pos_cd8_neg", "cd4_neg_cd8_pos", "cd4_pos_cd8_pos")) %>% 
-  tidyr::fill(pooled_col, dplyr::all_of(example_markers), .direction = "down")
+  tidyr::fill(cd3_pos, dplyr::all_of(example_markers), .direction = "down")
   
 
 # View updated gates with the col for CD4/CD8
