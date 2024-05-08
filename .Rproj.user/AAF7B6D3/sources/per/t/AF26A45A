@@ -1,0 +1,26 @@
+{
+    "id": "AF26A45A",
+    "path": "C:/My Documents/staRgate/R/get_perc.R",
+    "project_path": "R/get_perc.R",
+    "type": "r_source",
+    "hash": "149706052",
+    "contents": "",
+    "dirty": false,
+    "created": 1704381042291.0,
+    "source_on_save": false,
+    "relative_order": 10,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "104,78",
+        "scrollLine": "91"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1704468495,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1704468495101,
+    "read_only": false,
+    "read_only_alternatives": []
+}

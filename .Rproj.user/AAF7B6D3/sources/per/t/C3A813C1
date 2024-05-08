@@ -1,0 +1,26 @@
+{
+    "id": "C3A813C1",
+    "path": "C:/My Documents/staRgate/R/get_density_gates.R",
+    "project_path": "R/get_density_gates.R",
+    "type": "r_source",
+    "hash": "548408780",
+    "contents": "",
+    "dirty": false,
+    "created": 1684518626678.0,
+    "source_on_save": false,
+    "relative_order": 7,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "119,42",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1704485746,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1704485746552,
+    "read_only": false,
+    "read_only_alternatives": []
+}

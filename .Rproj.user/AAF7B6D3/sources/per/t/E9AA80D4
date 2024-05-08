@@ -1,0 +1,26 @@
+{
+    "id": "E9AA80D4",
+    "path": "C:/My Documents/staRgate/R/get_density_derivs.R",
+    "project_path": "R/get_density_derivs.R",
+    "type": "r_source",
+    "hash": "3362834779",
+    "contents": "",
+    "dirty": false,
+    "created": 1684518614944.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "32,12",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1685651233,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1685651233133,
+    "read_only": false,
+    "read_only_alternatives": []
+}
