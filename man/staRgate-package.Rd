@@ -6,7 +6,14 @@
 \alias{staRgate-package}
 \title{staRgate: What the Package Does (One Line, Title Case)}
 \description{
-What the package does (one paragraph).
+An R-based automated gating pipeline for flow cytometry data (one paragraph).
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://leejasme.github.io/staRgate/}
+}
+
 }
 \author{
 \strong{Maintainer}: Jasme Lee \email{leej22@mskcc.org} (\href{https://orcid.org/YOUR-ORCID-ID}{ORCID})
