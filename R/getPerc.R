@@ -57,8 +57,12 @@ getPerc = function(intens_dat,
   #'         `n_num` indicates the number of cells that satisifies the numerator conditions,
   #'         `n_denom` indicates the number of cells that satisifies the denominator conditions,
   #'         `perc` = `n_num` divided by `n_denom` unless `n_denom` = 0, then `perc = NA_real_`
+  #'
   #' @export
   #'
+
+
+
 
   ## Check inputs ---
   # Check names in num_marker and denom_marker are in the data
