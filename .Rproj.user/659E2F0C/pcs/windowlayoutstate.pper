@@ -1,22 +1,13 @@
 {
     "left": {
-<<<<<<< Updated upstream
         "splitterpos": 359,
-        "topwindowstate": "HIDE",
-=======
-        "splitterpos": 79,
         "topwindowstate": "NORMAL",
->>>>>>> Stashed changes
         "panelheight": 600,
         "windowheight": 638
     },
     "right": {
         "splitterpos": 143,
-<<<<<<< Updated upstream
         "topwindowstate": "MAXIMIZE",
-=======
-        "topwindowstate": "NORMAL",
->>>>>>> Stashed changes
         "panelheight": 600,
         "windowheight": 638
     }
