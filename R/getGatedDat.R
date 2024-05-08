@@ -1,6 +1,6 @@
-get_gated_dat = function(intens_dat = intensity_dat,
-                         cutoffs,
-                         subset_col){
+getGatedDat = function(intens_dat = intensity_dat,
+                       cutoffs,
+                       subset_col){
 
   #' Attach indicator columns to `intens_dat` based on gates provided in `cutoffs`
   #'
@@ -15,7 +15,7 @@ get_gated_dat = function(intens_dat = intensity_dat,
   #' @param intens_dat dataframe of pre-gated (compensated, biexp. transf, openCyto steps) intensity values where
   #'        rows = each sample
   #' @param cutoffs tibble of gates/cutoffs for all markers to gate
-  #'        Expects `cutoffs` to match format of output from [get_density_gates()] with
+  #'        Expects `cutoffs` to match format of output from [getDensityGates()] with
   #'        column corresponding to a marker, and rows to the subsets defined in the
   #'        `subset_col`
   #' @param subset_col string for the column name to indicate the subsets to apply density gating on

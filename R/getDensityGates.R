@@ -1,4 +1,4 @@
-get_density_gates = function(intens_dat,
+getDensityGates = function(intens_dat,
                              marker,
                              subset_col,
                              bin_n = 512,
@@ -196,7 +196,7 @@ get_density_gates = function(intens_dat,
 
 
             # Still expects just 1 marker at a time and the pos peak threshold to be a numeric
-             get_density_mats(i_dat,
+             getDensityMats(i_dat,
                               marker = m,
                               subset_col,
                               bin_n = bin_n,

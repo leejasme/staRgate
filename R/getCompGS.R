@@ -1,4 +1,4 @@
-get_comp_gs = function(gs, path_comp_mat){
+getCompGS = function(gs, path_comp_mat){
   #' @export
 
   # Compensation

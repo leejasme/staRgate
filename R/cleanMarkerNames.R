@@ -1,4 +1,4 @@
-clean_marker_names = function(dat){
+cleanMarkerNames = function(dat){
   #' Clean marker naming conventions
   #'
   #' Purpose: cleans column names to consistent formatting of

@@ -1,19 +1,18 @@
-
-get_density_peak_cutoff = function(dens_binned_dat,
-                                   marker,
-                                   subset_col = subset_col,
-                                   bin_n = 512,
-                                   peak_detect_ratio = 10,
-                                   pos_peak_threshold = 1600,
-                                   dens_flip = FALSE){
+getDensityPeakCutoff = function(dens_binned_dat,
+                                marker,
+                                subset_col = subset_col,
+                                bin_n = 512,
+                                peak_detect_ratio = 10,
+                                pos_peak_threshold = 1600,
+                                dens_flip = FALSE){
 
   #' Internal function: Determine the "real peaks" and cutoff
   #'
-  #' Internal function for `get_density_gates`
+  #' Internal function for `getDensityGates`
   #'
-  #' @param dens_binned_dat list of dataframe output from the `get_density_derivs`
+  #' @param dens_binned_dat list of dataframe output from the `getDensityDerivs`
   #' @param marker string for the marker to gate on
-  #'              the name needs to match exactly the column name in `intens_dat`
+  #'              the name needs to match exactly the column name in `dens_binned_dat`
   #' @param subset_col string for the column name to indicate the subsets to apply density gating on
   #'              will perform operation on subsets corresponding to each unique value in column
   #' @param bin_n numeric to be passed to `n` parameter of `density(n = bin_n)` for

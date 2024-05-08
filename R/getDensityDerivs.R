@@ -1,4 +1,4 @@
-get_density_derivs = function(dens,
+getDensityDerivs = function(dens,
                               marker,
                               subset_col,
                               bin_n = 512,

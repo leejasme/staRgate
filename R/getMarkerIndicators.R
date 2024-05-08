@@ -1,4 +1,4 @@
-get_marker_indicators = function(dat, col_nm = "marker", markers_nm){
+getMarkerIndicators = function(dat, col_nm = "marker", markers_nm){
   #' Get indicators of marker positive/negative in numerator and denominator for cell subpopulations
   #'
   #' Useful for matching subpopulation names ignoring order and naming of markers

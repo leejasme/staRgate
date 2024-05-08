@@ -1,13 +1,12 @@
-
-get_density_mats = function(intens_dat,
-                            marker,
-                            subset_col,
-                            bin_n = 512,
-                            peak_detect_ratio = 10,
-                            pos_peak_threshold = 1800){
+getDensityMats = function(intens_dat,
+                          marker,
+                          subset_col,
+                          bin_n = 512,
+                          peak_detect_ratio = 10,
+                          pos_peak_threshold = 1800){
   #' Internal function: Matrix of calculations for density gating of intensity values in `marker` for each unique subset of `subset_col`
   #'
-  #' Internal function for `get_density_gates`
+  #' Internal function for `getDensityGates`
   #' For each unique value in `subset_col`, there is a matrix for storing calculations for density gating
   #' contains: first to fourth derivatives of density,
   #' indicators for local peaks, "real peaks", plateau_pre and cutoff
@@ -33,13 +32,13 @@ get_density_mats = function(intens_dat,
   #'         for each unique subset found in `subset_col`
   #'         rows correspond to unique values in `subset_col`, cols correspond to ?
   #' @export
-  # Meant for using internally in get_density_gates but also for debug
+  # Meant for using internally in getDensityGates but also for debug
   # to grab the full matrix of density, peak and cutoff
   # rows is each bin for the density estimation
   # cols for x (intens), y (dens) values, derivs (1-4th), sign of derivs,
   # indicators for local peak, plateau_pre (for calculating cutoff)
   # indicator of "real peaks" and cutoff
-  # Same args as get_density_gates
+  # Same args as getDensityGates
 
 
   ## Calc density ---
@@ -66,7 +65,7 @@ get_density_mats = function(intens_dat,
       dens_binned =
         purrr::map(dens_obj,
                    function(d){
-                     get_density_derivs(d,
+                     getDensityDerivs(d,
                                         # dens_flip = FALSE,
                                         subset_col = subset_col,
                                         marker = marker,
@@ -81,7 +80,7 @@ get_density_mats = function(intens_dat,
         purrr::map(
           dens_binned,
           function(d){
-            get_density_peak_cutoff(d,
+            getDensityPeakCutoff(d,
                                     marker = marker,
                                     subset_col = subset_col,
                                     dens_flip = FALSE,
@@ -115,7 +114,7 @@ get_density_mats = function(intens_dat,
   #
   #   # Update w smaller binsize
   #   dens_binned$dens_binned[[i]] =
-  #     get_density_derivs(dens_binned$dens_obj[[i]], dens_flip = FALSE,
+  #     getDensityDerivs(dens_binned$dens_obj[[i]], dens_flip = FALSE,
   #                        marker = marker,
   #                        bin_size = bin_size_multipeaks,
   #                        peak_detect_ratio = peak_detect_ratio,
@@ -124,7 +123,7 @@ get_density_mats = function(intens_dat,
   #
   #
   #   dens_binned$dens_peaks[[i]] =
-  #     get_density_peak_cutoff(dens_binned$dens_binned[[i]], marker = marker, dens_flip = FALSE,
+  #     getDensityPeakCutoff(dens_binned$dens_binned[[i]], marker = marker, dens_flip = FALSE,
   #                             bin_size = bin_size_multipeaks,
   #                             peak_detect_ratio = peak_detect_ratio,
   #                             pos_peak_threshold = pos_peak_threshold)
@@ -185,7 +184,7 @@ get_density_mats = function(intens_dat,
         # dens_binned_flip =
         #   purrr::map2(dens_obj, bin_width,
         #      function(d, w){
-        #        get_density_derivs(d,
+        #        getDensityDerivs(d,
         #                           dens_flip = TRUE,
         #                           marker = marker,
         #                           bin_size = w,
@@ -202,14 +201,14 @@ get_density_mats = function(intens_dat,
             # dens_binned_flip,
             # bin_width,
             function(d){
-              get_density_peak_cutoff(d,
-                                      marker = marker,
-                                      subset_col = subset_col,
-                                      dens_flip = TRUE,
-                                      # bin_size = w,
-                                      bin_n = bin_n,
-                                      peak_detect_ratio = peak_detect_ratio,
-                                      pos_peak_threshold = pos_peak_threshold)
+              getDensityPeakCutoff(d,
+                                   marker = marker,
+                                   subset_col = subset_col,
+                                   dens_flip = TRUE,
+                                   # bin_size = w,
+                                   bin_n = bin_n,
+                                   peak_detect_ratio = peak_detect_ratio,
+                                   pos_peak_threshold = pos_peak_threshold)
             }
           )
       ) %>%

@@ -149,7 +149,7 @@ Optional: include a `samp_metadata` for saving out some properties of the FCS fi
     
     aux_log = flowWorkspace::markernames(cs) == "Viability" | flowWorkspace::markernames(cs) == "L/D" | flowWorkspace::markernames(cs) == "L_D"
     
-    markernames(cs) = replace(markernames(cs), aux_log, "LD")}
+    flowWorkspace::markernames(cs) = replace(markernames(cs), aux_log, "LD")}
   }
   
   ## Create a GatingSet of 1 sample
@@ -176,7 +176,7 @@ Optional: include a `samp_metadata` for saving out some properties of the FCS fi
   chk_cm
 
   # Apply comp 
-  gs = get_comp_gs(gs, path_comp_mat = path_comp_mat)
+  gs = getCompGS(gs, path_comp_mat = path_comp_mat)
   
   # Can check that the comp was applied
   chk_cm = flowWorkspace::gh_get_compensations(gs)
@@ -196,11 +196,13 @@ The transformation applied to all channels is the same: biexponential with `extr
 The structure of the table of parameters (as .csv format) should be first column for the flurochrome names corresponding to the panel, followed by the parameters. 
 
 ```{r}
-  tbl_biexp_params = read.csv(path_biexp_params) %>% janitor::clean_names(case = "all_caps")
+  tbl_biexp_params = 
+    utils::read.csv(path_biexp_params) %>% 
+    janitor::clean_names(case = "all_caps")
   
   ## Optional-- saving out the table of parameters as format that's easier to read
   # Below there is an option to save it out as the transformerList which is what 
-  # get_biexpTransform_gs.R relies on to supply to flowWorkspace::transform
+  # getBiexpTransformGS.R relies on to supply to flowWorkspace::transform
   samp_metadata$biexp_params = 
     tbl_biexp_params
 
@@ -211,7 +213,7 @@ The structure of the table of parameters (as .csv format) should be first column
 ```
 
 
-Currently, the package only supports biexponetial transformation for all channels with the `get_biexpTransform_gs()` function. However, the user may choose to create a transformation list explicitly if other transformations (e.g., archsin) are desired.
+Currently, the package only supports biexponetial transformation for all channels with the `getBiexpTransformGS()` function. However, the user may choose to create a transformation list explicitly if other transformations (e.g., archsin) are desired.
 
 Note that the {flowWorkspace} package also allows for an automated transformation calculation "guessing" appropriate parameters. We chose to explicitly specify the biexponential transformation with fixed parameters for all channels to match the manual gating strategy for a more direct comparison of {staRgate} to the manual gating results.
 
@@ -229,7 +231,7 @@ Note that the {flowWorkspace} package also allows for an automated transformatio
   
   
   # Apply biexp trans
-  gs = get_biexpTransform_gs(gs, path_biexp_params = path_biexp_params)
+  gs = getBiexpTransformGS(gs, path_biexp_params = path_biexp_params)
 
   
   ## Optional-- to check what pre-transformed data against post
@@ -428,19 +430,19 @@ neg_intensity_thres = -1000
 example_markers = c("LAG3", "CCR7", "CD45RA", "CD28", "EOMES", "CD38", "CD127")
 
 # Read in positive peak thresholds
-pos_thres = read.csv(path_pos_peak_thresholds)
+pos_thres = utils::read.csv(path_pos_peak_thresholds)
 
 # Show the exact output from the get_density_gates() function
 dens_gates_pre = 
   intensity_dat %>% 
   dplyr::filter(cd3_pos %in% c(0, 1)) %>% 
-  get_density_gates(intens_dat = ., 
-                    marker = example_markers,
-                    subset_col = "cd3_pos",
-                    bin_n = bin_i,
-                    peak_detect_ratio = peak_r,
-                    pos_peak_threshold = pos_thres %>% dplyr::select(marker, pos_peak_threshold),
-                    neg_intensity_threshold = neg_intensity_thres) 
+  getDensityGates(intens_dat = ., 
+                  marker = example_markers,
+                  subset_col = "cd3_pos",
+                  bin_n = bin_i,
+                  peak_detect_ratio = peak_r,
+                  pos_peak_threshold = pos_thres %>% dplyr::select(marker, pos_peak_threshold),
+                  neg_intensity_threshold = neg_intensity_thres) 
 
 
 dens_gates_pre
@@ -464,9 +466,9 @@ dens_gates
 
 # try get indicator col
 example_intensity_gated = 
-  get_gated_dat(intensity_dat,
-                subset_col = "cd4_pos_cd8_pos", 
-                cutoffs = dens_gates)
+  getGatedDat(intensity_dat,
+              subset_col = "cd4_pos_cd8_pos", 
+              cutoffs = dens_gates)
 
 
 # Plot the gate for visual
@@ -567,7 +569,7 @@ We can derive count and percentage of cells for all combinations of markers.
 For the subpopulations, the `denominator` is defined as the parent population and 
 `numerator` is the population of interest out of the parent population. 
 
-The `get_perc` function allows user to list the markers of interest for the `numerator` and
+The `getPerc` function allows user to list the markers of interest for the `numerator` and
 `denominator`
 
 In this example, we will consider CD4 and CD8 subsets as the largest parent population (`denominator`) and the three markers we gated on using `c("LAG3", "CCR7", "CD45RA")`. 
@@ -611,7 +613,7 @@ example_perc1 =
   example_intensity_gated %>% 
   # Should only count the CD3+ cells
   dplyr::filter(cd3_pos == 1) %>% 
-  get_perc(., 
+  getPerc(., 
            num_marker = example_markers, 
            denom_marker = c("CD4", "CD8"), 
            expand_num = FALSE, 
@@ -641,7 +643,7 @@ example_perc2 =
   example_intensity_gated %>% 
     # Should only count the CD3+ cells
     dplyr::filter(cd3_pos == 1) %>% 
-    get_perc(., 
+    getPerc(., 
              num_marker = example_markers, 
              denom_marker = c("CD4", "CD8"), 
              expand_num = TRUE, 
@@ -670,7 +672,7 @@ example_perc3 =
   example_intensity_gated %>% 
   # Should only count the CD3+ cells
   dplyr::filter(cd3_pos == 1) %>% 
-  get_perc(., 
+  getPerc(., 
            num_marker = example_markers, 
            denom_marker = c("CD4", "CD8"), 
            expand_num = FALSE, 
@@ -699,7 +701,7 @@ example_perc4 =
   example_intensity_gated %>% 
   # Should only count the CD3+ cells
   dplyr::filter(cd3_pos == 1) %>% 
-  get_perc(., 
+  getPerc(., 
            num_marker = example_markers, 
            denom_marker = c("CD4", "CD8"), 
            expand_num = TRUE, 

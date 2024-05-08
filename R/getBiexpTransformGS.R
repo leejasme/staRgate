@@ -1,4 +1,4 @@
-get_biexpTransform_gs = function(gs, path_biexp_params){
+getBiexpTransformGS = function(gs, path_biexp_params){
   #' @export
   #'
   # Transformation

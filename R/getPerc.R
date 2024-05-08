@@ -1,9 +1,9 @@
-get_perc = function(intens_dat,
-                    num_marker,
-                    denom_marker,
-                    expand_num = FALSE,
-                    expand_denom = FALSE,
-                    keep_indicators = TRUE){
+getPerc = function(intens_dat,
+                   num_marker,
+                   denom_marker,
+                   expand_num = FALSE,
+                   expand_denom = FALSE,
+                   keep_indicators = TRUE){
   #' Calculate the percentage of positive cells for specific subpopulations
   #'
   #' Expects data input same as the output from `get_gated_dat` with indicator columns of specific
@@ -506,7 +506,7 @@ num_marker = c("ICOS", "TIM3", "PD1", "LAG3",
 
 # test for all 4 combos of expand_num and expand_denom
 test =
-  get_perc(intens_dat,
+  getPerc(intens_dat,
            num_marker = num_marker,
            denom_marker = denom_marker,
            expand_num = FALSE,
@@ -518,7 +518,7 @@ test =
 dim(test) # 184
 
 test_2 =
-  get_perc(intens_dat,
+  getPerc(intens_dat,
            num_marker = num_marker,
            denom_marker = denom_marker,
            expand_num = TRUE,
@@ -528,7 +528,7 @@ test_2 =
 dim(test_2) # 4232
 
 test_3 =
-  get_perc(intens_dat,
+  getPerc(intens_dat,
            num_marker = num_marker,
            denom_marker = denom_marker,
            expand_num = FALSE,
@@ -538,7 +538,7 @@ test_3 =
 dim(test_3) # 8280
 
 test_4 =
-  get_perc(intens_dat,
+  getPerc(intens_dat,
            num_marker = num_marker,
            denom_marker = denom_marker,
            expand_num = TRUE,
