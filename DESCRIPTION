@@ -13,19 +13,20 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports: 
     dplyr,
-    flowAI,
     flowCore,
     flowWorkspace,
     janitor,
     magrittr,
-    openCyto,
     purrr,
+    rlang,
     stringr,
     tidyr
 Suggests: 
+    flowAI,
     ggplot2,
     gt,
     knitr,
+    openCyto,
     rmarkdown
 VignetteBuilder: knitr
 URL: https://leejasme.github.io/staRgate/
