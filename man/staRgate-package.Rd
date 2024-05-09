@@ -4,7 +4,7 @@
 \name{staRgate-package}
 \alias{staRgate}
 \alias{staRgate-package}
-\title{staRgate: What the Package Does (One Line, Title Case)}
+\title{staRgate: Automated gating pipeline for flow cytometry analysis to characterize the lineage, differentiation, and functional states of T-cells}
 \description{
 An R-based automated gating pipeline for flow cytometry data (one paragraph).
 }

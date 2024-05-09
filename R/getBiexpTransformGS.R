@@ -21,7 +21,7 @@ getBiexpTransformGS = function(gs, path_biexp_params){
   ## Read in the table of parameters
   tbl_biexp_params =
     # readxl::read_xlsx(path_biexp_params) %>%
-    read.csv(path_biexp_params) %>%
+    utils::read.csv(path_biexp_params) %>%
     janitor::clean_names(case = "all_caps")
 
   ## loop through all the channels and create a biexpTrans object per channel

@@ -15,9 +15,9 @@ getCompGS = function(gs, path_comp_mat){
 
   # Compensation
   ## Import comp. mat. csv exported from flowJo
-  comp.mat = read.csv(path_comp_mat,
-                      header = TRUE,
-                      skip = 0) %>%
+  comp.mat = utils::read.csv(path_comp_mat,
+                             header = TRUE,
+                             skip = 0) %>%
     ## Can remove the X col because that's the row names
     tibble::column_to_rownames(var = "X")
 
@@ -42,7 +42,7 @@ getCompGS = function(gs, path_comp_mat){
     # switch to using rownames b/c the names should be read in exactly rather than cols
     # That can changed when reading in such as the space converted to a .
     tibble::tibble(nms = rownames(comp.mat)) %>%
-    tidyr::separate_wider_delim(cols = nms,
+    tidyr::separate_wider_delim(cols = .data$nms,
                                 names = c("chnl", "marker"),
                                 # delim = "\\.\\.\\.\\.",
                                 delim = " :: ",
