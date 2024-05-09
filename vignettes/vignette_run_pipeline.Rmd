@@ -44,7 +44,7 @@ devtools::install_github("leejasme/staRgate")
 
 The essential dependencies for running the {staRgate} package include: {flowCore}, and {flowWorkspace}.
 
-To fully run the pipeline as shown in this Tutorial, these packages are needed, but not required for the {staRgate} code chunks to run: {openCyto}, {flowAI}, {ggplot2}, {ggCyto}, {gt}
+The following packages are needed to fully run the pipeline as shown in this Tutorial, but not required for the {staRgate} code chunks to run: {openCyto}, {flowAI}, {ggplot2}, {ggCyto}, {gt}
 
 Insert explanation of parameters that are in the entire pipeline, 
 and the fig workflow of pipeline
@@ -57,7 +57,7 @@ All of these input files are expected to be comma-separated values (csv) files
 
 A few things to keep in mind when debugging/iterating through gating: 
 
-+ If saving at the same path with same name (i.e., rerunning the same code), the GatingSet folder from the `flowWorkspace::save_gs()` command need to be deleted for {openCyto} to save again, otherwise, will encounter an error about invalid path
++ If saving at the same path with same name (i.e., rerunning the same code), the GatingSet folder from the `flowWorkspace::save_gs()` command needs to be deleted for {openCyto} to save again, otherwise, will encounter an error related to an invalid path from the `flowWorkspace::save_gs()` function
 
 
 ```{r setup}
