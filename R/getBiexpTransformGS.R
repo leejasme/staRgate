@@ -1,4 +1,20 @@
 getBiexpTransformGS = function(gs, path_biexp_params){
+  #' Applies Biexpeonential Transformation using specifications in csv file provided at `path_biexp_params`
+  #'
+  #' The csv file at `path_biexp_params` should specify the channels to apply the transformation to
+  #' and the parameters (negative decades, width basis and positive decades).
+  #'
+  #' The default is negative decades = 0.5, width basis = -30 and positive decades = 4.5.
+  #'
+  #' The Transformation can be applied to only a subset of the channels included in the
+  #' GatingSet.
+  #'
+  #' An example is provided in the extdata/biexp_transf_parameters_x50.csv
+  #'
+  #' @param gs GatingSet to apply Biexponential Transformation to
+  #' @param path_biexp_params file path for .csv file that specifies the Biexponential Transformation
+  #'
+  #' @return GatingSet with Biexponentially Transformed data
   #' @export
   #'
   # Transformation

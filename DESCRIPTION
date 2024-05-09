@@ -1,9 +1,10 @@
 Package: staRgate
-Title: What the Package Does (One Line, Title Case)
+Title: Automated gating pipeline for flow cytometry analysis to characterize the lineage, differentiation, and functional states of T-cells
 Version: 0.0.0.9000
 Authors@R: 
-    person("Jasme", "Lee", , "leej22@mskcc.org", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+    c(person("Jasme", "Lee", email = "leej22@mskcc.org", role = c("aut", "cre"),
+    comment = c(ORCID = "YOUR-ORCID-ID"))
+           )
 Description: An R-based automated gating pipeline for flow cytometry data (one paragraph).
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
@@ -22,6 +23,7 @@ Imports:
     stringr,
     tidyr
 Suggests: 
+    ggplot2,
     gt,
     knitr,
     rmarkdown

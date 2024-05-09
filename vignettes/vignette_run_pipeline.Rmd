@@ -17,12 +17,27 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Installation
+
+The {staRgate} package relies on a few Biocondcutor R packages.
+Before installing {staRgate}, first setup Bioconductor and install all dependencies. 
+
+[Below instructions are instructions for installing Bioconductor](https://www.bioconductor.org/install/)
+
+```{r, echo = TRUE, eval = FALSE}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install(version = "3.19")
+
+BiocManager::install(c("openCyto", "flowAI", "flowCore", "flowWorkspace"))
+```
+
+
 # Introduction
 
-The {staRgate} pipeline relies on a few R packages to gate each flow sample. 
+The essential dependencies for running the {staRgate} package include: {openCyto}, {flowAI}, {flowCore}, and {flowWorkspace}.
 
-The required packages include: 
-
+For a complete example and illustrative purposes, these packages are called in the vignette but not required for {staRgate} to run: {ggplot2}, {ggCyto}, {gt}
 
 Insert explanation of parameters that are in the entire pipeline, 
 and the fig workflow of pipeline
@@ -299,7 +314,7 @@ if(flowAI_yn){
   
   # Save data
   save_gs(gs_qc,
-          path = paste0(glue("{path_out}/data/GatingSet/{pt_samp_nm}_flowAI_qc_{Sys.Date()}")))
+          path = paste0(glue::glue("{path_out}/data/GatingSet/{pt_samp_nm}_flowAI_qc_{Sys.Date()}")))
 
 }else{
   # if no need to run flowAI, just set gs_qc as gs from previous transformation step

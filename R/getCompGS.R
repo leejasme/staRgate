@@ -1,5 +1,17 @@
 getCompGS = function(gs, path_comp_mat){
+  #' Applies Compensation using specifications in csv file provided at `path_comp_mat`
+  #'
+  #' The csv file at `path_comp_mat` should specify the channels to apply the compensation to.
+  #' The format is a matrix where the col and row names correspond to the channel names
+  #'
+  #' An example is provided in the extdata/comp_mat_example_fcs.csv
+  #'
+  #' @param gs GatingSet to apply Biexponential Transformation to
+  #' @param path_comp_mat file path for .csv file that specifies the Compensation Matrix
+  #'
+  #' @return GatingSet with compensated data
   #' @export
+  #'
 
   # Compensation
   ## Import comp. mat. csv exported from flowJo
