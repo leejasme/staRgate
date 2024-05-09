@@ -33,11 +33,18 @@ BiocManager::install(c("openCyto", "flowAI", "flowCore", "flowWorkspace"))
 ```
 
 
+To install staRgate: 
+
+```{r, echo = TRUE, eval = FALSE}
+devtools::install_github("leejasme/staRgate")
+```
+
+
 # Introduction
 
-The essential dependencies for running the {staRgate} package include: {openCyto}, {flowAI}, {flowCore}, and {flowWorkspace}.
+The essential dependencies for running the {staRgate} package include: {flowCore}, and {flowWorkspace}.
 
-For a complete example and illustrative purposes, these packages are called in the vignette but not required for {staRgate} to run: {ggplot2}, {ggCyto}, {gt}
+To fully run the pipeline as shown in this Tutorial, these packages are needed, but not required for the {staRgate} code chunks to run: {openCyto}, {flowAI}, {ggplot2}, {ggCyto}, {gt}
 
 Insert explanation of parameters that are in the entire pipeline, 
 and the fig workflow of pipeline
