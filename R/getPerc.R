@@ -458,98 +458,98 @@ getPerc = function(intens_dat,
 
 # Code for testing
 # four scenarios are T/F for expand_num and expand_denom
-library(tidyverse)
-
-intens_dat = tibble::tibble(
-  CD3_pos = c(0, 1, 0, 1, 1, 1, 1),
-  CD4_pos = c(0, 1, 0, 0, 1, 0, 0),
-  CD8_pos = c(0, 0, 0, 0, 1, 0, 1),
-  CD45RA_pos = c(0, 1, 1, 0, 0, 0, 1),
-  icos_pos = rep(0, times = 7),
-  cd25_pos = rep(1, times = 7),
-  tim3_pos = rep(0, times = 7),
-  cd27_pos = rep(0, times = 7),
-  Cd57_pos = rep(0, times = 7),
-  Cxcr5_pos = rep(0, times = 7),
-  CCR4_pos = rep(0, times = 7),
-  ccr7_pos = rep(0, times = 7),
-  hladr_pos = rep(0, times = 7),
-  cd28_pos = rep(0, times = 7),
-  pd1_pos = rep(0, times = 7),
-  LAG3_pos = c(0, 1, 0, 1, 0, 0, 0),
-  cd127_pos = rep(0, times = 7),
-  cd38_pos = rep(0, times = 7),
-  tigit_pos = rep(0, times = 7),
-  eomes_pos = rep(0, times = 7),
-  ctla4_pos = c(1, 1, 1, 0, 0, 0, 1),
-  foxp3_pos = rep(0, times = 7),
-  gitr_pos =  c(1, 1, 0, 0, 0, 0, 0),
-  tbet_pos = rep(0, times = 7),
-  ki67_pos = rep(0, times = 7),
-  gzm_b_pos = rep(0, times = 7)
-
-
-)
-
-# Some examples
-# A simpler combos
-denom_marker = c("CD4", "CD8") # "CD3",
-num_marker = c("LAG3", "PD1", "CTLa4", "ki67")
-
-# for 29-marker panel
-denom_marker = c("CD4", "CD8") # "CD3",
-num_marker = c("CD45RA", "ICOS", "CD25", "TIM3", "CD27", "CD57",
-                    "CXCR5", "CCR4", "CCR7", "HLADR", "CD28", "PD1", "LAG3",
-                    "CD127", "CD38", "TIGIT", "EOMES", "CTLA4", "FOXP3",
-                    "GITR", "TBET", "KI67", "GZM_B")
-
-# For 11-color
-denom_marker = c("CD4", "CD8") # "CD3",
-num_marker = c("ICOS", "TIM3", "PD1", "LAG3",
-               "CTLA4", "FOXP3", "KI67")
-
-# test for all 4 combos of expand_num and expand_denom
-test =
-  getPerc(intens_dat,
-           num_marker = num_marker,
-           denom_marker = denom_marker,
-           expand_num = FALSE,
-           expand_denom = FALSE,
-           keep_indicators = FALSE)
-
-# View(test)
-
-dim(test) # 184
-
-test_2 =
-  getPerc(intens_dat,
-           num_marker = num_marker,
-           denom_marker = denom_marker,
-           expand_num = TRUE,
-           expand_denom = FALSE,
-           keep_indicators = TRUE)
-
-dim(test_2) # 4232
-
-test_3 =
-  getPerc(intens_dat,
-           num_marker = num_marker,
-           denom_marker = denom_marker,
-           expand_num = FALSE,
-           expand_denom = TRUE,
-           keep_indicators = FALSE)
-
-dim(test_3) # 8280
-
-test_4 =
-  getPerc(intens_dat,
-           num_marker = num_marker,
-           denom_marker = denom_marker,
-           expand_num = TRUE,
-           expand_denom = TRUE,
-           keep_indicators = FALSE)
-
-dim(test_4) # 182344
+# library(tidyverse)
+#
+# intens_dat = tibble::tibble(
+#   CD3_pos = c(0, 1, 0, 1, 1, 1, 1),
+#   CD4_pos = c(0, 1, 0, 0, 1, 0, 0),
+#   CD8_pos = c(0, 0, 0, 0, 1, 0, 1),
+#   CD45RA_pos = c(0, 1, 1, 0, 0, 0, 1),
+#   icos_pos = rep(0, times = 7),
+#   cd25_pos = rep(1, times = 7),
+#   tim3_pos = rep(0, times = 7),
+#   cd27_pos = rep(0, times = 7),
+#   Cd57_pos = rep(0, times = 7),
+#   Cxcr5_pos = rep(0, times = 7),
+#   CCR4_pos = rep(0, times = 7),
+#   ccr7_pos = rep(0, times = 7),
+#   hladr_pos = rep(0, times = 7),
+#   cd28_pos = rep(0, times = 7),
+#   pd1_pos = rep(0, times = 7),
+#   LAG3_pos = c(0, 1, 0, 1, 0, 0, 0),
+#   cd127_pos = rep(0, times = 7),
+#   cd38_pos = rep(0, times = 7),
+#   tigit_pos = rep(0, times = 7),
+#   eomes_pos = rep(0, times = 7),
+#   ctla4_pos = c(1, 1, 1, 0, 0, 0, 1),
+#   foxp3_pos = rep(0, times = 7),
+#   gitr_pos =  c(1, 1, 0, 0, 0, 0, 0),
+#   tbet_pos = rep(0, times = 7),
+#   ki67_pos = rep(0, times = 7),
+#   gzm_b_pos = rep(0, times = 7)
+#
+#
+# )
+#
+# # Some examples
+# # A simpler combos
+# denom_marker = c("CD4", "CD8") # "CD3",
+# num_marker = c("LAG3", "PD1", "CTLa4", "ki67")
+#
+# # for 29-marker panel
+# denom_marker = c("CD4", "CD8") # "CD3",
+# num_marker = c("CD45RA", "ICOS", "CD25", "TIM3", "CD27", "CD57",
+#                     "CXCR5", "CCR4", "CCR7", "HLADR", "CD28", "PD1", "LAG3",
+#                     "CD127", "CD38", "TIGIT", "EOMES", "CTLA4", "FOXP3",
+#                     "GITR", "TBET", "KI67", "GZM_B")
+#
+# # For 11-color
+# denom_marker = c("CD4", "CD8") # "CD3",
+# num_marker = c("ICOS", "TIM3", "PD1", "LAG3",
+#                "CTLA4", "FOXP3", "KI67")
+#
+# # test for all 4 combos of expand_num and expand_denom
+# test =
+#   getPerc(intens_dat,
+#            num_marker = num_marker,
+#            denom_marker = denom_marker,
+#            expand_num = FALSE,
+#            expand_denom = FALSE,
+#            keep_indicators = FALSE)
+#
+# # View(test)
+#
+# dim(test) # 184
+#
+# test_2 =
+#   getPerc(intens_dat,
+#            num_marker = num_marker,
+#            denom_marker = denom_marker,
+#            expand_num = TRUE,
+#            expand_denom = FALSE,
+#            keep_indicators = TRUE)
+#
+# dim(test_2) # 4232
+#
+# test_3 =
+#   getPerc(intens_dat,
+#            num_marker = num_marker,
+#            denom_marker = denom_marker,
+#            expand_num = FALSE,
+#            expand_denom = TRUE,
+#            keep_indicators = FALSE)
+#
+# dim(test_3) # 8280
+#
+# test_4 =
+#   getPerc(intens_dat,
+#            num_marker = num_marker,
+#            denom_marker = denom_marker,
+#            expand_num = TRUE,
+#            expand_denom = TRUE,
+#            keep_indicators = FALSE)
+#
+# dim(test_4) # 182344
 
 # For each scenario, the n combinations are where n = number of markers supplied in num_marker
 # n_d = number of markers for denom in denom_markers
