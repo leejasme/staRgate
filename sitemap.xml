@@ -4,6 +4,12 @@
     <loc>https://leejasme.github.io/staRgate/404.html</loc>
   </url>
   <url>
+    <loc>https://leejasme.github.io/staRgate/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>https://leejasme.github.io/staRgate/LICENSE.html</loc>
+  </url>
+  <url>
     <loc>https://leejasme.github.io/staRgate/articles/index.html</loc>
   </url>
   <url>
@@ -19,7 +25,10 @@
     <loc>https://leejasme.github.io/staRgate/reference/cleanMarkerNames.html</loc>
   </url>
   <url>
-    <loc>https://leejasme.github.io/staRgate/reference/clean_marker_names.html</loc>
+    <loc>https://leejasme.github.io/staRgate/reference/getBiexpTransformGS.html</loc>
+  </url>
+  <url>
+    <loc>https://leejasme.github.io/staRgate/reference/getCompGS.html</loc>
   </url>
   <url>
     <loc>https://leejasme.github.io/staRgate/reference/getDensityDerivs.html</loc>
@@ -41,27 +50,6 @@
   </url>
   <url>
     <loc>https://leejasme.github.io/staRgate/reference/getPerc.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/reference/get_density_derivs.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/reference/get_density_gates.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/reference/get_density_mats.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/reference/get_density_peak_cutoff.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/reference/get_gated_dat.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/reference/get_marker_indicators.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/reference/get_perc.html</loc>
   </url>
   <url>
     <loc>https://leejasme.github.io/staRgate/reference/index.html</loc>
