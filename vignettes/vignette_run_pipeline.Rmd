@@ -29,7 +29,11 @@ if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install(version = "3.19")
 
-BiocManager::install(c("openCyto", "flowAI", "flowCore", "flowWorkspace"))
+BiocManager::install(c("openCyto",
+                       "flowAI",
+                       "flowCore",
+                       "flowWorkspace",
+                       "ggcyto"))
 ```
 
 

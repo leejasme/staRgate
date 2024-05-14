@@ -53,7 +53,7 @@ getDensityDerivs = function(dens,
     ) %>%
     # If not use interval of every 100 values
     # group_by(x) %>%
-    dplyr::group_by(x_int) %>%
+    dplyr::group_by(.data$x_int) %>%
     dplyr::summarize(
       x_avg = mean(x),
       y_avg = mean(y)

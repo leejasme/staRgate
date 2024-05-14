@@ -5,16 +5,13 @@ Authors@R:
     person("Jasme", "Lee", email = "leej22@mskcc.org", role = c("aut", "cre"),
     comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: An R-based automated gating pipeline for flow cytometry data (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 biocViews:
 Imports: 
     dplyr,
-    flowCore,
-    flowWorkspace,
     janitor,
     magrittr,
     purrr,
@@ -22,13 +19,18 @@ Imports:
     stringr,
     tidyr, 
     flowCore, 
-    flowWorkspace
+    flowWorkspace,
+    glue, 
+    tibble
 Suggests: 
     flowAI,
     ggplot2,
     gt,
     knitr,
     openCyto,
-    rmarkdown
+    ggcyto,
+    rmarkdown, 
+    data.table, 
+    here
 VignetteBuilder: knitr
 URL: https://leejasme.github.io/staRgate/
