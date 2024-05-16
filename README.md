@@ -9,7 +9,7 @@ The {staRgate} package relies on a few Biocondcutor R packages.
 Before installing {staRgate}, first setup Bioconductor and install all packages. 
 
 + {flowCore} and {flowWorkspace} are dependencies for the {staRgate} package
-+ {openCyto} and {flowAI} are not required to run the functions of {staRgate} but are used in the full gating pipeline as shown in the [Tutorial](https://leejasme.github.io/staRgate/articles/vignette_run_pipeline.html)
++ {openCyto}, {flowAI}, {ggcyto} are not required to run the functions of {staRgate} but are used in the full gating pipeline as shown in the [Tutorial](https://leejasme.github.io/staRgate/articles/vignette_run_pipeline.html)
 
 [Please refer to Bioconductor for full details on installation guidelines](https://www.bioconductor.org/install/)
 
