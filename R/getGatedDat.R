@@ -24,8 +24,6 @@ getGatedDat = function(intens_dat = intensity_dat,
   #' @export
 
   # Generalize getting 0/1 indicator for gated data based on cutoff
-  # To replace get_iso_gated_mat
-
 
   ## Grab the markers in cutoffs
   mrks = (colnames(cutoffs) %>% .[!(.%in% c(subset_col, "subpop"))])
@@ -88,7 +86,7 @@ getGatedDat = function(intens_dat = intensity_dat,
         )
     ) %>%
     # dont need the org data bc the indicators are added to the data as add'l cols
-    dplyr::select(-data) %>%
+    dplyr::select(-.data$data) %>%
     # use unnest() to combine back the data
     tidyr::unnest(cols = c(gated_data)) %>%
     # Ungroup data

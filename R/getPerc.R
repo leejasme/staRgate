@@ -205,10 +205,10 @@ getPerc = function(intens_dat,
     purrr::map(num_cols,
                function(c) {
                  num_pre %>%
-                   dplyr::mutate(!!c := ifelse(grepl(paste0(c, " == 1"), num_filters),
+                   dplyr::mutate(!!c := ifelse(grepl(paste0(c, " == 1"), .data$num_filters),
                                                1,
                                                ifelse(
-                                                 grepl(paste0(c, " == 0"), num_filters),
+                                                 grepl(paste0(c, " == 0"), .data$num_filters),
                                                  0,
                                                  NA_real_
                                                )))
@@ -221,29 +221,6 @@ getPerc = function(intens_dat,
       if (expand_num) {
         dplyr::bind_rows(
           .,
-          # purrr::map_dfc(num_cols,
-          #                function(n) {
-          #                  # We expect the col to be an indicator 0/1 col
-          #                  # SetNames will ensure named col in map outcome
-          #                  stats::setNames(data.frame(c(
-          #                    paste(n, "0", sep = " == "),
-          #                    paste(n, "1", sep = " == ")
-          #                  )),
-          #                  n)
-          #                }) %>%
-          #   # This creates the combos of all length(num_marker) so not
-          #   # going to create pairs when we supply a num_marker > length 2
-          #   # use utils::combn instead
-          #   # tidyr::expand(., !!!.) %>%
-          #   # {{}else{.}} %>%
-          #   # form a col that puts together the conditions
-          #   tidyr::unite(
-          #     .,
-          #     col = num_filters,
-          #     sep = " & ",
-          #     remove = FALSE
-          #   ) %>%
-
           # Using utils::combn to grab pairs of num markers
           utils::combn(num_pre$num_filters, 2) %>%
             # apply across cols to paste into 1 condition
@@ -255,11 +232,11 @@ getPerc = function(intens_dat,
                                       ~
                                         ifelse(
                                           grepl(paste0(dplyr::cur_column(), " == 0"),
-                                                num_filters),
+                                                .data$num_filters),
                                           0,
                                           ifelse(
                                             grepl(paste0(dplyr::cur_column(), " == 1"),
-                                                  num_filters),
+                                                  .data$num_filters),
                                             1,
                                             NA_real_
                                           )
@@ -271,7 +248,7 @@ getPerc = function(intens_dat,
           # such as ctla4_pos == 0 & ctla4_pos == 1
           dplyr::rowwise() %>% # Need rowwise to work with c_across
           dplyr::filter(
-            !(stringr::str_detect(num_filters, "&") & (sum(1*is.na(dplyr::c_across(dplyr::ends_with("_POS")))) == (length(num_marker)-1)))
+            !(stringr::str_detect(.data$num_filters, "&") & (sum(1*is.na(dplyr::c_across(dplyr::ends_with("_POS")))) == (length(num_marker)-1)))
           ) %>%
           dplyr::ungroup()
 
@@ -299,7 +276,7 @@ getPerc = function(intens_dat,
     tidyr::expand(.,!!!.) %>%
     # form a col that puts together the conditions
     tidyr::unite(.,
-                 col = denom_filters,
+                 col = .data$denom_filters,
                  sep = " & ",
                  remove = FALSE) %>%
     # also parse back the 0/1 from the original cols to add indicators
@@ -319,7 +296,7 @@ getPerc = function(intens_dat,
           expand.grid(denom_pre_expand$denom_filters, num_pre$num_filters) %>%
             tidyr::unite(
               .,
-              col = denom_filters,
+              col = .data$denom_filters,
               sep = " & ",
               remove = FALSE
             ) %>%
@@ -331,7 +308,7 @@ getPerc = function(intens_dat,
             dplyr::left_join(.,
                              num,
                              by = c("Var2" = "num_filters")) %>%
-            dplyr::select(-Var1,-Var2) %>%
+            dplyr::select(-.data$Var1, -.data$Var2) %>%
             # The numerator cols pulled from num need to be renamed with the _D
             dplyr::rename_with(~ paste0(., "_D"), dplyr::ends_with("_POS"))
         )
@@ -348,13 +325,13 @@ getPerc = function(intens_dat,
     dplyr::rowwise() %>%
     dplyr::filter(!grepl(
       # Just need to detect the var name part
-      stringr::str_remove(Var1, pattern = " == [[:digit:]]"),
-      Var2)
+      stringr::str_remove(.data$Var1, pattern = " == [[:digit:]]"),
+      .data$Var2)
       ) %>%
     dplyr::ungroup() %>%
     dplyr::rename(
-      num_filters = Var1,
-      denom_filters = Var2
+      num_filters = .data$Var1,
+      denom_filters = .data$Var2
     ) %>%
     # Grab the indicators again
     dplyr::left_join(.,
@@ -387,15 +364,15 @@ getPerc = function(intens_dat,
     # # Get marker names
     dplyr::mutate(
       num_label =
-        stringr::str_replace_all(num_filters, pattern = c("_POS == 0" = "_NEG",
+        stringr::str_replace_all(.data$num_filters, pattern = c("_POS == 0" = "_NEG",
                                                           "_POS == 1" = "_POS",
                                                           " \\& " = "_")),
       denom_label =
-        stringr::str_replace_all(denom_filters, pattern = c("_POS == 0" = "_NEG",
+        stringr::str_replace_all(.data$denom_filters, pattern = c("_POS == 0" = "_NEG",
                                                             "_POS == 1" = "_POS",
                                                             " \\& " = "_")),
       subpopulation =
-        paste0(num_label, "_OF_", denom_label)
+        paste0(.data$num_label, "_OF_", .data$denom_label)
 
     )
 
@@ -449,7 +426,8 @@ getPerc = function(intens_dat,
       }
     } %>%
     # Move the marker col to front, and remove the num/denom label and filter columns
-    dplyr::select(subpopulation, n_num, n_denom, perc, dplyr::everything(), -num_label, -denom_label, -num_filters, -denom_filters)
+    dplyr::select(.data$subpopulation, .data$n_num, .data$n_denom, .data$perc, dplyr::everything(),
+                  -.data$num_label, -.data$denom_label, -.data$num_filters, -.data$denom_filters)
 
   return(tbl_final)
 

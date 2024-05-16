@@ -1,10 +1,10 @@
 getDensityGates = function(intens_dat,
-                             marker,
-                             subset_col,
-                             bin_n = 512,
-                             peak_detect_ratio = 10,
-                             pos_peak_threshold = 1800,
-                             neg_intensity_threshold = -1000){
+                           marker,
+                           subset_col,
+                           bin_n = 512,
+                           peak_detect_ratio = 10,
+                           pos_peak_threshold = 1800,
+                           neg_intensity_threshold = -1000){
   #' Density gating of intensity values in `marker` for each unique subset of `subset_col`
   #'
   #' For each unique value in `subset_col`, gate using density and estimated derivatives
@@ -46,23 +46,6 @@ getDensityGates = function(intens_dat,
   #          to find the "shoulder point" after the negative peak as cutoff/gate
   #          this method does not require an isotype
   #
-  # Inputs:
-  # @intens_dat: df of pre-gated (compensated, biexp transf, gated CD4/CD8) intensity values where
-  #              cols = intensity value per marker,
-  #              rows = each sample
-  #              assumes there are cols cd4_pos and cd8_pos of 0/1 for neg/pos CD4 and CD8
-  # @marker: string for the marker to gate on
-  #          the name needs to match exactly the column name in `intens_dat`
-  # @bin_size: numeric for bin sizes when smoothing the density before taking derivs
-  #            default = 120 (on the biexp transf scale)
-  # @peak_detect_ratio: threshold for eliminating small peaks where
-  #            a peak that is < than the highest peak by `peak_detect_ratio` times will be ignored
-  #            default = 100
-  # @pos_peak_threshold: numeric for threshold on identifying a positive peak
-  #           current default is 1600 which still need to be checked/discussed as reasonable with MA
-  #
-  # Outputs:
-  # tibble of gates for CD4+/CD8-, CD8+/CD4- and double pos
   #
   # Process: 1. Calc density of `marker` intensity values
   #          2. Smooth the density into bins of size `bin_size`,
@@ -192,16 +175,16 @@ getDensityGates = function(intens_dat,
              p_threshold =
                pos_peak_threshold %>%
                dplyr::filter(MARKER == m) %>%
-               dplyr::pull(POS_PEAK_THRESHOLD)
+               dplyr::pull(.data$POS_PEAK_THRESHOLD)
 
 
             # Still expects just 1 marker at a time and the pos peak threshold to be a numeric
              getDensityMats(i_dat,
-                              marker = m,
-                              subset_col,
-                              bin_n = bin_n,
-                              peak_detect_ratio = peak_detect_ratio,
-                              pos_peak_threshold = p_threshold)
+                            marker = m,
+                            subset_col,
+                            bin_n = bin_n,
+                            peak_detect_ratio = peak_detect_ratio,
+                            pos_peak_threshold = p_threshold)
            }
            )
 
@@ -214,12 +197,12 @@ getDensityGates = function(intens_dat,
            function(m) {
              dens_binned[[m]] %>%
                dplyr::mutate("{m}" :=
-                               purrr::map(dens_peaks_final,
+                               purrr::map(.data$dens_peaks_final,
                                           function(d) {
                                             c =
                                               d %>%
-                                              dplyr::filter(cutoff == TRUE) %>%
-                                              dplyr::select(x_avg)
+                                              dplyr::filter(.data$cutoff == TRUE) %>%
+                                              dplyr::select(.data$x_avg)
 
                                             if (nrow(c) == 0) {
                                               return(NA_real_)
