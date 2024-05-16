@@ -10,8 +10,16 @@ getCompGS = function(gs, path_comp_mat){
   #' @param path_comp_mat file path for .csv file that specifies the Compensation Matrix
   #'
   #' @return GatingSet with compensated data
-  #' @export
+  #' @examples
+  #' \dontrun{
+  #' path_comp_mat = system.file("extdata", "comp_mat_example_fcs.csv",
+  #'                              package = "staRgate", mustWork = TRUE)
   #'
+  #' # gs is a GatingSet object
+  #' gs = getCompGS(gs, path_comp_mat = path_comp_mat)
+  #' }
+  #'
+  #' @export
 
   # Compensation
   ## Import comp. mat. csv exported from flowJo

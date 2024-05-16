@@ -26,3 +26,13 @@ GatingSet.
 
 An example is provided in the extdata/biexp_transf_parameters_x50.csv
 }
+\examples{
+\dontrun{
+path_biexp_params = system.file("extdata", "biexp_transf_parameters_x50.csv",
+                                 package = "staRgate", mustWork = TRUE)
+
+# gs must be a GatingSet object
+gs = getBiexpTransformGS(gs, path_biexp_params = path_biexp_params)
+}
+
+}

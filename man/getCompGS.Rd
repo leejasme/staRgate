@@ -21,3 +21,13 @@ The format is a matrix where the col and row names correspond to the channel nam
 \details{
 An example is provided in the extdata/comp_mat_example_fcs.csv
 }
+\examples{
+\dontrun{
+path_comp_mat = system.file("extdata", "comp_mat_example_fcs.csv",
+                             package = "staRgate", mustWork = TRUE)
+
+# gs is a GatingSet object
+gs = getCompGS(gs, path_comp_mat = path_comp_mat)
+}
+
+}

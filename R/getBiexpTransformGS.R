@@ -15,8 +15,18 @@ getBiexpTransformGS = function(gs, path_biexp_params){
   #' @param path_biexp_params file path for .csv file that specifies the Biexponential Transformation
   #'
   #' @return GatingSet with Biexponentially Transformed data
-  #' @export
   #'
+  #' @examples
+  #' \dontrun{
+  #' path_biexp_params = system.file("extdata", "biexp_transf_parameters_x50.csv",
+  #'                                  package = "staRgate", mustWork = TRUE)
+  #'
+  #' # gs must be a GatingSet object
+  #' gs = getBiexpTransformGS(gs, path_biexp_params = path_biexp_params)
+  #' }
+  #'
+  #' @export
+
   # Transformation
   ## Read in the table of parameters
   tbl_biexp_params =
