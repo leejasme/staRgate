@@ -81,7 +81,13 @@ are instructions for installing Bioconductor</a></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://bioconductor.github.io/BiocManager/" class="external-link">"BiocManager"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span>version <span class="op">=</span> <span class="st">"3.19"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># If running R4.3</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span>version <span class="op">=</span> <span class="st">"3.18"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># If running R4.4</span></span>
+<span><span class="co"># BiocManager::install(version = "3.198")</span></span>
+<span></span>
 <span></span>
 <span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"openCyto"</span>,</span>
 <span>                       <span class="st">"flowAI"</span>,</span>
@@ -128,8 +134,9 @@ function</li>
 <span><span class="co">#&gt; GatingSet objects has changed. For details, please read the section</span></span>
 <span><span class="co">#&gt; titled "The cytoframe and cytoset classes" in the package vignette:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   vignette("flowWorkspace-Introduction", "flowWorkspace")</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">flowCore</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   vignette("flowWorkspace-Introduction", "flowWorkspace")</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">flowCore</span><span class="op">)</span></span>
 <span><span class="co"># Just for plotting in the vignette</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
@@ -174,8 +181,9 @@ function</li>
 <span><span class="va">path_out</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># Print the path_out for user to see</span></span>
 <span><span class="va">path_out</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpLbsZw1"</span></span>
-<span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp3WNrZd"</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co">## File path Gating template</span></span>
 <span><span class="va">gtFile</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"gating_template_x50_tcell.csv"</span>, package <span class="op">=</span> <span class="st">"staRgate"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -187,7 +195,7 @@ function</li>
 <span></span>
 <span><span class="co">## File path to positive peak thresholds</span></span>
 <span><span class="va">path_pos_peak_thresholds</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"pos_peak_thresholds.csv"</span>, package <span class="op">=</span> <span class="st">"staRgate"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Some preferred ggplot settings. </span></span>
 <span><span class="co"># Not required/relevant for gating</span></span>
 <span></span>
@@ -209,13 +217,13 @@ function</li>
 <p>Optional: include a <code>samp_metadata</code> for saving out some
 properties of the FCS file and from the processing steps (e.g., the
 compensation matrix, the number of cells in the root population)</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Optional to save the samp_metadata</span></span>
 <span>  <span class="va">samp_metadata</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="import-fcs">Import FCS<a class="anchor" aria-label="anchor" href="#import-fcs"></a>
 </h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 2023-06-19 Test if we can pass in a gating set and return a gs</span></span>
 <span><span class="co"># First check that we can return a gs? Yes it worked</span></span>
 <span>  <span class="co">### Read in file</span></span>
@@ -235,8 +243,9 @@ compensation matrix, the number of cells in the root population)</p>
 <span><span class="co">#&gt; Adding population:cd4+cd8+</span></span>
 <span><span class="co">#&gt; Adding population:cd4-cd8+</span></span>
 <span><span class="co">#&gt; Adding population:cd4+cd8-</span></span>
-<span><span class="co">#&gt; Adding population:cd4-cd8-</span></span>
-<span>  </span>
+<span><span class="co">#&gt; Adding population:cd4-cd8-</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span>  </span>
 <span>  <span class="va">cs</span>  <span class="op">&lt;-</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/load_cytoset_from_fcs.html" class="external-link">load_cytoset_from_fcs</a></span><span class="op">(</span><span class="va">path_fcs</span><span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="co">### **Optional** - </span></span>
@@ -256,8 +265,9 @@ compensation matrix, the number of cells in the root population)</p>
 <span>  <span class="va">n_root</span> <span class="op">=</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_proportion.html" class="external-link">gh_pop_get_count</a></span><span class="op">(</span><span class="va">gs</span>, <span class="st">"root"</span><span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="va">n_root</span></span>
-<span><span class="co">#&gt; [1] 668160</span></span>
-<span>  </span>
+<span><span class="co">#&gt; [1] 668160</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span>  </span>
 <span>  <span class="co"># Add n_root to samp_metadata</span></span>
 <span>  <span class="va">samp_metadata</span><span class="op">$</span><span class="va">n_root</span> <span class="op">=</span> <span class="va">n_root</span></span>
 <span>  </span>
@@ -266,13 +276,14 @@ compensation matrix, the number of cells in the root population)</p>
 <div class="section level3">
 <h3 id="compensation">Compensation<a class="anchor" aria-label="anchor" href="#compensation"></a>
 </h3>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="co"># Check no comp applied</span></span>
 <span>  <span class="va">chk_cm</span> <span class="op">=</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_get_compensations.html" class="external-link">gh_get_compensations</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="va">chk_cm</span></span>
-<span><span class="co">#&gt; NULL</span></span>
-<span></span>
+<span><span class="co">#&gt; NULL</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span>  <span class="co"># Apply comp </span></span>
 <span>  <span class="va">gs</span> <span class="op">=</span> <span class="fu"><a href="../reference/getCompGS.html">getCompGS</a></span><span class="op">(</span><span class="va">gs</span>, path_comp_mat <span class="op">=</span> <span class="va">path_comp_mat</span><span class="op">)</span></span>
 <span>  </span>
@@ -321,8 +332,9 @@ compensation matrix, the number of cells in the root population)</p>
 <span><span class="co">#&gt; APC-f750-A  4.93700e-02  2.25955e-02  6.09145e-01</span></span>
 <span><span class="co">#&gt; BB515-A    -6.68526e-05 -3.01727e-05 -1.21999e-05</span></span>
 <span><span class="co">#&gt; BB660-A     7.25687e-02  2.16664e-02  5.19117e-03</span></span>
-<span><span class="co">#&gt; BB700-A     2.13325e-02  6.47322e-02  1.92574e-02</span></span>
-<span>  </span>
+<span><span class="co">#&gt; BB700-A     2.13325e-02  6.47322e-02  1.92574e-02</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span>  </span>
 <span>  <span class="co">## Optional- save the comp mat matrix</span></span>
 <span>  <span class="co"># Can grab with the @spillover from the compensation object</span></span>
 <span>  <span class="va">samp_metadata</span><span class="op">$</span><span class="va">comp_mat</span> <span class="op">=</span></span>
@@ -338,7 +350,7 @@ with <code>extra negative decades = 0.5</code>,
 <p>The structure of the table of parameters (as .csv format) should be
 first column for the flurochrome names corresponding to the panel,
 followed by the parameters.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="va">tbl_biexp_params</span> <span class="op">=</span> </span>
 <span>    <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">path_biexp_params</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>    <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/clean_names.html" class="external-link">clean_names</a></span><span class="op">(</span>case <span class="op">=</span> <span class="st">"all_caps"</span><span class="op">)</span></span>
@@ -980,14 +992,15 @@ transformation calculation “guessing” appropriate parameters. We chose
 to explicitly specify the biexponential transformation with fixed
 parameters for all channels to match the manual gating strategy for a
 more direct comparison of {staRgate} to the manual gating results.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="co">## Optional-- to check what pre-transformed data against post</span></span>
 <span>  <span class="co"># Check no transformation before</span></span>
 <span>  <span class="va">chk_tf</span> <span class="op">=</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_get_transformations.html" class="external-link">gh_get_transformations</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="va">chk_tf</span></span>
-<span><span class="co">#&gt; list()</span></span>
-<span>  </span>
+<span><span class="co">#&gt; list()</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span>  </span>
 <span>  <span class="va">dat_pre_transform</span> <span class="op">=</span> </span>
 <span>    <span class="va">gs</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>    <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_data.html" class="external-link">gh_pop_get_data</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
@@ -1021,8 +1034,8 @@ more direct comparison of {staRgate} to the manual gating results.</p>
 <span><span class="co">#&gt;         res[ind] &lt;- ifelse(deriv == 1, z$y[1L], 0)</span></span>
 <span><span class="co">#&gt;     res</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x55c4158b8138&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55c4140bf7d0&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x55ff71a16228&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x55ff71033e80&gt;</span></span>
 <span><span class="co">#&gt; attr(,"type")</span></span>
 <span><span class="co">#&gt; [1] "biexp"</span></span>
 <span><span class="co">#&gt; attr(,"parameters")</span></span>
@@ -1039,8 +1052,9 @@ more direct comparison of {staRgate} to the manual gating results.</p>
 <span><span class="co">#&gt; [1] 4.5</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attr(,"parameters")$widthBasis</span></span>
-<span><span class="co">#&gt; [1] -30</span></span>
-<span>  </span>
+<span><span class="co">#&gt; [1] -30</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span>  </span>
 <span>  <span class="va">dat_post_transform</span> <span class="op">=</span> </span>
 <span>    <span class="va">gs</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>    <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_data.html" class="external-link">gh_pop_get_data</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
@@ -1124,8 +1138,9 @@ more direct comparison of {staRgate} to the manual gating results.</p>
 <span><span class="co">#&gt;  Median :   -49.92   Median :    -0.70   Median :2393.280  </span></span>
 <span><span class="co">#&gt;  Mean   :    81.18   Mean   :    95.98   Mean   :2391.773  </span></span>
 <span><span class="co">#&gt;  3rd Qu.:    -2.59   3rd Qu.:    90.11   3rd Qu.:3580.679  </span></span>
-<span><span class="co">#&gt;  Max.   :254940.75   Max.   :201944.88   Max.   :4774.103</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">dat_post_transform</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  Max.   :254940.75   Max.   :201944.88   Max.   :4774.103</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">dat_post_transform</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      FSC-A            FSC-H            FSC-W            SSC-A         </span></span>
 <span><span class="co">#&gt;  Min.   : -6314   Min.   :  9985   Min.   : 47939   Min.   :  -214.1  </span></span>
 <span><span class="co">#&gt;  1st Qu.: 21001   1st Qu.: 18417   1st Qu.: 99876   1st Qu.: 11818.6  </span></span>
@@ -1188,8 +1203,9 @@ more direct comparison of {staRgate} to the manual gating results.</p>
 <span><span class="co">#&gt;  Median :   916.7   Median : 1012.6   Median :2393.280  </span></span>
 <span><span class="co">#&gt;  Mean   :   989.7   Mean   : 1121.0   Mean   :2391.773  </span></span>
 <span><span class="co">#&gt;  3rd Qu.:  1008.9   3rd Qu.: 1187.8   3rd Qu.:3580.679  </span></span>
-<span><span class="co">#&gt;  Max.   :  4086.6   Max.   : 4003.6   Max.   :4774.103</span></span>
-<span>  </span>
+<span><span class="co">#&gt;  Max.   :  4086.6   Max.   : 4003.6   Max.   :4774.103</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span>  </span>
 <span>  <span class="co">## Optional-- save out the transformerList </span></span>
 <span>  <span class="va">samp_metadata</span><span class="op">$</span><span class="va">transformerList</span> <span class="op">=</span> <span class="va">chk_tf</span></span></code></pre></div>
 </div>
@@ -1206,7 +1222,7 @@ too many cells.</p>
 <p>The first step of the gating template is a QC step that is especially
 important to include if the user chooses to exclude the {flowAI}
 step.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">flowAI_yn</span> <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span></span>
 <span><span class="co"># Run flowAI if TRUE, run it</span></span>
@@ -1248,7 +1264,7 @@ step.</p>
 <span>  <span class="va">gs_qc</span> <span class="op">=</span> <span class="va">gs</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span>  <span class="co"># Pre-gating up to CD4/8+ with {openCyto}</span></span>
 <span>  <span class="co">## Set seed using today's date </span></span>
@@ -1288,7 +1304,7 @@ step.</p>
 <span><span class="co">#&gt; Population 'cd4+cd8+'</span></span>
 <span><span class="co">#&gt; done.</span></span>
 <span><span class="co">#&gt; finished.</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  </span>
 <span>  <span class="co">## Check autoplot</span></span>
 <span>  <span class="fu">ggcyto</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">gs_qc</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
@@ -1297,7 +1313,7 @@ step.</p>
 <div class="section level3">
 <h3 id="extract-intensity-matrix">Extract intensity matrix<a class="anchor" aria-label="anchor" href="#extract-intensity-matrix"></a>
 </h3>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="co"># Extract intensity matrix from GatingSet object</span></span>
 <span>  <span class="co">## Grab marker names from GatingSet for labeling col names in intensity matrix</span></span>
 <span>  <span class="co">## Can skip this step if you know the exact namings of the marker names in your FCS files</span></span>
@@ -1402,7 +1418,7 @@ function</p>
 <code>40</code>.</p>
 <p>For illustration purposes, we will only apply density gating on a few
 markers.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Density gating parameters</span></span>
 <span><span class="va">peak_r</span> <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="va">bin_i</span> <span class="op">=</span> <span class="fl">40</span></span>
@@ -1433,8 +1449,9 @@ markers.</p>
 <span><span class="co">#&gt;   cd3_pos  LAG3  CCR7 CD45RA  CD28 EOMES  CD38 CD127</span></span>
 <span><span class="co">#&gt;     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>       0 <span style="text-decoration: underline;">1</span>368. <span style="text-decoration: underline;">1</span>494.  <span style="text-decoration: underline;">1</span>225. <span style="text-decoration: underline;">1</span>212. <span style="text-decoration: underline;">1</span>548. <span style="text-decoration: underline;">1</span>306. <span style="text-decoration: underline;">1</span>370.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>       1 <span style="text-decoration: underline;">1</span>667. <span style="text-decoration: underline;">1</span>852.  <span style="text-decoration: underline;">1</span>438. <span style="text-decoration: underline;">1</span>825. <span style="text-decoration: underline;">1</span>850. <span style="text-decoration: underline;">1</span>303. <span style="text-decoration: underline;">1</span>509.</span></span>
-<span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>       1 <span style="text-decoration: underline;">1</span>667. <span style="text-decoration: underline;">1</span>852.  <span style="text-decoration: underline;">1</span>438. <span style="text-decoration: underline;">1</span>825. <span style="text-decoration: underline;">1</span>850. <span style="text-decoration: underline;">1</span>303. <span style="text-decoration: underline;">1</span>509.</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co"># Since we apply density gating on CD3+ cells but</span></span>
 <span><span class="co"># Would like to calculate subpopulations with CD4+ and CD8+ as </span></span>
 <span><span class="co"># the starting parent population, we need to add corresponding rows</span></span>
@@ -1457,8 +1474,9 @@ markers.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>       1 <span style="text-decoration: underline;">1</span>667. <span style="text-decoration: underline;">1</span>852.  <span style="text-decoration: underline;">1</span>438. <span style="text-decoration: underline;">1</span>825. <span style="text-decoration: underline;">1</span>850. <span style="text-decoration: underline;">1</span>303. <span style="text-decoration: underline;">1</span>509. cd4_neg_cd8_neg</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>       1 <span style="text-decoration: underline;">1</span>667. <span style="text-decoration: underline;">1</span>852.  <span style="text-decoration: underline;">1</span>438. <span style="text-decoration: underline;">1</span>825. <span style="text-decoration: underline;">1</span>850. <span style="text-decoration: underline;">1</span>303. <span style="text-decoration: underline;">1</span>509. cd4_pos_cd8_neg</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>       1 <span style="text-decoration: underline;">1</span>667. <span style="text-decoration: underline;">1</span>852.  <span style="text-decoration: underline;">1</span>438. <span style="text-decoration: underline;">1</span>825. <span style="text-decoration: underline;">1</span>850. <span style="text-decoration: underline;">1</span>303. <span style="text-decoration: underline;">1</span>509. cd4_neg_cd8_pos</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>       1 <span style="text-decoration: underline;">1</span>667. <span style="text-decoration: underline;">1</span>852.  <span style="text-decoration: underline;">1</span>438. <span style="text-decoration: underline;">1</span>825. <span style="text-decoration: underline;">1</span>850. <span style="text-decoration: underline;">1</span>303. <span style="text-decoration: underline;">1</span>509. cd4_pos_cd8_pos</span></span>
-<span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>       1 <span style="text-decoration: underline;">1</span>667. <span style="text-decoration: underline;">1</span>852.  <span style="text-decoration: underline;">1</span>438. <span style="text-decoration: underline;">1</span>825. <span style="text-decoration: underline;">1</span>850. <span style="text-decoration: underline;">1</span>303. <span style="text-decoration: underline;">1</span>509. cd4_pos_cd8_pos</span></span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co"># try get indicator col</span></span>
 <span><span class="va">example_intensity_gated</span> <span class="op">=</span> </span>
 <span>  <span class="fu"><a href="../reference/getGatedDat.html">getGatedDat</a></span><span class="op">(</span><span class="va">intensity_dat</span>,</span>
@@ -1481,7 +1499,7 @@ markers.</p>
 <span>             linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of LAG3 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-14-1.png" width="576" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># If by CD4/CD8, </span></span>
 <span><span class="va">intensity_dat</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
@@ -1498,7 +1516,7 @@ markers.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of LAG3 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">cd4_pos_cd8_pos</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-14-2.png" width="576" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
 <span><span class="co"># For CCR7</span></span>
@@ -1515,7 +1533,7 @@ markers.</p>
 <span>             linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CCR7 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-14-3.png" width="576" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># If by CD4/CD8, </span></span>
 <span><span class="va">intensity_dat</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
@@ -1532,7 +1550,7 @@ markers.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CCR7 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">cd4_pos_cd8_pos</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-14-4.png" width="576" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># For CD45RA</span></span>
 <span><span class="va">intensity_dat</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
@@ -1548,7 +1566,7 @@ markers.</p>
 <span>             linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CD45RA intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-14-5.png" width="576" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># If by CD4/CD8, </span></span>
 <span><span class="va">intensity_dat</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
@@ -1659,7 +1677,7 @@ demonstrate the other scenarios for combinations of
 <code>expand_num</code> and <code>expand_denom</code> so
 <code>keep_indicators</code> is set to <code>FALSE</code> for the
 remaining examples.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc1</span> <span class="op">=</span> </span>
 <span>  <span class="va">example_intensity_gated</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="co"># Should only count the CD3+ cells</span></span>
@@ -1684,23 +1702,23 @@ remaining examples.</p>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/fmt_number.html" class="external-link">fmt_number</a></span><span class="op">(</span>columns <span class="op">=</span> <span class="st">"perc"</span>, </span>
 <span>                 decimals <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> </span></code></pre></div>
-<div id="cucwohpkrw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#cucwohpkrw table {
+<div id="scbopictsc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#scbopictsc table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#cucwohpkrw thead, #cucwohpkrw tbody, #cucwohpkrw tfoot, #cucwohpkrw tr, #cucwohpkrw td, #cucwohpkrw th {
+#scbopictsc thead, #scbopictsc tbody, #scbopictsc tfoot, #scbopictsc tr, #scbopictsc td, #scbopictsc th {
   border-style: none;
 }
 
-#cucwohpkrw p {
+#scbopictsc p {
   margin: 0;
   padding: 0;
 }
 
-#cucwohpkrw .gt_table {
+#scbopictsc .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1726,12 +1744,12 @@ remaining examples.</p>
   border-left-color: #D3D3D3;
 }
 
-#cucwohpkrw .gt_caption {
+#scbopictsc .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#cucwohpkrw .gt_title {
+#scbopictsc .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1743,7 +1761,7 @@ remaining examples.</p>
   border-bottom-width: 0;
 }
 
-#cucwohpkrw .gt_subtitle {
+#scbopictsc .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1755,7 +1773,7 @@ remaining examples.</p>
   border-top-width: 0;
 }
 
-#cucwohpkrw .gt_heading {
+#scbopictsc .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1767,13 +1785,13 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#cucwohpkrw .gt_bottom_border {
+#scbopictsc .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#cucwohpkrw .gt_col_headings {
+#scbopictsc .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1788,7 +1806,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#cucwohpkrw .gt_col_heading {
+#scbopictsc .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1808,7 +1826,7 @@ remaining examples.</p>
   overflow-x: hidden;
 }
 
-#cucwohpkrw .gt_column_spanner_outer {
+#scbopictsc .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1820,15 +1838,15 @@ remaining examples.</p>
   padding-right: 4px;
 }
 
-#cucwohpkrw .gt_column_spanner_outer:first-child {
+#scbopictsc .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#cucwohpkrw .gt_column_spanner_outer:last-child {
+#scbopictsc .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#cucwohpkrw .gt_column_spanner {
+#scbopictsc .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1840,11 +1858,11 @@ remaining examples.</p>
   width: 100%;
 }
 
-#cucwohpkrw .gt_spanner_row {
+#scbopictsc .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#cucwohpkrw .gt_group_heading {
+#scbopictsc .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1870,7 +1888,7 @@ remaining examples.</p>
   text-align: left;
 }
 
-#cucwohpkrw .gt_empty_group_heading {
+#scbopictsc .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1885,15 +1903,15 @@ remaining examples.</p>
   vertical-align: middle;
 }
 
-#cucwohpkrw .gt_from_md > :first-child {
+#scbopictsc .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#cucwohpkrw .gt_from_md > :last-child {
+#scbopictsc .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#cucwohpkrw .gt_row {
+#scbopictsc .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1912,7 +1930,7 @@ remaining examples.</p>
   overflow-x: hidden;
 }
 
-#cucwohpkrw .gt_stub {
+#scbopictsc .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1925,7 +1943,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#cucwohpkrw .gt_stub_row_group {
+#scbopictsc .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1939,15 +1957,15 @@ remaining examples.</p>
   vertical-align: top;
 }
 
-#cucwohpkrw .gt_row_group_first td {
+#scbopictsc .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#cucwohpkrw .gt_row_group_first th {
+#scbopictsc .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#cucwohpkrw .gt_summary_row {
+#scbopictsc .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1957,16 +1975,16 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#cucwohpkrw .gt_first_summary_row {
+#scbopictsc .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#cucwohpkrw .gt_first_summary_row.thick {
+#scbopictsc .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#cucwohpkrw .gt_last_summary_row {
+#scbopictsc .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1976,7 +1994,7 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#cucwohpkrw .gt_grand_summary_row {
+#scbopictsc .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1986,7 +2004,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#cucwohpkrw .gt_first_grand_summary_row {
+#scbopictsc .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1996,7 +2014,7 @@ remaining examples.</p>
   border-top-color: #D3D3D3;
 }
 
-#cucwohpkrw .gt_last_grand_summary_row_top {
+#scbopictsc .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2006,11 +2024,11 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#cucwohpkrw .gt_striped {
+#scbopictsc .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#cucwohpkrw .gt_table_body {
+#scbopictsc .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2019,7 +2037,7 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#cucwohpkrw .gt_footnotes {
+#scbopictsc .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2033,7 +2051,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#cucwohpkrw .gt_footnote {
+#scbopictsc .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2042,7 +2060,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#cucwohpkrw .gt_sourcenotes {
+#scbopictsc .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2056,7 +2074,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#cucwohpkrw .gt_sourcenote {
+#scbopictsc .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2064,63 +2082,63 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#cucwohpkrw .gt_left {
+#scbopictsc .gt_left {
   text-align: left;
 }
 
-#cucwohpkrw .gt_center {
+#scbopictsc .gt_center {
   text-align: center;
 }
 
-#cucwohpkrw .gt_right {
+#scbopictsc .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#cucwohpkrw .gt_font_normal {
+#scbopictsc .gt_font_normal {
   font-weight: normal;
 }
 
-#cucwohpkrw .gt_font_bold {
+#scbopictsc .gt_font_bold {
   font-weight: bold;
 }
 
-#cucwohpkrw .gt_font_italic {
+#scbopictsc .gt_font_italic {
   font-style: italic;
 }
 
-#cucwohpkrw .gt_super {
+#scbopictsc .gt_super {
   font-size: 65%;
 }
 
-#cucwohpkrw .gt_footnote_marks {
+#scbopictsc .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#cucwohpkrw .gt_asterisk {
+#scbopictsc .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#cucwohpkrw .gt_indent_1 {
+#scbopictsc .gt_indent_1 {
   text-indent: 5px;
 }
 
-#cucwohpkrw .gt_indent_2 {
+#scbopictsc .gt_indent_2 {
   text-indent: 10px;
 }
 
-#cucwohpkrw .gt_indent_3 {
+#scbopictsc .gt_indent_3 {
   text-indent: 15px;
 }
 
-#cucwohpkrw .gt_indent_4 {
+#scbopictsc .gt_indent_4 {
   text-indent: 20px;
 }
 
-#cucwohpkrw .gt_indent_5 {
+#scbopictsc .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -2998,7 +3016,7 @@ remaining examples.</p>
 </div>
 <p>Below is an example of when <code>expand_num = TRUE</code> and
 <code>expand_denom = FALSE</code></p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc2</span> <span class="op">=</span> </span>
 <span>  <span class="va">example_intensity_gated</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>    <span class="co"># Should only count the CD3+ cells</span></span>
@@ -3023,23 +3041,23 @@ remaining examples.</p>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/fmt_number.html" class="external-link">fmt_number</a></span><span class="op">(</span>columns <span class="op">=</span> <span class="st">"perc"</span>, </span>
 <span>                 decimals <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> </span></code></pre></div>
-<div id="isybzsqhpa" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#isybzsqhpa table {
+<div id="xdbxxlecfw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#xdbxxlecfw table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#isybzsqhpa thead, #isybzsqhpa tbody, #isybzsqhpa tfoot, #isybzsqhpa tr, #isybzsqhpa td, #isybzsqhpa th {
+#xdbxxlecfw thead, #xdbxxlecfw tbody, #xdbxxlecfw tfoot, #xdbxxlecfw tr, #xdbxxlecfw td, #xdbxxlecfw th {
   border-style: none;
 }
 
-#isybzsqhpa p {
+#xdbxxlecfw p {
   margin: 0;
   padding: 0;
 }
 
-#isybzsqhpa .gt_table {
+#xdbxxlecfw .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3065,12 +3083,12 @@ remaining examples.</p>
   border-left-color: #D3D3D3;
 }
 
-#isybzsqhpa .gt_caption {
+#xdbxxlecfw .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#isybzsqhpa .gt_title {
+#xdbxxlecfw .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3082,7 +3100,7 @@ remaining examples.</p>
   border-bottom-width: 0;
 }
 
-#isybzsqhpa .gt_subtitle {
+#xdbxxlecfw .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3094,7 +3112,7 @@ remaining examples.</p>
   border-top-width: 0;
 }
 
-#isybzsqhpa .gt_heading {
+#xdbxxlecfw .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3106,13 +3124,13 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#isybzsqhpa .gt_bottom_border {
+#xdbxxlecfw .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#isybzsqhpa .gt_col_headings {
+#xdbxxlecfw .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3127,7 +3145,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#isybzsqhpa .gt_col_heading {
+#xdbxxlecfw .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3147,7 +3165,7 @@ remaining examples.</p>
   overflow-x: hidden;
 }
 
-#isybzsqhpa .gt_column_spanner_outer {
+#xdbxxlecfw .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3159,15 +3177,15 @@ remaining examples.</p>
   padding-right: 4px;
 }
 
-#isybzsqhpa .gt_column_spanner_outer:first-child {
+#xdbxxlecfw .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#isybzsqhpa .gt_column_spanner_outer:last-child {
+#xdbxxlecfw .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#isybzsqhpa .gt_column_spanner {
+#xdbxxlecfw .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3179,11 +3197,11 @@ remaining examples.</p>
   width: 100%;
 }
 
-#isybzsqhpa .gt_spanner_row {
+#xdbxxlecfw .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#isybzsqhpa .gt_group_heading {
+#xdbxxlecfw .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3209,7 +3227,7 @@ remaining examples.</p>
   text-align: left;
 }
 
-#isybzsqhpa .gt_empty_group_heading {
+#xdbxxlecfw .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3224,15 +3242,15 @@ remaining examples.</p>
   vertical-align: middle;
 }
 
-#isybzsqhpa .gt_from_md > :first-child {
+#xdbxxlecfw .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#isybzsqhpa .gt_from_md > :last-child {
+#xdbxxlecfw .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#isybzsqhpa .gt_row {
+#xdbxxlecfw .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3251,7 +3269,7 @@ remaining examples.</p>
   overflow-x: hidden;
 }
 
-#isybzsqhpa .gt_stub {
+#xdbxxlecfw .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3264,7 +3282,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#isybzsqhpa .gt_stub_row_group {
+#xdbxxlecfw .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3278,15 +3296,15 @@ remaining examples.</p>
   vertical-align: top;
 }
 
-#isybzsqhpa .gt_row_group_first td {
+#xdbxxlecfw .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#isybzsqhpa .gt_row_group_first th {
+#xdbxxlecfw .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#isybzsqhpa .gt_summary_row {
+#xdbxxlecfw .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3296,16 +3314,16 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#isybzsqhpa .gt_first_summary_row {
+#xdbxxlecfw .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#isybzsqhpa .gt_first_summary_row.thick {
+#xdbxxlecfw .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#isybzsqhpa .gt_last_summary_row {
+#xdbxxlecfw .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3315,7 +3333,7 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#isybzsqhpa .gt_grand_summary_row {
+#xdbxxlecfw .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3325,7 +3343,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#isybzsqhpa .gt_first_grand_summary_row {
+#xdbxxlecfw .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3335,7 +3353,7 @@ remaining examples.</p>
   border-top-color: #D3D3D3;
 }
 
-#isybzsqhpa .gt_last_grand_summary_row_top {
+#xdbxxlecfw .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3345,11 +3363,11 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#isybzsqhpa .gt_striped {
+#xdbxxlecfw .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#isybzsqhpa .gt_table_body {
+#xdbxxlecfw .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3358,7 +3376,7 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#isybzsqhpa .gt_footnotes {
+#xdbxxlecfw .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3372,7 +3390,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#isybzsqhpa .gt_footnote {
+#xdbxxlecfw .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3381,7 +3399,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#isybzsqhpa .gt_sourcenotes {
+#xdbxxlecfw .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3395,7 +3413,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#isybzsqhpa .gt_sourcenote {
+#xdbxxlecfw .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3403,63 +3421,63 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#isybzsqhpa .gt_left {
+#xdbxxlecfw .gt_left {
   text-align: left;
 }
 
-#isybzsqhpa .gt_center {
+#xdbxxlecfw .gt_center {
   text-align: center;
 }
 
-#isybzsqhpa .gt_right {
+#xdbxxlecfw .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#isybzsqhpa .gt_font_normal {
+#xdbxxlecfw .gt_font_normal {
   font-weight: normal;
 }
 
-#isybzsqhpa .gt_font_bold {
+#xdbxxlecfw .gt_font_bold {
   font-weight: bold;
 }
 
-#isybzsqhpa .gt_font_italic {
+#xdbxxlecfw .gt_font_italic {
   font-style: italic;
 }
 
-#isybzsqhpa .gt_super {
+#xdbxxlecfw .gt_super {
   font-size: 65%;
 }
 
-#isybzsqhpa .gt_footnote_marks {
+#xdbxxlecfw .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#isybzsqhpa .gt_asterisk {
+#xdbxxlecfw .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#isybzsqhpa .gt_indent_1 {
+#xdbxxlecfw .gt_indent_1 {
   text-indent: 5px;
 }
 
-#isybzsqhpa .gt_indent_2 {
+#xdbxxlecfw .gt_indent_2 {
   text-indent: 10px;
 }
 
-#isybzsqhpa .gt_indent_3 {
+#xdbxxlecfw .gt_indent_3 {
   text-indent: 15px;
 }
 
-#isybzsqhpa .gt_indent_4 {
+#xdbxxlecfw .gt_indent_4 {
   text-indent: 20px;
 }
 
-#isybzsqhpa .gt_indent_5 {
+#xdbxxlecfw .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -5840,7 +5858,7 @@ remaining examples.</p>
 </div>
 <p>Below is an example of when <code>expand_num = FALSE</code> and
 <code>expand_denom = TRUE</code></p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc3</span> <span class="op">=</span> </span>
 <span>  <span class="va">example_intensity_gated</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="co"># Should only count the CD3+ cells</span></span>
@@ -5865,23 +5883,23 @@ remaining examples.</p>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/fmt_number.html" class="external-link">fmt_number</a></span><span class="op">(</span>columns <span class="op">=</span> <span class="st">"perc"</span>, </span>
 <span>                 decimals <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> </span></code></pre></div>
-<div id="elwqnzzdmu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#elwqnzzdmu table {
+<div id="yqbaqxbxjx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#yqbaqxbxjx table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#elwqnzzdmu thead, #elwqnzzdmu tbody, #elwqnzzdmu tfoot, #elwqnzzdmu tr, #elwqnzzdmu td, #elwqnzzdmu th {
+#yqbaqxbxjx thead, #yqbaqxbxjx tbody, #yqbaqxbxjx tfoot, #yqbaqxbxjx tr, #yqbaqxbxjx td, #yqbaqxbxjx th {
   border-style: none;
 }
 
-#elwqnzzdmu p {
+#yqbaqxbxjx p {
   margin: 0;
   padding: 0;
 }
 
-#elwqnzzdmu .gt_table {
+#yqbaqxbxjx .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -5907,12 +5925,12 @@ remaining examples.</p>
   border-left-color: #D3D3D3;
 }
 
-#elwqnzzdmu .gt_caption {
+#yqbaqxbxjx .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#elwqnzzdmu .gt_title {
+#yqbaqxbxjx .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -5924,7 +5942,7 @@ remaining examples.</p>
   border-bottom-width: 0;
 }
 
-#elwqnzzdmu .gt_subtitle {
+#yqbaqxbxjx .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -5936,7 +5954,7 @@ remaining examples.</p>
   border-top-width: 0;
 }
 
-#elwqnzzdmu .gt_heading {
+#yqbaqxbxjx .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -5948,13 +5966,13 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#elwqnzzdmu .gt_bottom_border {
+#yqbaqxbxjx .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#elwqnzzdmu .gt_col_headings {
+#yqbaqxbxjx .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -5969,7 +5987,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#elwqnzzdmu .gt_col_heading {
+#yqbaqxbxjx .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -5989,7 +6007,7 @@ remaining examples.</p>
   overflow-x: hidden;
 }
 
-#elwqnzzdmu .gt_column_spanner_outer {
+#yqbaqxbxjx .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6001,15 +6019,15 @@ remaining examples.</p>
   padding-right: 4px;
 }
 
-#elwqnzzdmu .gt_column_spanner_outer:first-child {
+#yqbaqxbxjx .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#elwqnzzdmu .gt_column_spanner_outer:last-child {
+#yqbaqxbxjx .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#elwqnzzdmu .gt_column_spanner {
+#yqbaqxbxjx .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -6021,11 +6039,11 @@ remaining examples.</p>
   width: 100%;
 }
 
-#elwqnzzdmu .gt_spanner_row {
+#yqbaqxbxjx .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#elwqnzzdmu .gt_group_heading {
+#yqbaqxbxjx .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6051,7 +6069,7 @@ remaining examples.</p>
   text-align: left;
 }
 
-#elwqnzzdmu .gt_empty_group_heading {
+#yqbaqxbxjx .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -6066,15 +6084,15 @@ remaining examples.</p>
   vertical-align: middle;
 }
 
-#elwqnzzdmu .gt_from_md > :first-child {
+#yqbaqxbxjx .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#elwqnzzdmu .gt_from_md > :last-child {
+#yqbaqxbxjx .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#elwqnzzdmu .gt_row {
+#yqbaqxbxjx .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6093,7 +6111,7 @@ remaining examples.</p>
   overflow-x: hidden;
 }
 
-#elwqnzzdmu .gt_stub {
+#yqbaqxbxjx .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6106,7 +6124,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#elwqnzzdmu .gt_stub_row_group {
+#yqbaqxbxjx .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6120,15 +6138,15 @@ remaining examples.</p>
   vertical-align: top;
 }
 
-#elwqnzzdmu .gt_row_group_first td {
+#yqbaqxbxjx .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#elwqnzzdmu .gt_row_group_first th {
+#yqbaqxbxjx .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#elwqnzzdmu .gt_summary_row {
+#yqbaqxbxjx .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -6138,16 +6156,16 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#elwqnzzdmu .gt_first_summary_row {
+#yqbaqxbxjx .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#elwqnzzdmu .gt_first_summary_row.thick {
+#yqbaqxbxjx .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#elwqnzzdmu .gt_last_summary_row {
+#yqbaqxbxjx .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6157,7 +6175,7 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#elwqnzzdmu .gt_grand_summary_row {
+#yqbaqxbxjx .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -6167,7 +6185,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#elwqnzzdmu .gt_first_grand_summary_row {
+#yqbaqxbxjx .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6177,7 +6195,7 @@ remaining examples.</p>
   border-top-color: #D3D3D3;
 }
 
-#elwqnzzdmu .gt_last_grand_summary_row_top {
+#yqbaqxbxjx .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6187,11 +6205,11 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#elwqnzzdmu .gt_striped {
+#yqbaqxbxjx .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#elwqnzzdmu .gt_table_body {
+#yqbaqxbxjx .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -6200,7 +6218,7 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#elwqnzzdmu .gt_footnotes {
+#yqbaqxbxjx .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -6214,7 +6232,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#elwqnzzdmu .gt_footnote {
+#yqbaqxbxjx .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -6223,7 +6241,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#elwqnzzdmu .gt_sourcenotes {
+#yqbaqxbxjx .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -6237,7 +6255,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#elwqnzzdmu .gt_sourcenote {
+#yqbaqxbxjx .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -6245,63 +6263,63 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#elwqnzzdmu .gt_left {
+#yqbaqxbxjx .gt_left {
   text-align: left;
 }
 
-#elwqnzzdmu .gt_center {
+#yqbaqxbxjx .gt_center {
   text-align: center;
 }
 
-#elwqnzzdmu .gt_right {
+#yqbaqxbxjx .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#elwqnzzdmu .gt_font_normal {
+#yqbaqxbxjx .gt_font_normal {
   font-weight: normal;
 }
 
-#elwqnzzdmu .gt_font_bold {
+#yqbaqxbxjx .gt_font_bold {
   font-weight: bold;
 }
 
-#elwqnzzdmu .gt_font_italic {
+#yqbaqxbxjx .gt_font_italic {
   font-style: italic;
 }
 
-#elwqnzzdmu .gt_super {
+#yqbaqxbxjx .gt_super {
   font-size: 65%;
 }
 
-#elwqnzzdmu .gt_footnote_marks {
+#yqbaqxbxjx .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#elwqnzzdmu .gt_asterisk {
+#yqbaqxbxjx .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#elwqnzzdmu .gt_indent_1 {
+#yqbaqxbxjx .gt_indent_1 {
   text-indent: 5px;
 }
 
-#elwqnzzdmu .gt_indent_2 {
+#yqbaqxbxjx .gt_indent_2 {
   text-indent: 10px;
 }
 
-#elwqnzzdmu .gt_indent_3 {
+#yqbaqxbxjx .gt_indent_3 {
   text-indent: 15px;
 }
 
-#elwqnzzdmu .gt_indent_4 {
+#yqbaqxbxjx .gt_indent_4 {
   text-indent: 20px;
 }
 
-#elwqnzzdmu .gt_indent_5 {
+#yqbaqxbxjx .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -10866,7 +10884,7 @@ remaining examples.</p>
 </div>
 <p>Below is an example of when <code>expand_num = TRUE</code> and
 <code>expand_denom = TRUE</code></p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc4</span> <span class="op">=</span> </span>
 <span>  <span class="va">example_intensity_gated</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="co"># Should only count the CD3+ cells</span></span>
@@ -10892,23 +10910,23 @@ remaining examples.</p>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/fmt_number.html" class="external-link">fmt_number</a></span><span class="op">(</span>columns <span class="op">=</span> <span class="st">"perc"</span>, </span>
 <span>                 decimals <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> </span></code></pre></div>
-<div id="skniqcixtq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#skniqcixtq table {
+<div id="lgyozvvyvw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#lgyozvvyvw table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#skniqcixtq thead, #skniqcixtq tbody, #skniqcixtq tfoot, #skniqcixtq tr, #skniqcixtq td, #skniqcixtq th {
+#lgyozvvyvw thead, #lgyozvvyvw tbody, #lgyozvvyvw tfoot, #lgyozvvyvw tr, #lgyozvvyvw td, #lgyozvvyvw th {
   border-style: none;
 }
 
-#skniqcixtq p {
+#lgyozvvyvw p {
   margin: 0;
   padding: 0;
 }
 
-#skniqcixtq .gt_table {
+#lgyozvvyvw .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -10934,12 +10952,12 @@ remaining examples.</p>
   border-left-color: #D3D3D3;
 }
 
-#skniqcixtq .gt_caption {
+#lgyozvvyvw .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#skniqcixtq .gt_title {
+#lgyozvvyvw .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -10951,7 +10969,7 @@ remaining examples.</p>
   border-bottom-width: 0;
 }
 
-#skniqcixtq .gt_subtitle {
+#lgyozvvyvw .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -10963,7 +10981,7 @@ remaining examples.</p>
   border-top-width: 0;
 }
 
-#skniqcixtq .gt_heading {
+#lgyozvvyvw .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -10975,13 +10993,13 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#skniqcixtq .gt_bottom_border {
+#lgyozvvyvw .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#skniqcixtq .gt_col_headings {
+#lgyozvvyvw .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -10996,7 +11014,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#skniqcixtq .gt_col_heading {
+#lgyozvvyvw .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -11016,7 +11034,7 @@ remaining examples.</p>
   overflow-x: hidden;
 }
 
-#skniqcixtq .gt_column_spanner_outer {
+#lgyozvvyvw .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -11028,15 +11046,15 @@ remaining examples.</p>
   padding-right: 4px;
 }
 
-#skniqcixtq .gt_column_spanner_outer:first-child {
+#lgyozvvyvw .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#skniqcixtq .gt_column_spanner_outer:last-child {
+#lgyozvvyvw .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#skniqcixtq .gt_column_spanner {
+#lgyozvvyvw .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -11048,11 +11066,11 @@ remaining examples.</p>
   width: 100%;
 }
 
-#skniqcixtq .gt_spanner_row {
+#lgyozvvyvw .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#skniqcixtq .gt_group_heading {
+#lgyozvvyvw .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -11078,7 +11096,7 @@ remaining examples.</p>
   text-align: left;
 }
 
-#skniqcixtq .gt_empty_group_heading {
+#lgyozvvyvw .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -11093,15 +11111,15 @@ remaining examples.</p>
   vertical-align: middle;
 }
 
-#skniqcixtq .gt_from_md > :first-child {
+#lgyozvvyvw .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#skniqcixtq .gt_from_md > :last-child {
+#lgyozvvyvw .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#skniqcixtq .gt_row {
+#lgyozvvyvw .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -11120,7 +11138,7 @@ remaining examples.</p>
   overflow-x: hidden;
 }
 
-#skniqcixtq .gt_stub {
+#lgyozvvyvw .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -11133,7 +11151,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#skniqcixtq .gt_stub_row_group {
+#lgyozvvyvw .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -11147,15 +11165,15 @@ remaining examples.</p>
   vertical-align: top;
 }
 
-#skniqcixtq .gt_row_group_first td {
+#lgyozvvyvw .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#skniqcixtq .gt_row_group_first th {
+#lgyozvvyvw .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#skniqcixtq .gt_summary_row {
+#lgyozvvyvw .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -11165,16 +11183,16 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#skniqcixtq .gt_first_summary_row {
+#lgyozvvyvw .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#skniqcixtq .gt_first_summary_row.thick {
+#lgyozvvyvw .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#skniqcixtq .gt_last_summary_row {
+#lgyozvvyvw .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -11184,7 +11202,7 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#skniqcixtq .gt_grand_summary_row {
+#lgyozvvyvw .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -11194,7 +11212,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#skniqcixtq .gt_first_grand_summary_row {
+#lgyozvvyvw .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -11204,7 +11222,7 @@ remaining examples.</p>
   border-top-color: #D3D3D3;
 }
 
-#skniqcixtq .gt_last_grand_summary_row_top {
+#lgyozvvyvw .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -11214,11 +11232,11 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#skniqcixtq .gt_striped {
+#lgyozvvyvw .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#skniqcixtq .gt_table_body {
+#lgyozvvyvw .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -11227,7 +11245,7 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#skniqcixtq .gt_footnotes {
+#lgyozvvyvw .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -11241,7 +11259,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#skniqcixtq .gt_footnote {
+#lgyozvvyvw .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -11250,7 +11268,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#skniqcixtq .gt_sourcenotes {
+#lgyozvvyvw .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -11264,7 +11282,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#skniqcixtq .gt_sourcenote {
+#lgyozvvyvw .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -11272,63 +11290,63 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#skniqcixtq .gt_left {
+#lgyozvvyvw .gt_left {
   text-align: left;
 }
 
-#skniqcixtq .gt_center {
+#lgyozvvyvw .gt_center {
   text-align: center;
 }
 
-#skniqcixtq .gt_right {
+#lgyozvvyvw .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#skniqcixtq .gt_font_normal {
+#lgyozvvyvw .gt_font_normal {
   font-weight: normal;
 }
 
-#skniqcixtq .gt_font_bold {
+#lgyozvvyvw .gt_font_bold {
   font-weight: bold;
 }
 
-#skniqcixtq .gt_font_italic {
+#lgyozvvyvw .gt_font_italic {
   font-style: italic;
 }
 
-#skniqcixtq .gt_super {
+#lgyozvvyvw .gt_super {
   font-size: 65%;
 }
 
-#skniqcixtq .gt_footnote_marks {
+#lgyozvvyvw .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#skniqcixtq .gt_asterisk {
+#lgyozvvyvw .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#skniqcixtq .gt_indent_1 {
+#lgyozvvyvw .gt_indent_1 {
   text-indent: 5px;
 }
 
-#skniqcixtq .gt_indent_2 {
+#lgyozvvyvw .gt_indent_2 {
   text-indent: 10px;
 }
 
-#skniqcixtq .gt_indent_3 {
+#lgyozvvyvw .gt_indent_3 {
   text-indent: 15px;
 }
 
-#skniqcixtq .gt_indent_4 {
+#lgyozvvyvw .gt_indent_4 {
   text-indent: 20px;
 }
 
-#skniqcixtq .gt_indent_5 {
+#lgyozvvyvw .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -38072,7 +38090,7 @@ remaining examples.</p>
 <h3 id="optional-adding-density-gates-back-to-gatingset">Optional: Adding density gates back to GatingSet<a class="anchor" aria-label="anchor" href="#optional-adding-density-gates-back-to-gatingset"></a>
 </h3>
 <p>Let’s add the gate for LAG3 of CD4+ and CD8+</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Grab gate as a numeric</span></span>
 <span><span class="va">current_gate</span> <span class="op">=</span> </span>
 <span>  <span class="va">dens_gates</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
