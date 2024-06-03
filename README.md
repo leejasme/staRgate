@@ -24,6 +24,9 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install(version = "3.18")
 
 BiocManager::install(c("openCyto", "flowAI", "flowCore", "flowWorkspace"))
+
+# In order to run the vignette,
+BiocManager::install(c("ggcyto"))
 ```
 
 
