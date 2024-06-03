@@ -16,7 +16,12 @@ Before installing {staRgate}, first setup Bioconductor and install all packages.
 ```
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install(version = "3.19")
+
+# If using R 4.4
+# BiocManager::install(version = "3.19")
+
+# If using R 4.3
+BiocManager::install(version = "3.18")
 
 BiocManager::install(c("openCyto", "flowAI", "flowCore", "flowWorkspace"))
 ```
