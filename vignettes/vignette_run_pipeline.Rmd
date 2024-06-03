@@ -27,7 +27,13 @@ Before installing {staRgate}, first setup Bioconductor and install all dependenc
 ```{r, echo = TRUE, eval = FALSE}
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install(version = "3.19")
+
+# If running R4.3
+BiocManager::install(version = "3.18")
+
+# If running R4.4
+# BiocManager::install(version = "3.198")
+
 
 BiocManager::install(c("openCyto",
                        "flowAI",

@@ -276,7 +276,7 @@ getPerc = function(intens_dat,
     tidyr::expand(.,!!!.) %>%
     # form a col that puts together the conditions
     tidyr::unite(.,
-                 col = .data$denom_filters,
+                 col = denom_filters,
                  sep = " & ",
                  remove = FALSE) %>%
     # also parse back the 0/1 from the original cols to add indicators
@@ -296,7 +296,7 @@ getPerc = function(intens_dat,
           expand.grid(denom_pre_expand$denom_filters, num_pre$num_filters) %>%
             tidyr::unite(
               .,
-              col = .data$denom_filters,
+              col = denom_filters,
               sep = " & ",
               remove = FALSE
             ) %>%
@@ -437,7 +437,7 @@ getPerc = function(intens_dat,
 # Code for testing
 # four scenarios are T/F for expand_num and expand_denom
 # library(tidyverse)
-#
+# #
 # intens_dat = tibble::tibble(
 #   CD3_pos = c(0, 1, 0, 1, 1, 1, 1),
 #   CD4_pos = c(0, 1, 0, 0, 1, 0, 0),
@@ -468,11 +468,11 @@ getPerc = function(intens_dat,
 #
 #
 # )
-#
-# # Some examples
-# # A simpler combos
+# #
+# # # Some examples
+# # # A simpler combos
 # denom_marker = c("CD4", "CD8") # "CD3",
-# num_marker = c("LAG3", "PD1", "CTLa4", "ki67")
+# num_marker = c("LAG3", "PD1") #, "CTLa4", "ki67")
 #
 # # for 29-marker panel
 # denom_marker = c("CD4", "CD8") # "CD3",
@@ -494,7 +494,7 @@ getPerc = function(intens_dat,
 #            expand_num = FALSE,
 #            expand_denom = FALSE,
 #            keep_indicators = FALSE)
-#
+# #
 # # View(test)
 #
 # dim(test) # 184
