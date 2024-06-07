@@ -596,7 +596,7 @@ intensity_dat %>%
 
 ## Getting percentage data
 
-```{r}
+```{r, echo = FALSE}
 panel_n = 23
 panel_n_d = 2
 ```
@@ -729,9 +729,7 @@ Currently, we support the four scenarios listed below:
   gt::tab_footnote(
     footnote = gt::md("n, number of markers specified in the numerator; n<sub>d</sub>,  number of markers specified in the denominator"),
     locations = gt::cells_column_labels(columns = "n_subpops")
-  ) %>% 
-  gt::tab_options(., 
-                  container.width = 1000)
+  )
 ```
 
 
