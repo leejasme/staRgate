@@ -1,6 +1,9 @@
 url: https://leejasme.github.io/staRgate/
 template:
   bootstrap: 5
+  bootswatch: 
+    light: lumen
+    dark: superhero
 navbar:
   structure:
     right: [search, github]
