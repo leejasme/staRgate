@@ -33,4 +33,4 @@ Suggests:
     data.table, 
     here
 VignetteBuilder: knitr
-URL: https://leejasme.github.io/staRgate/
+URL: https://leejasme.github.io/staRgate/, https://github.com/leejasme/staRgate
