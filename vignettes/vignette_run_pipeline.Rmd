@@ -32,7 +32,7 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install(version = "3.18")
 
 # If running R4.4
-# BiocManager::install(version = "3.198")
+# BiocManager::install(version = "3.19")
 
 
 BiocManager::install(c("openCyto",
@@ -596,41 +596,144 @@ intensity_dat %>%
 
 ## Getting percentage data
 
-We can derive count and percentage of cells for all combinations of markers. 
+```{r}
+panel_n = 23
+panel_n_d = 2
+```
+
+
+We can then summarize the single-cell level data to counts and percentages of cells for all combinations of markers. 
 
 For the subpopulations, the `denominator` is defined as the parent population and 
-`numerator` is the population of interest out of the parent population. 
+`numerator` is the population of interest out of the parent population. The $n_d$ refers to the number of 
+markers considered for the denominator and $n$ for the number of markers considered for the numerator. 
+
+For the 29-marker panel, if the `denominator` is specified as the CD4 and CD8 subsets, then $n_d = 2$ and $n = 23$ for the markers of interest.
 
 The `getPerc` function allows user to list the markers of interest for the `numerator` and
 `denominator`
 
-In this example, we will consider CD4 and CD8 subsets as the largest parent population (`denominator`) and the three markers we gated on using `c("LAG3", "CCR7", "CD45RA")`. 
+In the example below, we will consider CD4 and CD8 subsets as the key parent populations of interest (`denominator`) and the three markers we gated on using `c("LAG3", "CCR7", "CD45RA")` (`numerator` markers). 
 
 The additional arguments `expand_num` and `expand_denom` generates different lists of
-subpopulations to calculate counts/percentages for. 
+subpopulations to calculate counts/percentages for: 
 
-Currently, we support the below: 
++ expand_num: should calculations consider up to pairs of numerator markers included?,
++ expand_denom: should the calculations consider combinations of each numerator marker and parent populations specified in the denominator?
 
-+---------------+-----------------+-------------------------------------------------------------------------+
-| `expand_num`  | `expand_denom`  | List of subpopulations                                                  |
-+===============+=================+=========================================================================+
-| FALSE         | FALSE           | - Positive/negative for each marker in `num_marker`                     |
-|               |                 | - Combinations of positive/negative for marker(s) in `denom_marker`     |
-+---------------+-----------------+-------------------------------------------------------------------------+
-| TRUE          | FALSE           | - Combinations of positive/negative for pairs of markers in `num_marker`|
-|               |                 | - Combinations of positive/negative for marker(s) in `denom_marker`     |
-+---------------+-----------------+-------------------------------------------------------------------------+
-| FALSE         | TRUE            | - Positive/negative for each marker in `num_marker`                     |
-|               |                 | - Combinations of positive/negative for marker(s) in `denom_marker` and |
-|               |                 |   combinations of positive/negative for marker(s) in `denom_marker` with|
-|               |                 |   one marker from `num_marker` positive/negative                        |
-+---------------+-----------------+-------------------------------------------------------------------------+
-| TRUE          | TRUE            | - Combinations of positive/negative for each and pairs of markers       |
-|               |                 |   in `num_marker`                                                       |
-|               |                 | - Combinations of positive/negative for marker(s) in `denom_marker` and |
-|               |                 |   combinations of positive/negative for marker(s) in `denom_marker` with|
-|               |                 |   one marker from `num_marker` positive/negative                        |
-+---------------+-----------------+-------------------------------------------------------------------------+
+Currently, we support the four scenarios listed below: 
+
+```{r, echo = FALSE}
+
+# Follows supp table 1 in the paper
+  tibble::tibble(
+    expand_num = c("FALSE", "TRUE", "FALSE", "TRUE"),
+    expand_denom = c("FALSE", "FALSE", "TRUE", "TRUE"),
+    gen = c(
+      # For expand_num, expand_denom combos
+      # FALSE, FALSE
+"- Numerator: Positive and negative for each marker specified
+- Denominator: Combinations of positive and negative for markers specified",
+      # TRUE, FALSE
+"- Numerator: Positive and negative for each marker specified, and combinations of positive/negative for pairs of markers
+    - At least 2 markers must be included in the numerator
+-	Denominator: Combinations of positive and negative for marker(s)",
+      # FALSE, TRUE
+"- Numerator: Positive and negative for each marker specified
+    - At least 2 markers must be included in the numerator
+- Denominator: Combinations of positive and negative for marker(s), and combinations of positive and negative for marker(s) in denominator with one marker from the numerator",
+      # TRUE, TRUE
+"- Numerator: Positive and negative for each marker specified, and combinations of positive/negative for pairs of markers
+    - At least 3 markers must be included in the numerator
+- Denominator: Combinations of positive and negative for marker(s), and combinations of positive and negative for marker(s) in denominator with one marker from the numerator"
+      ),
+    examples = c(
+"Numerator specified to (“LAG3”) and denominator specified as (“CD4”, “CD8”):
+-	LAG3+/- of CD4- & CD8-
+-	LAG3+/- of CD4+ & CD8-
+-	LAG3+/- of CD4+ & CD8+
+-	LAG3+/- of CD4- & CD8+
+",
+"Numerator specified as (“LAG3”, “KI67”) and denominator as (“CD4”):
+-	LAG3+/- of CD4+/-
+-	KI67+/- of CD4+/-
+-	LAG3- KI67-  of CD4+/-
+-	LAG3+ KI67-  of CD4+/-
+-	LAG3- KI67+  of CD4+/-
+-	LAG3+ KI67+  of CD4+/-
+",
+"Numerator specified as (“LAG3”, “KI67”) and denominator as (“CD4”)
+-	LAG3+/- of CD4+/-
+-	KI67+/- of CD4+/-
+-	LAG3+/- of CD4-KI67-
+-	LAG3+/- of CD4-KI67+
+-	LAG3+/- of CD4+KI67-
+-	LAG3+/- of CD4+KI67+
+-	KI67+/- of CD4-LAG3-
+-	KI67+/- of CD4-LAG3+
+-	KI67+/- of CD4+LAG3-
+-	KI67+/- of CD4+LAG3+",
+"Numerator specified as (“LAG3”, “KI67”, “CTLA4”) and denominator as (“CD4”)
+-	LAG3+/- of CD4+/-
+-	KI67+/- of CD4+/-
+-	CTLA4+/- of CD4+/-
+-	LAG3+/- of CD4-KI67-
+-	LAG3+/- of CD4-KI67+
+-	LAG3+/- of CD4+KI67-
+-	LAG3+/- of CD4+KI67+
+-	KI67+/- of CD4-LAG3-
+-	KI67+/- of CD4-LAG3+
+-	KI67+/- of CD4+LAG3-
+-	KI67+/- of CD4+LAG3+
+-	….
+-	LAG3- KI67-  of CD4+/-
+-	LAG3+ KI67-  of CD4+/-
+-	LAG3- KI67+  of CD4+/-
+-	LAG3+ KI67+  of CD4+/-
+-	…
+-	LAG3+ KI67+  of CD4+/- & CTLA4+/-
+-	…"
+    ),
+  n_subpops = 
+    c(
+      "2n\\*(2<sup>n<sub>d</sub></sup>)",
+      "2n\\*(2<sup>n<sub>d</sub></sup>) +<br>2<sup>n<sub>d</sub></sup>\\*(n choose 2)\\*(2<sup>2</sup>)",
+      "2n\\*(2<sup>n<sub>d</sub></sup>) +<br>4\\*2<sup>n<sub>d</sub></sup>\\*n\\*(n-1)",
+      "2n\\*(2<sup>n<sub>d</sub></sup>) +<br>2<sup>n<sub>d</sub></sup>\\*(n choose 2)\\*(2<sup>2</sup>) +<br>4\\*2<sup>n<sub>d</sub></sup>\\*n\\*(n-1) +<br>2<sup>2</sup>\\*n\\*((n-1) choose 2)\\*(2<sup>n<sub>d</sub>+1</sup>)"
+    ),
+  combos = 
+    c(
+      2*panel_n*2^(panel_n_d), # 184,
+      2*panel_n*2^(panel_n_d) + 2^(panel_n_d)*(choose(panel_n, 2))*2^2, # 4232,
+      2*panel_n*2^(panel_n_d) + 4*2^(panel_n_d)*panel_n*(panel_n-1), # 8280,
+      2*panel_n*2^(panel_n_d) + 2^(panel_n_d)*(choose(panel_n, 2))*2^2 + 
+        4*2^(panel_n_d)*panel_n*(panel_n-1) + 
+        2^2*(panel_n)*(choose(panel_n-1, 2))*(2^(panel_n_d+1)) # 182344)
+    ) 
+  ) %>% 
+  gt::gt() %>% 
+  gt::fmt_markdown(
+    columns = dplyr::everything()
+  ) %>% 
+  gt::cols_label(
+    expand_num = "expand_num",
+    expand_denom = "expand_denom",
+    gen = "The subpopulations to generate",
+    examples = "Examples",
+    n_subpops = "Expected number of subpopulations", 
+    combos = "Expected number of subpopulations<br>for the 29-marker T-cell panel",
+    .fn = gt::md
+  ) %>% 
+  gt::cols_align(align = "center",
+                 columns = c("n_subpops", "combos")) %>% 
+  gt::tab_footnote(
+    footnote = gt::md("n, number of markers specified in the numerator; n<sub>d</sub>,  number of markers specified in the denominator"),
+    locations = gt::cells_column_labels(columns = "n_subpops")
+  ) %>% 
+  gt::tab_options(., 
+                  container.width = 1000)
+```
+
 
 The `keep_indicators` argument provides the 0/1 for which marker is considered in the numerator and denominator
 for each subpopulation. This is especially useful when merging onto other data that does not have the same format.
