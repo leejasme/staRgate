@@ -188,7 +188,7 @@ function</li>
 <span><span class="va">path_out</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># Print the path_out for user to see</span></span>
 <span><span class="va">path_out</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpXZoDgp"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "/tmp/RtmpXKsKhj"</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">## File path Gating template</span></span>
@@ -1041,8 +1041,8 @@ more direct comparison of {staRgate} to the manual gating results.</p>
 <span><span class="co">#&gt;         res[ind] &lt;- ifelse(deriv == 1, z$y[1L], 0)</span></span>
 <span><span class="co">#&gt;     res</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x55c1766a2e48&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55c175cab650&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x5570f7c58cb8&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x5570f72489c0&gt;</span></span>
 <span><span class="co">#&gt; attr(,"type")</span></span>
 <span><span class="co">#&gt; [1] "biexp"</span></span>
 <span><span class="co">#&gt; attr(,"parameters")</span></span>
@@ -1594,9 +1594,6 @@ markers.</p>
 <div class="section level3">
 <h3 id="getting-percentage-data">Getting percentage data<a class="anchor" aria-label="anchor" href="#getting-percentage-data"></a>
 </h3>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">panel_n</span> <span class="op">=</span> <span class="fl">23</span></span>
-<span><span class="va">panel_n_d</span> <span class="op">=</span> <span class="fl">2</span></span></code></pre></div>
 <p>We can then summarize the single-cell level data to counts and
 percentages of cells for all combinations of markers.</p>
 <p>For the subpopulations, the <code>denominator</code> is defined as
@@ -1625,7 +1622,7 @@ numerator marker and parent populations specified in the
 denominator?</li>
 </ul>
 <p>Currently, we support the four scenarios listed below:</p>
-<div id="qvodmpdvpe" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:1000px;height:auto;">
+<div id="qvodmpdvpe" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#qvodmpdvpe table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
@@ -2240,7 +2237,7 @@ demonstrate the other scenarios for combinations of
 <code>expand_num</code> and <code>expand_denom</code> so
 <code>keep_indicators</code> is set to <code>FALSE</code> for the
 remaining examples.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc1</span> <span class="op">=</span> </span>
 <span>  <span class="va">example_intensity_gated</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="co"># Should only count the CD3+ cells</span></span>
@@ -3579,7 +3576,7 @@ remaining examples.</p>
 </div>
 <p>Below is an example of when <code>expand_num = TRUE</code> and
 <code>expand_denom = FALSE</code></p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc2</span> <span class="op">=</span> </span>
 <span>  <span class="va">example_intensity_gated</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>    <span class="co"># Should only count the CD3+ cells</span></span>
@@ -6421,7 +6418,7 @@ remaining examples.</p>
 </div>
 <p>Below is an example of when <code>expand_num = FALSE</code> and
 <code>expand_denom = TRUE</code></p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc3</span> <span class="op">=</span> </span>
 <span>  <span class="va">example_intensity_gated</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="co"># Should only count the CD3+ cells</span></span>
@@ -11447,7 +11444,7 @@ remaining examples.</p>
 </div>
 <p>Below is an example of when <code>expand_num = TRUE</code> and
 <code>expand_denom = TRUE</code></p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc4</span> <span class="op">=</span> </span>
 <span>  <span class="va">example_intensity_gated</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="co"># Should only count the CD3+ cells</span></span>
@@ -38653,7 +38650,7 @@ remaining examples.</p>
 <h3 id="optional-adding-density-gates-back-to-gatingset">Optional: Adding density gates back to GatingSet<a class="anchor" aria-label="anchor" href="#optional-adding-density-gates-back-to-gatingset"></a>
 </h3>
 <p>Let’s add the gate for LAG3 of CD4+ and CD8+</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Grab gate as a numeric</span></span>
 <span><span class="va">current_gate</span> <span class="op">=</span> </span>
 <span>  <span class="va">dens_gates</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
