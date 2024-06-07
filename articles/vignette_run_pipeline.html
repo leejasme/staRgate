@@ -90,13 +90,13 @@ are instructions for installing Bioconductor</a></p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># If running R4.3</span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span>version <span class="op">=</span> <span class="st">"3.18"</span><span class="op">)</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span>version <span class="op">=</span> <span class="st">"3.18"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># If running R4.4</span></span>
-<span><span class="co"># BiocManager::install(version = "3.198")</span></span>
+<span><span class="co"># BiocManager::install(version = "3.19")</span></span>
 <span></span>
 <span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"openCyto"</span>,</span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"openCyto"</span>,</span>
 <span>                       <span class="st">"flowAI"</span>,</span>
 <span>                       <span class="st">"flowCore"</span>,</span>
 <span>                       <span class="st">"flowWorkspace"</span>,</span>
@@ -188,7 +188,7 @@ function</li>
 <span><span class="va">path_out</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># Print the path_out for user to see</span></span>
 <span><span class="va">path_out</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmpi0Zlws"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "/tmp/RtmpXZoDgp"</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">## File path Gating template</span></span>
@@ -1041,8 +1041,8 @@ more direct comparison of {staRgate} to the manual gating results.</p>
 <span><span class="co">#&gt;         res[ind] &lt;- ifelse(deriv == 1, z$y[1L], 0)</span></span>
 <span><span class="co">#&gt;     res</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x5631d52b7798&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x5631d48d1690&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x55c1766a2e48&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x55c175cab650&gt;</span></span>
 <span><span class="co">#&gt; attr(,"type")</span></span>
 <span><span class="co">#&gt; [1] "biexp"</span></span>
 <span><span class="co">#&gt; attr(,"parameters")</span></span>
@@ -1594,122 +1594,38 @@ markers.</p>
 <div class="section level3">
 <h3 id="getting-percentage-data">Getting percentage data<a class="anchor" aria-label="anchor" href="#getting-percentage-data"></a>
 </h3>
-<p>We can derive count and percentage of cells for all combinations of
-markers.</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">panel_n</span> <span class="op">=</span> <span class="fl">23</span></span>
+<span><span class="va">panel_n_d</span> <span class="op">=</span> <span class="fl">2</span></span></code></pre></div>
+<p>We can then summarize the single-cell level data to counts and
+percentages of cells for all combinations of markers.</p>
 <p>For the subpopulations, the <code>denominator</code> is defined as
 the parent population and <code>numerator</code> is the population of
-interest out of the parent population.</p>
+interest out of the parent population. The <span class="math inline">\(n_d\)</span> refers to the number of markers
+considered for the denominator and <span class="math inline">\(n\)</span> for the number of markers considered
+for the numerator.</p>
+<p>For the 29-marker panel, if the <code>denominator</code> is specified
+as the CD4 and CD8 subsets, then <span class="math inline">\(n_d =
+2\)</span> and <span class="math inline">\(n = 23\)</span> for the
+markers of interest.</p>
 <p>The <code>getPerc</code> function allows user to list the markers of
 interest for the <code>numerator</code> and <code>denominator</code></p>
-<p>In this example, we will consider CD4 and CD8 subsets as the largest
-parent population (<code>denominator</code>) and the three markers we
-gated on using <code>c("LAG3", "CCR7", "CD45RA")</code>.</p>
+<p>In the example below, we will consider CD4 and CD8 subsets as the key
+parent populations of interest (<code>denominator</code>) and the three
+markers we gated on using <code>c("LAG3", "CCR7", "CD45RA")</code>
+(<code>numerator</code> markers).</p>
 <p>The additional arguments <code>expand_num</code> and
 <code>expand_denom</code> generates different lists of subpopulations to
-calculate counts/percentages for.</p>
-<p>Currently, we support the below:</p>
-<table style="width:99%;" class="table">
-<colgroup>
-<col width="14%">
-<col width="16%">
-<col width="67%">
-</colgroup>
-<thead><tr class="header">
-<th><code>expand_num</code></th>
-<th><code>expand_denom</code></th>
-<th>List of subpopulations</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>FALSE</td>
-<td>FALSE</td>
-<td><ul>
-<li>Positive/negative for each marker in <code>num_marker</code>
-</li>
-<li>Combinations of positive/negative for marker(s) in
-<code>denom_marker</code>
-</li>
-</ul></td>
-</tr>
-<tr class="even">
-<td>TRUE</td>
-<td>FALSE</td>
-<td><ul>
-<li>Combinations of positive/negative for pairs of markers in
-<code>num_marker</code>
-</li>
-<li>Combinations of positive/negative for marker(s) in
-<code>denom_marker</code>
-</li>
-</ul></td>
-</tr>
-<tr class="odd">
-<td>FALSE</td>
-<td>TRUE</td>
-<td><ul>
-<li>Positive/negative for each marker in <code>num_marker</code>
-</li>
-<li>Combinations of positive/negative for marker(s) in
-<code>denom_marker</code> and combinations of positive/negative for
-marker(s) in <code>denom_marker</code> with one marker from
-<code>num_marker</code> positive/negative</li>
-</ul></td>
-</tr>
-<tr class="even">
-<td>TRUE</td>
-<td>TRUE</td>
-<td><ul>
-<li>Combinations of positive/negative for each and pairs of markers in
-<code>num_marker</code>
-</li>
-<li>Combinations of positive/negative for marker(s) in
-<code>denom_marker</code> and combinations of positive/negative for
-marker(s) in <code>denom_marker</code> with one marker from
-<code>num_marker</code> positive/negative</li>
-</ul></td>
-</tr>
-</tbody>
-</table>
-<p>The <code>keep_indicators</code> argument provides the 0/1 for which
-marker is considered in the numerator and denominator for each
-subpopulation. This is especially useful when merging onto other data
-that does not have the same format.</p>
-<p>For example, when matching strings: “CD4+ &amp; CD8- of CD3+” is
-different from “CD8- &amp; CD4+ of CD3+” and “CD4+ and CD8- of CD3+”</p>
-<p>Below is an example of when <code>expand_num = FALSE</code> and
-<code>expand_denom = FALSE</code>, and
-<code>keep_indicators = TRUE</code> to illustrate the columns we get for
-the <code>_POS</code> and <code>_POS_D</code>. Other examples below
-demonstrate the other scenarios for combinations of
-<code>expand_num</code> and <code>expand_denom</code> so
-<code>keep_indicators</code> is set to <code>FALSE</code> for the
-remaining examples.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">example_perc1</span> <span class="op">=</span> </span>
-<span>  <span class="va">example_intensity_gated</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="co"># Should only count the CD3+ cells</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="../reference/getPerc.html">getPerc</a></span><span class="op">(</span><span class="va">.</span>, </span>
-<span>           num_marker <span class="op">=</span> <span class="va">example_markers</span>, </span>
-<span>           denom_marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD4"</span>, <span class="st">"CD8"</span><span class="op">)</span>, </span>
-<span>           expand_num <span class="op">=</span> <span class="cn">FALSE</span>, </span>
-<span>           expand_denom <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>           keep_indicators <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># For display only, group based on the denominators and </span></span>
-<span><span class="co"># simplify the names to be numerators</span></span>
-<span><span class="va">example_perc1</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate_wider_delim.html" class="external-link">separate_wider_delim</a></span><span class="op">(</span><span class="va">subpopulation</span>, </span>
-<span>                              delim <span class="op">=</span> <span class="st">"_OF_"</span>, </span>
-<span>                              names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"num"</span>, <span class="st">"denom"</span><span class="op">)</span>,</span>
-<span>                              cols_remove <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>denom <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Denom = "</span>, <span class="va">denom</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">denom</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">subpopulation</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/fmt_number.html" class="external-link">fmt_number</a></span><span class="op">(</span>columns <span class="op">=</span> <span class="st">"perc"</span>, </span>
-<span>                 decimals <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> </span></code></pre></div>
-<div id="qvodmpdvpe" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+calculate counts/percentages for:</p>
+<ul>
+<li>expand_num: should calculations consider up to pairs of numerator
+markers included?,</li>
+<li>expand_denom: should the calculations consider combinations of each
+numerator marker and parent populations specified in the
+denominator?</li>
+</ul>
+<p>Currently, we support the four scenarios listed below:</p>
+<div id="qvodmpdvpe" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:1000px;height:auto;">
 <style>#qvodmpdvpe table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
@@ -2146,6 +2062,646 @@ remaining examples.</p>
 }
 
 #qvodmpdvpe .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead><tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="expand_num">expand_num</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="expand_denom">expand_denom</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="The subpopulations to generate">The subpopulations to generate</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Examples">Examples</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id='Expected number of subpopulations&lt;span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;'>Expected number of subpopulations<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span>
+</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Expected number of subpopulations&lt;br&gt;for the 29-marker T-cell panel">Expected number of subpopulations<br>for the 29-marker T-cell panel</th>
+    </tr></thead>
+<tbody class="gt_table_body">
+<tr>
+<td headers="expand_num" class="gt_row gt_left"><div class="gt_from_md">
+<p>FALSE</p>
+</div></td>
+<td headers="expand_denom" class="gt_row gt_left"><div class="gt_from_md">
+<p>FALSE</p>
+</div></td>
+<td headers="gen" class="gt_row gt_left"><div class="gt_from_md"><ul>
+<li>Numerator: Positive and negative for each marker specified</li>
+<li>Denominator: Combinations of positive and negative for markers specified</li>
+</ul></div></td>
+<td headers="examples" class="gt_row gt_left"><div class="gt_from_md">
+<p>Numerator specified to (“LAG3”) and denominator specified as (“CD4”, “CD8”):</p>
+<ul>
+<li>LAG3+/- of CD4- &amp; CD8-</li>
+<li>LAG3+/- of CD4+ &amp; CD8-</li>
+<li>LAG3+/- of CD4+ &amp; CD8+</li>
+<li>LAG3+/- of CD4- &amp; CD8+</li>
+</ul>
+</div></td>
+<td headers="n_subpops" class="gt_row gt_center"><div class="gt_from_md">
+<p>2n*(2<sup>n<sub>d</sub></sup>)</p>
+</div></td>
+<td headers="combos" class="gt_row gt_center"><div class="gt_from_md">
+<p>184</p>
+</div></td>
+</tr>
+<tr>
+<td headers="expand_num" class="gt_row gt_left"><div class="gt_from_md">
+<p>TRUE</p>
+</div></td>
+<td headers="expand_denom" class="gt_row gt_left"><div class="gt_from_md">
+<p>FALSE</p>
+</div></td>
+<td headers="gen" class="gt_row gt_left"><div class="gt_from_md"><ul>
+<li>Numerator: Positive and negative for each marker specified, and combinations of positive/negative for pairs of markers
+<ul>
+<li>At least 2 markers must be included in the numerator</li>
+</ul>
+</li>
+<li>Denominator: Combinations of positive and negative for marker(s)</li>
+</ul></div></td>
+<td headers="examples" class="gt_row gt_left"><div class="gt_from_md">
+<p>Numerator specified as (“LAG3”, “KI67”) and denominator as (“CD4”):</p>
+<ul>
+<li>LAG3+/- of CD4+/-</li>
+<li>KI67+/- of CD4+/-</li>
+<li>LAG3- KI67-  of CD4+/-</li>
+<li>LAG3+ KI67-  of CD4+/-</li>
+<li>LAG3- KI67+  of CD4+/-</li>
+<li>LAG3+ KI67+  of CD4+/-</li>
+</ul>
+</div></td>
+<td headers="n_subpops" class="gt_row gt_center"><div class="gt_from_md">
+<p>2n*(2<sup>n<sub>d</sub></sup>) +<br>2<sup>n<sub>d</sub></sup>*(n choose 2)*(2<sup>2</sup>)</p>
+</div></td>
+<td headers="combos" class="gt_row gt_center"><div class="gt_from_md">
+<p>4232</p>
+</div></td>
+</tr>
+<tr>
+<td headers="expand_num" class="gt_row gt_left"><div class="gt_from_md">
+<p>FALSE</p>
+</div></td>
+<td headers="expand_denom" class="gt_row gt_left"><div class="gt_from_md">
+<p>TRUE</p>
+</div></td>
+<td headers="gen" class="gt_row gt_left"><div class="gt_from_md"><ul>
+<li>Numerator: Positive and negative for each marker specified
+<ul>
+<li>At least 2 markers must be included in the numerator</li>
+</ul>
+</li>
+<li>Denominator: Combinations of positive and negative for marker(s), and combinations of positive and negative for marker(s) in denominator with one marker from the numerator</li>
+</ul></div></td>
+<td headers="examples" class="gt_row gt_left"><div class="gt_from_md">
+<p>Numerator specified as (“LAG3”, “KI67”) and denominator as (“CD4”)</p>
+<ul>
+<li>LAG3+/- of CD4+/-</li>
+<li>KI67+/- of CD4+/-</li>
+<li>LAG3+/- of CD4-KI67-</li>
+<li>LAG3+/- of CD4-KI67+</li>
+<li>LAG3+/- of CD4+KI67-</li>
+<li>LAG3+/- of CD4+KI67+</li>
+<li>KI67+/- of CD4-LAG3-</li>
+<li>KI67+/- of CD4-LAG3+</li>
+<li>KI67+/- of CD4+LAG3-</li>
+<li>KI67+/- of CD4+LAG3+</li>
+</ul>
+</div></td>
+<td headers="n_subpops" class="gt_row gt_center"><div class="gt_from_md">
+<p>2n*(2<sup>n<sub>d</sub></sup>) +<br>4*2<sup>n<sub>d</sub></sup>*n*(n-1)</p>
+</div></td>
+<td headers="combos" class="gt_row gt_center"><div class="gt_from_md">
+<p>8280</p>
+</div></td>
+</tr>
+<tr>
+<td headers="expand_num" class="gt_row gt_left"><div class="gt_from_md">
+<p>TRUE</p>
+</div></td>
+<td headers="expand_denom" class="gt_row gt_left"><div class="gt_from_md">
+<p>TRUE</p>
+</div></td>
+<td headers="gen" class="gt_row gt_left"><div class="gt_from_md"><ul>
+<li>Numerator: Positive and negative for each marker specified, and combinations of positive/negative for pairs of markers
+<ul>
+<li>At least 3 markers must be included in the numerator</li>
+</ul>
+</li>
+<li>Denominator: Combinations of positive and negative for marker(s), and combinations of positive and negative for marker(s) in denominator with one marker from the numerator</li>
+</ul></div></td>
+<td headers="examples" class="gt_row gt_left"><div class="gt_from_md">
+<p>Numerator specified as (“LAG3”, “KI67”, “CTLA4”) and denominator as (“CD4”)</p>
+<ul>
+<li>LAG3+/- of CD4+/-</li>
+<li>KI67+/- of CD4+/-</li>
+<li>CTLA4+/- of CD4+/-</li>
+<li>LAG3+/- of CD4-KI67-</li>
+<li>LAG3+/- of CD4-KI67+</li>
+<li>LAG3+/- of CD4+KI67-</li>
+<li>LAG3+/- of CD4+KI67+</li>
+<li>KI67+/- of CD4-LAG3-</li>
+<li>KI67+/- of CD4-LAG3+</li>
+<li>KI67+/- of CD4+LAG3-</li>
+<li>KI67+/- of CD4+LAG3+</li>
+<li>….</li>
+<li>LAG3- KI67-  of CD4+/-</li>
+<li>LAG3+ KI67-  of CD4+/-</li>
+<li>LAG3- KI67+  of CD4+/-</li>
+<li>LAG3+ KI67+  of CD4+/-</li>
+<li>…</li>
+<li>LAG3+ KI67+  of CD4+/- &amp; CTLA4+/-</li>
+<li>…</li>
+</ul>
+</div></td>
+<td headers="n_subpops" class="gt_row gt_center"><div class="gt_from_md">
+<p>2n*(2<sup>n<sub>d</sub></sup>) +<br>2<sup>n<sub>d</sub></sup>*(n choose 2)*(2<sup>2</sup>) +<br>4*2<sup>n<sub>d</sub></sup>*n*(n-1) +<br>2<sup>2</sup>*n*((n-1) choose 2)*(2<sup>n<sub>d</sub>+1</sup>)</p>
+</div></td>
+<td headers="combos" class="gt_row gt_center"><div class="gt_from_md">
+<p>182344</p>
+</div></td>
+</tr>
+</tbody>
+<tfoot class="gt_footnotes"><tr>
+<td class="gt_footnote" colspan="6">
+<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span> n, number of markers specified in the numerator; n<sub>d</sub>,  number of markers specified in the denominator</td>
+    </tr></tfoot>
+</table>
+</div>
+<p>The <code>keep_indicators</code> argument provides the 0/1 for which
+marker is considered in the numerator and denominator for each
+subpopulation. This is especially useful when merging onto other data
+that does not have the same format.</p>
+<p>For example, when matching strings: “CD4+ &amp; CD8- of CD3+” is
+different from “CD8- &amp; CD4+ of CD3+” and “CD4+ and CD8- of CD3+”</p>
+<p>Below is an example of when <code>expand_num = FALSE</code> and
+<code>expand_denom = FALSE</code>, and
+<code>keep_indicators = TRUE</code> to illustrate the columns we get for
+the <code>_POS</code> and <code>_POS_D</code>. Other examples below
+demonstrate the other scenarios for combinations of
+<code>expand_num</code> and <code>expand_denom</code> so
+<code>keep_indicators</code> is set to <code>FALSE</code> for the
+remaining examples.</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">example_perc1</span> <span class="op">=</span> </span>
+<span>  <span class="va">example_intensity_gated</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># Should only count the CD3+ cells</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/getPerc.html">getPerc</a></span><span class="op">(</span><span class="va">.</span>, </span>
+<span>           num_marker <span class="op">=</span> <span class="va">example_markers</span>, </span>
+<span>           denom_marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD4"</span>, <span class="st">"CD8"</span><span class="op">)</span>, </span>
+<span>           expand_num <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>           expand_denom <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>           keep_indicators <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># For display only, group based on the denominators and </span></span>
+<span><span class="co"># simplify the names to be numerators</span></span>
+<span><span class="va">example_perc1</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate_wider_delim.html" class="external-link">separate_wider_delim</a></span><span class="op">(</span><span class="va">subpopulation</span>, </span>
+<span>                              delim <span class="op">=</span> <span class="st">"_OF_"</span>, </span>
+<span>                              names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"num"</span>, <span class="st">"denom"</span><span class="op">)</span>,</span>
+<span>                              cols_remove <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>denom <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Denom = "</span>, <span class="va">denom</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">denom</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">subpopulation</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/fmt_number.html" class="external-link">fmt_number</a></span><span class="op">(</span>columns <span class="op">=</span> <span class="st">"perc"</span>, </span>
+<span>                 decimals <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> </span></code></pre></div>
+<div id="zymctsofho" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#zymctsofho table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#zymctsofho thead, #zymctsofho tbody, #zymctsofho tfoot, #zymctsofho tr, #zymctsofho td, #zymctsofho th {
+  border-style: none;
+}
+
+#zymctsofho p {
+  margin: 0;
+  padding: 0;
+}
+
+#zymctsofho .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#zymctsofho .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#zymctsofho .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#zymctsofho .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#zymctsofho .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#zymctsofho .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zymctsofho .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#zymctsofho .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#zymctsofho .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#zymctsofho .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#zymctsofho .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#zymctsofho .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#zymctsofho .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#zymctsofho .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#zymctsofho .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#zymctsofho .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#zymctsofho .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#zymctsofho .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#zymctsofho .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zymctsofho .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#zymctsofho .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#zymctsofho .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#zymctsofho .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zymctsofho .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#zymctsofho .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#zymctsofho .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zymctsofho .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zymctsofho .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#zymctsofho .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zymctsofho .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#zymctsofho .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zymctsofho .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#zymctsofho .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zymctsofho .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#zymctsofho .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zymctsofho .gt_left {
+  text-align: left;
+}
+
+#zymctsofho .gt_center {
+  text-align: center;
+}
+
+#zymctsofho .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#zymctsofho .gt_font_normal {
+  font-weight: normal;
+}
+
+#zymctsofho .gt_font_bold {
+  font-weight: bold;
+}
+
+#zymctsofho .gt_font_italic {
+  font-style: italic;
+}
+
+#zymctsofho .gt_super {
+  font-size: 65%;
+}
+
+#zymctsofho .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#zymctsofho .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#zymctsofho .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#zymctsofho .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#zymctsofho .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#zymctsofho .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#zymctsofho .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -3023,7 +3579,7 @@ remaining examples.</p>
 </div>
 <p>Below is an example of when <code>expand_num = TRUE</code> and
 <code>expand_denom = FALSE</code></p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc2</span> <span class="op">=</span> </span>
 <span>  <span class="va">example_intensity_gated</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>    <span class="co"># Should only count the CD3+ cells</span></span>
@@ -3048,23 +3604,23 @@ remaining examples.</p>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/fmt_number.html" class="external-link">fmt_number</a></span><span class="op">(</span>columns <span class="op">=</span> <span class="st">"perc"</span>, </span>
 <span>                 decimals <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> </span></code></pre></div>
-<div id="gxbscexpom" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#gxbscexpom table {
+<div id="wmiskodzox" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#wmiskodzox table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#gxbscexpom thead, #gxbscexpom tbody, #gxbscexpom tfoot, #gxbscexpom tr, #gxbscexpom td, #gxbscexpom th {
+#wmiskodzox thead, #wmiskodzox tbody, #wmiskodzox tfoot, #wmiskodzox tr, #wmiskodzox td, #wmiskodzox th {
   border-style: none;
 }
 
-#gxbscexpom p {
+#wmiskodzox p {
   margin: 0;
   padding: 0;
 }
 
-#gxbscexpom .gt_table {
+#wmiskodzox .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3090,12 +3646,12 @@ remaining examples.</p>
   border-left-color: #D3D3D3;
 }
 
-#gxbscexpom .gt_caption {
+#wmiskodzox .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#gxbscexpom .gt_title {
+#wmiskodzox .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3107,7 +3663,7 @@ remaining examples.</p>
   border-bottom-width: 0;
 }
 
-#gxbscexpom .gt_subtitle {
+#wmiskodzox .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3119,7 +3675,7 @@ remaining examples.</p>
   border-top-width: 0;
 }
 
-#gxbscexpom .gt_heading {
+#wmiskodzox .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3131,13 +3687,13 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#gxbscexpom .gt_bottom_border {
+#wmiskodzox .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#gxbscexpom .gt_col_headings {
+#wmiskodzox .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3152,7 +3708,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#gxbscexpom .gt_col_heading {
+#wmiskodzox .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3172,7 +3728,7 @@ remaining examples.</p>
   overflow-x: hidden;
 }
 
-#gxbscexpom .gt_column_spanner_outer {
+#wmiskodzox .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3184,15 +3740,15 @@ remaining examples.</p>
   padding-right: 4px;
 }
 
-#gxbscexpom .gt_column_spanner_outer:first-child {
+#wmiskodzox .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#gxbscexpom .gt_column_spanner_outer:last-child {
+#wmiskodzox .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#gxbscexpom .gt_column_spanner {
+#wmiskodzox .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3204,11 +3760,11 @@ remaining examples.</p>
   width: 100%;
 }
 
-#gxbscexpom .gt_spanner_row {
+#wmiskodzox .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#gxbscexpom .gt_group_heading {
+#wmiskodzox .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3234,7 +3790,7 @@ remaining examples.</p>
   text-align: left;
 }
 
-#gxbscexpom .gt_empty_group_heading {
+#wmiskodzox .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3249,15 +3805,15 @@ remaining examples.</p>
   vertical-align: middle;
 }
 
-#gxbscexpom .gt_from_md > :first-child {
+#wmiskodzox .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#gxbscexpom .gt_from_md > :last-child {
+#wmiskodzox .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#gxbscexpom .gt_row {
+#wmiskodzox .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3276,7 +3832,7 @@ remaining examples.</p>
   overflow-x: hidden;
 }
 
-#gxbscexpom .gt_stub {
+#wmiskodzox .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3289,7 +3845,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#gxbscexpom .gt_stub_row_group {
+#wmiskodzox .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3303,15 +3859,15 @@ remaining examples.</p>
   vertical-align: top;
 }
 
-#gxbscexpom .gt_row_group_first td {
+#wmiskodzox .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#gxbscexpom .gt_row_group_first th {
+#wmiskodzox .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#gxbscexpom .gt_summary_row {
+#wmiskodzox .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3321,16 +3877,16 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#gxbscexpom .gt_first_summary_row {
+#wmiskodzox .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#gxbscexpom .gt_first_summary_row.thick {
+#wmiskodzox .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#gxbscexpom .gt_last_summary_row {
+#wmiskodzox .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3340,7 +3896,7 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#gxbscexpom .gt_grand_summary_row {
+#wmiskodzox .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3350,7 +3906,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#gxbscexpom .gt_first_grand_summary_row {
+#wmiskodzox .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3360,7 +3916,7 @@ remaining examples.</p>
   border-top-color: #D3D3D3;
 }
 
-#gxbscexpom .gt_last_grand_summary_row_top {
+#wmiskodzox .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3370,11 +3926,11 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#gxbscexpom .gt_striped {
+#wmiskodzox .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#gxbscexpom .gt_table_body {
+#wmiskodzox .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3383,7 +3939,7 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#gxbscexpom .gt_footnotes {
+#wmiskodzox .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3397,7 +3953,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#gxbscexpom .gt_footnote {
+#wmiskodzox .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3406,7 +3962,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#gxbscexpom .gt_sourcenotes {
+#wmiskodzox .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3420,7 +3976,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#gxbscexpom .gt_sourcenote {
+#wmiskodzox .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3428,63 +3984,63 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#gxbscexpom .gt_left {
+#wmiskodzox .gt_left {
   text-align: left;
 }
 
-#gxbscexpom .gt_center {
+#wmiskodzox .gt_center {
   text-align: center;
 }
 
-#gxbscexpom .gt_right {
+#wmiskodzox .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#gxbscexpom .gt_font_normal {
+#wmiskodzox .gt_font_normal {
   font-weight: normal;
 }
 
-#gxbscexpom .gt_font_bold {
+#wmiskodzox .gt_font_bold {
   font-weight: bold;
 }
 
-#gxbscexpom .gt_font_italic {
+#wmiskodzox .gt_font_italic {
   font-style: italic;
 }
 
-#gxbscexpom .gt_super {
+#wmiskodzox .gt_super {
   font-size: 65%;
 }
 
-#gxbscexpom .gt_footnote_marks {
+#wmiskodzox .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#gxbscexpom .gt_asterisk {
+#wmiskodzox .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#gxbscexpom .gt_indent_1 {
+#wmiskodzox .gt_indent_1 {
   text-indent: 5px;
 }
 
-#gxbscexpom .gt_indent_2 {
+#wmiskodzox .gt_indent_2 {
   text-indent: 10px;
 }
 
-#gxbscexpom .gt_indent_3 {
+#wmiskodzox .gt_indent_3 {
   text-indent: 15px;
 }
 
-#gxbscexpom .gt_indent_4 {
+#wmiskodzox .gt_indent_4 {
   text-indent: 20px;
 }
 
-#gxbscexpom .gt_indent_5 {
+#wmiskodzox .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -5865,7 +6421,7 @@ remaining examples.</p>
 </div>
 <p>Below is an example of when <code>expand_num = FALSE</code> and
 <code>expand_denom = TRUE</code></p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc3</span> <span class="op">=</span> </span>
 <span>  <span class="va">example_intensity_gated</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="co"># Should only count the CD3+ cells</span></span>
@@ -5890,23 +6446,23 @@ remaining examples.</p>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/fmt_number.html" class="external-link">fmt_number</a></span><span class="op">(</span>columns <span class="op">=</span> <span class="st">"perc"</span>, </span>
 <span>                 decimals <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> </span></code></pre></div>
-<div id="sivufnundp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#sivufnundp table {
+<div id="bhnljdlasn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#bhnljdlasn table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#sivufnundp thead, #sivufnundp tbody, #sivufnundp tfoot, #sivufnundp tr, #sivufnundp td, #sivufnundp th {
+#bhnljdlasn thead, #bhnljdlasn tbody, #bhnljdlasn tfoot, #bhnljdlasn tr, #bhnljdlasn td, #bhnljdlasn th {
   border-style: none;
 }
 
-#sivufnundp p {
+#bhnljdlasn p {
   margin: 0;
   padding: 0;
 }
 
-#sivufnundp .gt_table {
+#bhnljdlasn .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -5932,12 +6488,12 @@ remaining examples.</p>
   border-left-color: #D3D3D3;
 }
 
-#sivufnundp .gt_caption {
+#bhnljdlasn .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#sivufnundp .gt_title {
+#bhnljdlasn .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -5949,7 +6505,7 @@ remaining examples.</p>
   border-bottom-width: 0;
 }
 
-#sivufnundp .gt_subtitle {
+#bhnljdlasn .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -5961,7 +6517,7 @@ remaining examples.</p>
   border-top-width: 0;
 }
 
-#sivufnundp .gt_heading {
+#bhnljdlasn .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -5973,13 +6529,13 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#sivufnundp .gt_bottom_border {
+#bhnljdlasn .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#sivufnundp .gt_col_headings {
+#bhnljdlasn .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -5994,7 +6550,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#sivufnundp .gt_col_heading {
+#bhnljdlasn .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6014,7 +6570,7 @@ remaining examples.</p>
   overflow-x: hidden;
 }
 
-#sivufnundp .gt_column_spanner_outer {
+#bhnljdlasn .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6026,15 +6582,15 @@ remaining examples.</p>
   padding-right: 4px;
 }
 
-#sivufnundp .gt_column_spanner_outer:first-child {
+#bhnljdlasn .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#sivufnundp .gt_column_spanner_outer:last-child {
+#bhnljdlasn .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#sivufnundp .gt_column_spanner {
+#bhnljdlasn .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -6046,11 +6602,11 @@ remaining examples.</p>
   width: 100%;
 }
 
-#sivufnundp .gt_spanner_row {
+#bhnljdlasn .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#sivufnundp .gt_group_heading {
+#bhnljdlasn .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6076,7 +6632,7 @@ remaining examples.</p>
   text-align: left;
 }
 
-#sivufnundp .gt_empty_group_heading {
+#bhnljdlasn .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -6091,15 +6647,15 @@ remaining examples.</p>
   vertical-align: middle;
 }
 
-#sivufnundp .gt_from_md > :first-child {
+#bhnljdlasn .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#sivufnundp .gt_from_md > :last-child {
+#bhnljdlasn .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#sivufnundp .gt_row {
+#bhnljdlasn .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6118,7 +6674,7 @@ remaining examples.</p>
   overflow-x: hidden;
 }
 
-#sivufnundp .gt_stub {
+#bhnljdlasn .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6131,7 +6687,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#sivufnundp .gt_stub_row_group {
+#bhnljdlasn .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6145,15 +6701,15 @@ remaining examples.</p>
   vertical-align: top;
 }
 
-#sivufnundp .gt_row_group_first td {
+#bhnljdlasn .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#sivufnundp .gt_row_group_first th {
+#bhnljdlasn .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#sivufnundp .gt_summary_row {
+#bhnljdlasn .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -6163,16 +6719,16 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#sivufnundp .gt_first_summary_row {
+#bhnljdlasn .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#sivufnundp .gt_first_summary_row.thick {
+#bhnljdlasn .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#sivufnundp .gt_last_summary_row {
+#bhnljdlasn .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6182,7 +6738,7 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#sivufnundp .gt_grand_summary_row {
+#bhnljdlasn .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -6192,7 +6748,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#sivufnundp .gt_first_grand_summary_row {
+#bhnljdlasn .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6202,7 +6758,7 @@ remaining examples.</p>
   border-top-color: #D3D3D3;
 }
 
-#sivufnundp .gt_last_grand_summary_row_top {
+#bhnljdlasn .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6212,11 +6768,11 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#sivufnundp .gt_striped {
+#bhnljdlasn .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#sivufnundp .gt_table_body {
+#bhnljdlasn .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -6225,7 +6781,7 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#sivufnundp .gt_footnotes {
+#bhnljdlasn .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -6239,7 +6795,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#sivufnundp .gt_footnote {
+#bhnljdlasn .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -6248,7 +6804,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#sivufnundp .gt_sourcenotes {
+#bhnljdlasn .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -6262,7 +6818,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#sivufnundp .gt_sourcenote {
+#bhnljdlasn .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -6270,63 +6826,63 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#sivufnundp .gt_left {
+#bhnljdlasn .gt_left {
   text-align: left;
 }
 
-#sivufnundp .gt_center {
+#bhnljdlasn .gt_center {
   text-align: center;
 }
 
-#sivufnundp .gt_right {
+#bhnljdlasn .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#sivufnundp .gt_font_normal {
+#bhnljdlasn .gt_font_normal {
   font-weight: normal;
 }
 
-#sivufnundp .gt_font_bold {
+#bhnljdlasn .gt_font_bold {
   font-weight: bold;
 }
 
-#sivufnundp .gt_font_italic {
+#bhnljdlasn .gt_font_italic {
   font-style: italic;
 }
 
-#sivufnundp .gt_super {
+#bhnljdlasn .gt_super {
   font-size: 65%;
 }
 
-#sivufnundp .gt_footnote_marks {
+#bhnljdlasn .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#sivufnundp .gt_asterisk {
+#bhnljdlasn .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#sivufnundp .gt_indent_1 {
+#bhnljdlasn .gt_indent_1 {
   text-indent: 5px;
 }
 
-#sivufnundp .gt_indent_2 {
+#bhnljdlasn .gt_indent_2 {
   text-indent: 10px;
 }
 
-#sivufnundp .gt_indent_3 {
+#bhnljdlasn .gt_indent_3 {
   text-indent: 15px;
 }
 
-#sivufnundp .gt_indent_4 {
+#bhnljdlasn .gt_indent_4 {
   text-indent: 20px;
 }
 
-#sivufnundp .gt_indent_5 {
+#bhnljdlasn .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -10891,7 +11447,7 @@ remaining examples.</p>
 </div>
 <p>Below is an example of when <code>expand_num = TRUE</code> and
 <code>expand_denom = TRUE</code></p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc4</span> <span class="op">=</span> </span>
 <span>  <span class="va">example_intensity_gated</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="co"># Should only count the CD3+ cells</span></span>
@@ -10917,23 +11473,23 @@ remaining examples.</p>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/fmt_number.html" class="external-link">fmt_number</a></span><span class="op">(</span>columns <span class="op">=</span> <span class="st">"perc"</span>, </span>
 <span>                 decimals <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> </span></code></pre></div>
-<div id="ofulcrsptq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ofulcrsptq table {
+<div id="unnsbqyzyi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#unnsbqyzyi table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ofulcrsptq thead, #ofulcrsptq tbody, #ofulcrsptq tfoot, #ofulcrsptq tr, #ofulcrsptq td, #ofulcrsptq th {
+#unnsbqyzyi thead, #unnsbqyzyi tbody, #unnsbqyzyi tfoot, #unnsbqyzyi tr, #unnsbqyzyi td, #unnsbqyzyi th {
   border-style: none;
 }
 
-#ofulcrsptq p {
+#unnsbqyzyi p {
   margin: 0;
   padding: 0;
 }
 
-#ofulcrsptq .gt_table {
+#unnsbqyzyi .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -10959,12 +11515,12 @@ remaining examples.</p>
   border-left-color: #D3D3D3;
 }
 
-#ofulcrsptq .gt_caption {
+#unnsbqyzyi .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ofulcrsptq .gt_title {
+#unnsbqyzyi .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -10976,7 +11532,7 @@ remaining examples.</p>
   border-bottom-width: 0;
 }
 
-#ofulcrsptq .gt_subtitle {
+#unnsbqyzyi .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -10988,7 +11544,7 @@ remaining examples.</p>
   border-top-width: 0;
 }
 
-#ofulcrsptq .gt_heading {
+#unnsbqyzyi .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -11000,13 +11556,13 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#ofulcrsptq .gt_bottom_border {
+#unnsbqyzyi .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ofulcrsptq .gt_col_headings {
+#unnsbqyzyi .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -11021,7 +11577,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#ofulcrsptq .gt_col_heading {
+#unnsbqyzyi .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -11041,7 +11597,7 @@ remaining examples.</p>
   overflow-x: hidden;
 }
 
-#ofulcrsptq .gt_column_spanner_outer {
+#unnsbqyzyi .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -11053,15 +11609,15 @@ remaining examples.</p>
   padding-right: 4px;
 }
 
-#ofulcrsptq .gt_column_spanner_outer:first-child {
+#unnsbqyzyi .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ofulcrsptq .gt_column_spanner_outer:last-child {
+#unnsbqyzyi .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ofulcrsptq .gt_column_spanner {
+#unnsbqyzyi .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -11073,11 +11629,11 @@ remaining examples.</p>
   width: 100%;
 }
 
-#ofulcrsptq .gt_spanner_row {
+#unnsbqyzyi .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ofulcrsptq .gt_group_heading {
+#unnsbqyzyi .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -11103,7 +11659,7 @@ remaining examples.</p>
   text-align: left;
 }
 
-#ofulcrsptq .gt_empty_group_heading {
+#unnsbqyzyi .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -11118,15 +11674,15 @@ remaining examples.</p>
   vertical-align: middle;
 }
 
-#ofulcrsptq .gt_from_md > :first-child {
+#unnsbqyzyi .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ofulcrsptq .gt_from_md > :last-child {
+#unnsbqyzyi .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ofulcrsptq .gt_row {
+#unnsbqyzyi .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -11145,7 +11701,7 @@ remaining examples.</p>
   overflow-x: hidden;
 }
 
-#ofulcrsptq .gt_stub {
+#unnsbqyzyi .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -11158,7 +11714,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#ofulcrsptq .gt_stub_row_group {
+#unnsbqyzyi .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -11172,15 +11728,15 @@ remaining examples.</p>
   vertical-align: top;
 }
 
-#ofulcrsptq .gt_row_group_first td {
+#unnsbqyzyi .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ofulcrsptq .gt_row_group_first th {
+#unnsbqyzyi .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ofulcrsptq .gt_summary_row {
+#unnsbqyzyi .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -11190,16 +11746,16 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#ofulcrsptq .gt_first_summary_row {
+#unnsbqyzyi .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ofulcrsptq .gt_first_summary_row.thick {
+#unnsbqyzyi .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ofulcrsptq .gt_last_summary_row {
+#unnsbqyzyi .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -11209,7 +11765,7 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#ofulcrsptq .gt_grand_summary_row {
+#unnsbqyzyi .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -11219,7 +11775,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#ofulcrsptq .gt_first_grand_summary_row {
+#unnsbqyzyi .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -11229,7 +11785,7 @@ remaining examples.</p>
   border-top-color: #D3D3D3;
 }
 
-#ofulcrsptq .gt_last_grand_summary_row_top {
+#unnsbqyzyi .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -11239,11 +11795,11 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#ofulcrsptq .gt_striped {
+#unnsbqyzyi .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ofulcrsptq .gt_table_body {
+#unnsbqyzyi .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -11252,7 +11808,7 @@ remaining examples.</p>
   border-bottom-color: #D3D3D3;
 }
 
-#ofulcrsptq .gt_footnotes {
+#unnsbqyzyi .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -11266,7 +11822,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#ofulcrsptq .gt_footnote {
+#unnsbqyzyi .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -11275,7 +11831,7 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#ofulcrsptq .gt_sourcenotes {
+#unnsbqyzyi .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -11289,7 +11845,7 @@ remaining examples.</p>
   border-right-color: #D3D3D3;
 }
 
-#ofulcrsptq .gt_sourcenote {
+#unnsbqyzyi .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -11297,63 +11853,63 @@ remaining examples.</p>
   padding-right: 5px;
 }
 
-#ofulcrsptq .gt_left {
+#unnsbqyzyi .gt_left {
   text-align: left;
 }
 
-#ofulcrsptq .gt_center {
+#unnsbqyzyi .gt_center {
   text-align: center;
 }
 
-#ofulcrsptq .gt_right {
+#unnsbqyzyi .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ofulcrsptq .gt_font_normal {
+#unnsbqyzyi .gt_font_normal {
   font-weight: normal;
 }
 
-#ofulcrsptq .gt_font_bold {
+#unnsbqyzyi .gt_font_bold {
   font-weight: bold;
 }
 
-#ofulcrsptq .gt_font_italic {
+#unnsbqyzyi .gt_font_italic {
   font-style: italic;
 }
 
-#ofulcrsptq .gt_super {
+#unnsbqyzyi .gt_super {
   font-size: 65%;
 }
 
-#ofulcrsptq .gt_footnote_marks {
+#unnsbqyzyi .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ofulcrsptq .gt_asterisk {
+#unnsbqyzyi .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ofulcrsptq .gt_indent_1 {
+#unnsbqyzyi .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ofulcrsptq .gt_indent_2 {
+#unnsbqyzyi .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ofulcrsptq .gt_indent_3 {
+#unnsbqyzyi .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ofulcrsptq .gt_indent_4 {
+#unnsbqyzyi .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ofulcrsptq .gt_indent_5 {
+#unnsbqyzyi .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -38097,7 +38653,7 @@ remaining examples.</p>
 <h3 id="optional-adding-density-gates-back-to-gatingset">Optional: Adding density gates back to GatingSet<a class="anchor" aria-label="anchor" href="#optional-adding-density-gates-back-to-gatingset"></a>
 </h3>
 <p>Let’s add the gate for LAG3 of CD4+ and CD8+</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Grab gate as a numeric</span></span>
 <span><span class="va">current_gate</span> <span class="op">=</span> </span>
 <span>  <span class="va">dens_gates</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
@@ -38132,7 +38688,7 @@ remaining examples.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">ggcyto</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">gs_qc</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-19-1.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-21-1.png" width="768" style="display: block; margin: auto;"></p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
