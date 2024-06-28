@@ -8,7 +8,7 @@ cleanMarkerNames = function(dat){
   #' Inputs:
   #' @param dat dataframe: markers in columns and samples in rows
   #' @return dataframe with updated column names
-  #' @export
+
 
 
   # Check dat is of class data.frame
