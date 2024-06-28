@@ -16,7 +16,7 @@ getMarkerIndicators = function(dat, col_nm = "marker", markers_nm){
   #' Each value of `markers_nm` will have 2 columns to indicate positivity in numerator or denominator
   #' Naming conventions are `tolower(marker_name)_pos` for positivity indicator in numerator
   #' and `tolower(marker_name)_pos_d` for positivity in denominator
-  #' @export
+
 
   # Check inputs
   if(!(inherits(dat, "data.frame") & inherits(col_nm, "character"))){
