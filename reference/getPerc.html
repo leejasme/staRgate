@@ -145,6 +145,31 @@ num denotes numerator, and denom denotes denominator
 (these shorthands are used in the function arguments)</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a fake dataset</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">intens_dat</span> <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>               CD3_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>               CD4 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">100</span>, <span class="fl">10</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>               CD8 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">100</span>, <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Run getDensityGates to obtain the gates</span></span></span>
+<span class="r-in"><span><span class="va">gates</span> <span class="op">=</span> <span class="fu"><a href="getDensityGates.html">getDensityGates</a></span><span class="op">(</span><span class="va">intens_dat</span>, marker <span class="op">=</span> <span class="st">"CD4"</span>, susbet_col <span class="op">=</span> <span class="st">"CD3_pos"</span>, bin_n <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Tag on the 0/1 on intens_dat</span></span></span>
+<span class="r-in"><span><span class="va">intens_dat_2</span> <span class="op">=</span> <span class="fu"><a href="getGatedDat.html">getGatedDat</a></span><span class="op">(</span><span class="va">intens_dat</span>, cutoffs <span class="op">=</span> <span class="va">gates</span>, subset_col <span class="op">=</span> <span class="st">"CD3_pos"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Get percentage for CD4 based on gating</span></span></span>
+<span class="r-in"><span><span class="fu">getPerc</span><span class="op">(</span><span class="va">intens_dat_2</span>, num_marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD4"</span><span class="op">)</span>, denom_marker <span class="op">=</span> <span class="st">"CD3"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
