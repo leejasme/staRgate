@@ -6,13 +6,14 @@
 \alias{staRgate-package}
 \title{staRgate: Automated gating pipeline for flow cytometry analysis to characterize the lineage, differentiation, and functional states of T-cells}
 \description{
-An R-based automated gating pipeline for flow cytometry data designed to mimic the manual gating strategy of defining flow biomarker positive populations relative to a unimodal background population to include cells with varying intensities of marker expression. The pipeline’s main feature is a flexible density-based gating strategy capable of capturing varying scenarios based on marker expression patterns to analyze a 29-marker flow panel that characterizes T-cell lineage, differentiation, and functional states. .
+An R-based automated gating pipeline for flow cytometry data designed to mimic the manual gating strategy of defining flow biomarker positive populations relative to a unimodal background population to include cells with varying intensities of marker expression. The pipeline’s main feature is a flexible density-based gating strategy capable of capturing varying scenarios based on marker expression patterns to analyze a 29-marker flow panel that characterizes T-cell lineage, differentiation, and functional states.
 }
 \seealso{
 Useful links:
 \itemize{
   \item \url{https://leejasme.github.io/staRgate/}
   \item \url{https://github.com/leejasme/staRgate}
+  \item Report bugs at \url{https://github.com/leejasme/staRgate/issues}
 }
 
 }

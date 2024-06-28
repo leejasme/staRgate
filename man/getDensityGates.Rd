@@ -59,7 +59,7 @@ capturing dim subpopulations.
 }
 \examples{
 \dontrun{
-#' library(tidyverse)
+#' library(dplyr)
 
 # Create a fake dataset
 set.seed(100)

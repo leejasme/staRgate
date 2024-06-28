@@ -33,7 +33,7 @@ The naming convention for the tagged on indicator columns will be
 }
 \examples{
 \dontrun{
-library(tidyverse)
+library(dplyr)
 
 # Create a fake dataset
 set.seed(100)

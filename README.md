@@ -1,7 +1,7 @@
 # staRgate
 An R-based automated gating pipeline for flow cytometry data to characterize the lineage, differentiation, and functional states of T-cells
 
-This GitHub stores the {staRgate} R package, currently a work in progress
+This GitHub stores the {staRgate} R package.
 
 # Installation
 
@@ -17,16 +17,17 @@ Before installing {staRgate}, first setup Bioconductor and install all packages.
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
-# If using R 4.4
-# BiocManager::install(version = "3.19")
-
 # If using R 4.3
 BiocManager::install(version = "3.18")
 
-BiocManager::install(c("openCyto", "flowAI", "flowCore", "flowWorkspace"))
+# If using R 4.4
+# BiocManager::install(version = "3.19")
+
+
+BiocManager::install(c("flowCore", "flowWorkspace"))
 
 # In order to run the vignette,
-BiocManager::install(c("ggcyto"))
+BiocManager::install(c("openCyto", "flowAI", "ggcyto"))
 ```
 
 

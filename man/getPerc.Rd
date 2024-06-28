@@ -77,7 +77,7 @@ num denotes numerator, and denom denotes denominator
 }
 \examples{
 \dontrun{
-library(tidyverse)
+library(dplyr)
 
 # Create a fake dataset
 set.seed(100)

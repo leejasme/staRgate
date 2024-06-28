@@ -17,6 +17,16 @@ knitr::opts_chunk$set(
 )
 ```
 
+
+# Introduction
+
+staRgate is an automated gating pipeline to process and analyze flow cytometry data to characterize the lineage, differentiation and functional states of T-cells. 
+
+This pipeline is designed to mimic the manual gating of defining flow biomarker positive populations relative to a unimodal background population to include cells with varying intensities of marker expression. This is achieved via estimating the kernel density of the intensity distribution and corresponding derivatives. This pipeline integrates the density gating method in conjuction with some pre-processing steps achieved via the R package {openCyto} and an optional step with {flowAI}. The flow data is stored within R as a `GatingSet` object, which makes it easily transferable to other flow cytometry workflows available on BioConductor.
+
+This vignette will walk through how to run the {staRgate} pipeline starting from importing an flow cytometry standard (FCS) file into R to preprocessing and gating, as well as identifying T-cell subpopulations for downstream analysis. This pipeline returns results at the single-cell level as well as the summarized sample-level data (for the percentages of T-cell cells when identifying the subpopulations).
+
+
 # Installation
 
 The {staRgate} package relies on a few Biocondcutor R packages.
@@ -50,24 +60,9 @@ devtools::install_github("leejasme/staRgate")
 ```
 
 
-# Introduction
-
 The essential dependencies for running the {staRgate} package include: {flowCore}, and {flowWorkspace}.
 
 The following packages are needed to fully run the pipeline as shown in this Tutorial, but not required for the {staRgate} code chunks to run: {openCyto}, {flowAI}, {ggplot2}, {ggCyto}, {gt}
-
-Insert explanation of parameters that are in the entire pipeline, 
-and the fig workflow of pipeline
-
-All of these input files are expected to be comma-separated values (csv) files
-
-+ Comp mat
-+ Biexp transformation parameters
-+ Gating template
-
-A few things to keep in mind when debugging/iterating through gating: 
-
-+ If saving at the same path with same name (i.e., rerunning the same code), the GatingSet folder from the `flowWorkspace::save_gs()` command needs to be deleted for {openCyto} to save again, otherwise, will encounter an error related to an invalid path from the `flowWorkspace::save_gs()` function
 
 
 ```{r setup}
@@ -147,11 +142,31 @@ ggplot2::theme_set(ggplot2::theme_bw() +
                                     legend.position = 'bottom') )
 ```
 
+# Input files and function parameters
+
+In order to run the pipeline, the user must have the data in flow cytometry standard (FCS) format. This is usually the output from flowJo. 
+All of these input files are expected to be comma-separated values (csv) files. Please see the `inst` folder of the package for examples of the formats.
+
++ Compensation matrix from manual gating-
+    + Matrix where the column and row names correspond to the channel names, cell values correspond to the spillover correction to be applied.
+    + This can be exported as a csv in flowJo's options
++ Biexponential transformation parameters-
+    + This is a table specifying the parameters (negative decades, width basis and positive decades) to be applied to the listed channels
++ Gating template
+    + A gating template is required to run the pre-gating via {openCyto}
+    + The package includes a gating template tailored for gating this panel of T-cell markers. 
+    + For examples of how to modify the gating template, please refer to the [openCyto documentation](https://www.bioconductor.org/packages/devel/bioc/vignettes/openCyto/inst/doc/HowToWriteCSVTemplate.html).
+
+A few things to keep in mind when debugging/iterating through gating: 
+
++ If saving at the same path with same name (i.e., rerunning the same code), the GatingSet folder from the `flowWorkspace::save_gs()` command needs to be deleted for {openCyto} to save again, otherwise, will encounter an error related to an invalid path from the `flowWorkspace::save_gs()` function
+
 ## Suggestions for setting parameters
 
-Below is an example of gating 1 FCS sample.
 
-# Example
+# Example of automated gating
+
+Below is an example of gating 1 FCS sample.
 
 Optional: include a `samp_metadata` for saving out some properties of the FCS file and from the processing steps (e.g., the compensation matrix, the number of cells in the root population)
 
@@ -898,4 +913,22 @@ openCyto::gs_add_gating_method(
 
 ggcyto::autoplot(gs_qc[[1]])
 ```
+
+# Session info 
+
+```{r}
+sessionInfo()
+```
+
+
+# References {-}
+
+G. Finak, J. Frelinger, W. Jiang, E. W. Newell, J. Ramey, M. M. Davis, S. A. Kalams, S. C. De Rosa and R. Gottardo, "OpenCyto: An Open Source Infrastructure for Scalable, Robust, Reproducible, and Automated, End-to-End Flow Cytometry Data Analysis," PLoS Computational Biology, vol. 10, p. e1003806, August 2014. 
+
+G. Finak and M. Jiang, "flowWorkspace: Infrastructure for representing and interacting with gated and ungated cytometry data sets.," 2023.
+
+G. Finak, W. Jiang and R. Gottardo, "CytoML for cross-platform cytometry data sharing," Cytometry Part A, vol. 93, pp. -7, 2018. 
+
+G. Monaco, H. Chen, M. Poidinger, J. Chen, J. P. de Magalhães and A. Larbi, "flowAI: automatic and interactive anomaly discerning tools for flow cytometry data," Bioinformatics, vol. 32, p. 2473–2480, April 2016. 
+P. Van, W. Jiang, R. Gottardo and G. Finak, "ggcyto: Next-generation open-source visualization software for cytometry," Bioinformatics, 2018. 
 

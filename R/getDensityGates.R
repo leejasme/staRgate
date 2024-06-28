@@ -47,7 +47,7 @@ getDensityGates = function(intens_dat,
 #'
 #' @examples
 #' \dontrun{
-#' #' library(tidyverse)
+#' #' library(dplyr)
 #'
 #' # Create a fake dataset
 #' set.seed(100)
