@@ -46,7 +46,7 @@ getDensityGates = function(intens_dat,
 #' @export
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' #' library(tidyverse)
 #'
 #' # Create a fake dataset
@@ -64,6 +64,14 @@ getDensityGates = function(intens_dat,
 #'
 #' }
 #'
+
+# getDensityGates() calls a few internal functions but they are not exported
+# To keep the package functions clean and less confusing about which functions to use
+# Order of calls/operation:
+# (1) getDensityGates() (exported function) calls:
+# (2) getDensityMats (internal) calls (in the following order)
+#     (3) getDensityDerivs() (internal)
+#     (4) getDensityPeakCutoff() (internal)
 
   ## Check inputs ---
   if(!(inherits(intens_dat, "data.frame"))){
@@ -201,7 +209,7 @@ getDensityGates = function(intens_dat,
   # Name the list elements for easier grabbing?
   names(dens_binned) = marker
 
-  # Grab the cutoff or gates and return as a tibble to match format in get_iso_ntil_gates()
+  # Grab the cutoff or gates and return as a tibble
   cutoffs =
     lapply(marker,
            function(m) {
@@ -221,15 +229,12 @@ getDensityGates = function(intens_dat,
                                             }
                                           }) %>%
                                unlist()) %>%
-               # dplyr::filter(cd4_pos_cd8_pos != "cd4_neg_cd8_neg") %>%
-               dplyr::select(dplyr::all_of(c(subset_col, m))) #%>%
-             # rename(subpop = cd4_pos_cd8_pos)
+               dplyr::select(dplyr::all_of(c(subset_col, m)))
            }
     ) %>%
     # Reduce to a dataframe
     purrr::reduce(.,
                   dplyr::left_join,
-                  # TO TEST- will it work if the subset_col is a string arg?
                   by = subset_col)
 
   return(cutoffs)

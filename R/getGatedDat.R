@@ -23,7 +23,7 @@ getGatedDat = function(intens_dat = intensity_dat,
 #' @return `intens_dat` with additional cols attached for each marker in `cutoffs`
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' library(tidyverse)
 #'
 #' # Create a fake dataset
@@ -43,8 +43,6 @@ getGatedDat = function(intens_dat = intensity_dat,
 #' # intens_dat_2 now has the cd4_pos tagged on
 #' head(intens_dat_2)
 #' }
-
-  # Generalize getting 0/1 indicator for gated data based on cutoff
 
   ## Grab the markers in cutoffs
   mrks = (colnames(cutoffs) %>% .[!(.%in% c(subset_col, "subpop"))])
@@ -85,14 +83,12 @@ getGatedDat = function(intens_dat = intensity_dat,
     dplyr::mutate(
       gated_data =
         purrr::map2(
-          # 2023-05-19 does !!sym() in map work?
           !!rlang::sym(subset_col),
           data,
           function(s, d){
             # Filter to cutoffs for this subpop first
             c =
               cutoffs %>%
-              # 2023-05-19 does !!sym() in filter work?
               dplyr::filter(!!rlang::sym(subset_col) == s)
 
             # If nrow(c) == 0 then add NAs for mrk_pos

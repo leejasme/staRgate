@@ -2,7 +2,7 @@
 % Please edit documentation in R/internal.R
 \name{getDensityPeakCutoff}
 \alias{getDensityPeakCutoff}
-\title{Internal function: Determine the "real peaks" and cutoff}
+\title{Internal function: Determine the "real peaks" and cutoff based on the density estimation and its derivs}
 \usage{
 getDensityPeakCutoff(
   dens_binned_dat,

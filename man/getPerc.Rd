@@ -76,7 +76,7 @@ num denotes numerator, and denom denotes denominator
 (these shorthands are used in the function arguments)
 }
 \examples{
-\donttest{
+\dontrun{
 library(tidyverse)
 
 # Create a fake dataset

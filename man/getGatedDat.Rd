@@ -32,7 +32,7 @@ The naming convention for the tagged on indicator columns will be
 1 indicates positivity or intensity > gate provided
 }
 \examples{
-\donttest{
+\dontrun{
 library(tidyverse)
 
 # Create a fake dataset

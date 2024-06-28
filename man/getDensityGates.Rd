@@ -58,7 +58,7 @@ to gate relative to a unimodal background negative subpopulation, which is capab
 capturing dim subpopulations.
 }
 \examples{
-\donttest{
+\dontrun{
 #' library(tidyverse)
 
 # Create a fake dataset
