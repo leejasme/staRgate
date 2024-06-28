@@ -8,7 +8,7 @@ getGatedDat(intens_dat = intensity_dat, cutoffs, subset_col)
 }
 \arguments{
 \item{intens_dat}{dataframe of pre-gated (compensated, biexp. transf, openCyto steps) intensity values where
-rows = each sample}
+rows = each cell and cols are the intensity values for each marker}
 
 \item{cutoffs}{tibble of gates/cutoffs for all markers to gate
 Expects \code{cutoffs} to match format of output from \code{\link[=getDensityGates]{getDensityGates()}} with
@@ -30,4 +30,26 @@ The naming convention for the tagged on indicator columns will be
 \verb{tolower(<marker_name>_pos)} where
 0 indicates negativity or intensity < gate provided
 1 indicates positivity or intensity > gate provided
+}
+\examples{
+\donttest{
+library(tidyverse)
+
+# Create a fake dataset
+set.seed(100)
+intens_dat = tibble::tibble(
+               CD3_pos = rep(c(0, 1), each = 50),
+               CD4 = rnorm(100, 100, 10),
+               CD8 = rnorm(100, 100, 10)
+)
+
+# Run getDensityGates to obtain the gates
+gates = getDensityGates(intens_dat, marker = "CD4", susbet_col = "CD3_pos", bin_n = 40)
+
+# Tag on the 0/1 on intens_dat
+intens_dat_2 = getGatedDat(intens_dat, cutoffs = gates, subset_col = "CD3_pos")
+
+# intens_dat_2 now has the cd4_pos tagged on
+head(intens_dat_2)
+}
 }

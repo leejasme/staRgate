@@ -75,3 +75,26 @@ The subpopulations are defined as (num marker(s)) out of (denom marker(s)) where
 num denotes numerator, and denom denotes denominator
 (these shorthands are used in the function arguments)
 }
+\examples{
+\donttest{
+library(tidyverse)
+
+# Create a fake dataset
+set.seed(100)
+intens_dat = tibble::tibble(
+               CD3_pos = rep(c(0, 1), each = 50),
+               CD4 = rnorm(100, 100, 10),
+               CD8 = rnorm(100, 100, 10)
+)
+
+# Run getDensityGates to obtain the gates
+gates = getDensityGates(intens_dat, marker = "CD4", susbet_col = "CD3_pos", bin_n = 40)
+
+# Tag on the 0/1 on intens_dat
+intens_dat_2 = getGatedDat(intens_dat, cutoffs = gates, subset_col = "CD3_pos")
+
+# Get percentage for CD4 based on gating
+getPerc(intens_dat_2, num_marker = c("CD4"), denom_marker = "CD3")
+}
+
+}

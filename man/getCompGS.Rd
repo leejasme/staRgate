@@ -19,7 +19,7 @@ The csv file at \code{path_comp_mat} should specify the channels to apply the co
 The format is a matrix where the col and row names correspond to the channel names
 }
 \details{
-An example is provided in the extdata/comp_mat_example_fcs.csv
+An example matrix is provided in the extdata/comp_mat_example_fcs.csv
 }
 \examples{
 \dontrun{

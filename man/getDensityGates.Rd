@@ -52,6 +52,28 @@ rows correspond to unique values in \code{subset_col}, cols correspond to \code{
 }
 \description{
 For each unique value in \code{subset_col}, gate using density and estimated derivatives
-to identify cutoff at shoulder (i.e., point of tapering off) after peak for
-\code{marker} (intensity values)
+to identify cutoff at shoulder (i.e., point of tapering off) relative to the peak for
+\code{marker} (intensity values). The strategy of cutting at the shoulder mimics the strategy
+to gate relative to a unimodal background negative subpopulation, which is capable of
+capturing dim subpopulations.
+}
+\examples{
+\donttest{
+#' library(tidyverse)
+
+# Create a fake dataset
+set.seed(100)
+intens_dat = tibble::tibble(
+               CD3_pos = rep(c(0, 1), each = 50),
+               CD4 = rnorm(100, 100, 10),
+               CD8 = rnorm(100, 100, 10)
+)
+
+# Run density gating, leaving other params at suggested defaults
+# number of bins suggested is 40 but default of the function is at `bin_n = 512`,
+# which is the default for the R base density() function
+getDensityGates(intens_dat, marker = "CD4", susbet_col = "CD3_pos", bin_n = 40)
+
+}
+
 }

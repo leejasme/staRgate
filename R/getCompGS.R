@@ -1,25 +1,25 @@
 getCompGS = function(gs, path_comp_mat){
-  #' Applies Compensation using specifications in csv file provided at `path_comp_mat`
-  #'
-  #' The csv file at `path_comp_mat` should specify the channels to apply the compensation to.
-  #' The format is a matrix where the col and row names correspond to the channel names
-  #'
-  #' An example is provided in the extdata/comp_mat_example_fcs.csv
-  #'
-  #' @param gs GatingSet to apply Biexponential Transformation to
-  #' @param path_comp_mat file path for .csv file that specifies the Compensation Matrix
-  #'
-  #' @return GatingSet with compensated data
-  #' @examples
-  #' \dontrun{
-  #' path_comp_mat = system.file("extdata", "comp_mat_example_fcs.csv",
-  #'                              package = "staRgate", mustWork = TRUE)
-  #'
-  #' # gs is a GatingSet object
-  #' gs = getCompGS(gs, path_comp_mat = path_comp_mat)
-  #' }
-  #'
-  #' @export
+#' Applies Compensation using specifications in csv file provided at `path_comp_mat`
+#'
+#' The csv file at `path_comp_mat` should specify the channels to apply the compensation to.
+#' The format is a matrix where the col and row names correspond to the channel names
+#'
+#' An example matrix is provided in the extdata/comp_mat_example_fcs.csv
+#'
+#' @param gs GatingSet to apply Biexponential Transformation to
+#' @param path_comp_mat file path for .csv file that specifies the Compensation Matrix
+#'
+#' @return GatingSet with compensated data
+#' @examples
+#' \dontrun{
+#' path_comp_mat = system.file("extdata", "comp_mat_example_fcs.csv",
+#'                              package = "staRgate", mustWork = TRUE)
+#'
+#' # gs is a GatingSet object
+#' gs = getCompGS(gs, path_comp_mat = path_comp_mat)
+#' }
+#'
+#' @export
 
   # Compensation
   ## Import comp. mat. csv exported from flowJo
@@ -39,16 +39,6 @@ getCompGS = function(gs, path_comp_mat){
   # Condition 2 is if we clean up the rownames(comp.mat) with
   # names <channel> :: <marker>
   marker_chnl_names =
-    # tibble::tibble(colnms = colnames(comp.mat)) %>%
-    # tidyr::separate_wider_delim(cols = colnms,
-    #                            names = c("chnl", "marker"),
-    #                            # delim = "\\.\\.\\.\\.",
-    #                            delim = "....",
-    #                            too_few = "align_start",
-    #                            too_many = "merge",
-    #                            cols_remove = FALSE)
-    # switch to using rownames b/c the names should be read in exactly rather than cols
-    # That can changed when reading in such as the space converted to a .
     tibble::tibble(nms = rownames(comp.mat)) %>%
     tidyr::separate_wider_delim(cols = .data$nms,
                                 names = c("chnl", "marker"),

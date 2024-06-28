@@ -24,7 +24,7 @@ The default is negative decades = 0.5, width basis = -30 and positive decades = 
 The Transformation can be applied to only a subset of the channels included in the
 GatingSet.
 
-An example is provided in the extdata/biexp_transf_parameters_x50.csv
+An example table is provided in the extdata/biexp_transf_parameters_x50.csv
 }
 \examples{
 \dontrun{
