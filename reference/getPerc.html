@@ -77,35 +77,35 @@ values of 0 to indicate negative-, 1 to indicate positive-expressing</p></dd>
 
 
 <dt>num_marker</dt>
-<dd><p>string for the marker(s) to specify the numerator for subpopulations of interest
+<dd><p>string for the marker(s) to specify the numerator for subpopulations of interest <br>
 See <code>expand_num</code> argument and examples for how to specify</p></dd>
 
 
 <dt>denom_marker</dt>
-<dd><p>string for the marker(s) to specify the denominator for subpopulations of interest
+<dd><p>string for the marker(s) to specify the denominator for subpopulations of interest <br>
 See <code>expand_denom</code> argument and examples for how to specify.</p></dd>
 
 
 <dt>expand_num</dt>
-<dd><p>logical, only accepts <code>TRUE</code> or <code>FALSE</code> with default of <code>FALSE</code>
+<dd><p>logical, only accepts <code>TRUE</code> or <code>FALSE</code> with default of <code>FALSE</code> <br>
 if <code>expand_num = TRUE</code>, currently only considers up to pairs of markers
 specified in <code>num_marker</code> in the numerator of subpopulation calculations
-(e.g., CD4+ &amp; CD8- of CD3+)
+(e.g., CD4+ &amp; CD8- of CD3+) <br>
 if <code>expand_num = FALSE</code>, only considers each marker specified in <code>num_marker</code>
 individually in the numerator of subpopulation calculations
 (e.g., CD4+ of CD3+)</p></dd>
 
 
 <dt>expand_denom</dt>
-<dd><p>logical, only accepts <code>TRUE</code> or <code>FALSE</code> with default of <code>FALSE</code>
+<dd><p>logical, only accepts <code>TRUE</code> or <code>FALSE</code> with default of <code>FALSE</code> <br>
 if <code>expand_denom = TRUE</code>, currently considers up to 1 marker from the <code>num_marker</code> and
-the unique combinations of <code>denom_marker</code> to generate list of subpopulations
+the unique combinations of <code>denom_marker</code> to generate list of subpopulations <br>
 e.g., if <code>denom_marker = c("CD8")</code>, <code>num_marker = c("LAG3", "KI67")</code>, and <code>expand_denom = TRUE</code>,
-the subpopulations will include:
-1. LAG3+ of CD8+, LAG3- of CD8+, LAG3+ of CD8-, LAG3- of CD8-,
-2. KI67+ of CD8+, KI67- of CD8+, KI67+ of CD8-, KI67- of CD8-,
-3. KI67+ of (LAG3+ &amp; CD8+), KI67- of (LAG3+ &amp; CD8+), KI67+ of (LAG3+ &amp; CD8-), KI67- of (LAG3+ &amp; CD8-)...etc.,
-4. LAG3+ of (KI67+ &amp; CD8+), LAG3- of (KI67+ &amp; CD8+), LAG3+ of (KI67+ &amp; CD8-), LAG3- of (KI67+ &amp; CD8-)...etc.,
+the subpopulations will include: <br>
+1. LAG3+ of CD8+, LAG3- of CD8+, LAG3+ of CD8-, LAG3- of CD8-, <br>
+2. KI67+ of CD8+, KI67- of CD8+, KI67+ of CD8-, KI67- of CD8-, <br>
+3. KI67+ of (LAG3+ &amp; CD8+), KI67- of (LAG3+ &amp; CD8+), KI67+ of (LAG3+ &amp; CD8-), KI67- of (LAG3+ &amp; CD8-)...etc., <br>
+4. LAG3+ of (KI67+ &amp; CD8+), LAG3- of (KI67+ &amp; CD8+), LAG3+ of (KI67+ &amp; CD8-), LAG3- of (KI67+ &amp; CD8-)...etc., <br>
 if <code>expand_denom = FALSE</code>, only generates the list of subpopulations based on
 unique combinations of the <code>denom_marker</code>
 (e.g., <code>denom_marker = c("CD4")</code> and <code>expand_denom = FALSE</code> only considers subpopulations with
@@ -115,29 +115,29 @@ denominator CD4+ and CD4- whereas
 
 
 <dt>keep_indicators</dt>
-<dd><p>logical, only accepts <code>TRUE</code> or <code>FALSE</code> with default of <code>TRUE</code>
+<dd><p>logical, only accepts <code>TRUE</code> or <code>FALSE</code> with default of <code>TRUE</code> <br>
 if <code>keep_indicators = TRUE</code>, will return indicator columns of 0/1 to specify which markers are considered in the
-numerator and denominators of the subpopulations. Naming convention for the numerator cols are <code>&lt;marker&gt;_POS</code>
-and for denominator cols are <code>&lt;marker&gt;_POS_D</code>. For both sets of columns, <code>0</code> indicates considered the negative cells,
-<code>1</code> indicates considered the positive cells and <code>NA_real_</code> indicates not in consideration for the subpopulation.
+numerator and denominators of the subpopulations.  <br>
+Naming convention for the numerator cols are <code>&lt;marker&gt;_POS</code>
+and for denominator cols are <code>&lt;marker&gt;_POS_D</code>. <br>
+For both sets of columns, <code>0</code> indicates considered the negative cells,
+<code>1</code> indicates considered the positive cells and <code>NA_real_</code>
+indicates not in consideration for the subpopulation.  <br>
 This is useful for matching to percentage data
 with potentially different naming conventions to avoid not having exact string matches for the same
-subpopulation
-take note that the order also matters when matching strings: "CD4+ &amp; CD8- of CD3+" is different from "CD8- &amp; CD4+ of CD3+"</p></dd>
+subpopulation <br>
+Take note that the order also matters when matching strings: "CD4+ &amp; CD8- of CD3+" is different from "CD8- &amp; CD4+ of CD3+"</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>tibble containing the percentage of cells where
-rows correspond to each subpopulation specified in the <code>subpopulation</code>,
-<code>n_num</code> indicates the number of cells that satisifies the numerator conditions,
-<code>n_denom</code> indicates the number of cells that satisifies the denominator conditions,
-<code>perc</code> = <code>n_num</code> divided by <code>n_denom</code> unless <code>n_denom</code> = 0, then <code>perc = NA_real_</code></p>
-
-
-    </div>
+<p>tibble containing the percentage of cells where</p><ul><li><p>rows correspond to each subpopulation specified in the <code>subpopulation</code>,</p></li>
+<li><p><code>n_num</code> indicates the number of cells that satisifies the numerator conditions,</p></li>
+<li><p><code>n_denom</code> indicates the number of cells that satisifies the denominator conditions,</p></li>
+<li><p><code>perc</code> = <code>n_num</code> divided by <code>n_denom</code> unless <code>n_denom</code> = 0, then <code>perc = NA_real_</code></p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The subpopulations are defined as (num marker(s)) out of (denom marker(s)) where
@@ -147,8 +147,15 @@ num denotes numerator, and denom denotes denominator
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘dplyr’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:stats’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     filter, lag</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     intersect, setdiff, setequal, union</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create a fake dataset</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span></span>
@@ -159,15 +166,20 @@ num denotes numerator, and denom denotes denominator
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Run getDensityGates to obtain the gates</span></span></span>
-<span class="r-in"><span><span class="va">gates</span> <span class="op">=</span> <span class="fu"><a href="getDensityGates.html">getDensityGates</a></span><span class="op">(</span><span class="va">intens_dat</span>, marker <span class="op">=</span> <span class="st">"CD4"</span>, susbet_col <span class="op">=</span> <span class="st">"CD3_pos"</span>, bin_n <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gates</span> <span class="op">=</span> <span class="fu"><a href="getDensityGates.html">getDensityGates</a></span><span class="op">(</span><span class="va">intens_dat</span>, marker <span class="op">=</span> <span class="st">"CD4"</span>, subset_col <span class="op">=</span> <span class="st">"CD3_pos"</span>, bin_n <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Tag on the 0/1 on intens_dat</span></span></span>
 <span class="r-in"><span><span class="va">intens_dat_2</span> <span class="op">=</span> <span class="fu"><a href="getGatedDat.html">getGatedDat</a></span><span class="op">(</span><span class="va">intens_dat</span>, cutoffs <span class="op">=</span> <span class="va">gates</span>, subset_col <span class="op">=</span> <span class="st">"CD3_pos"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Get percentage for CD4 based on gating</span></span></span>
 <span class="r-in"><span><span class="fu">getPerc</span><span class="op">(</span><span class="va">intens_dat_2</span>, num_marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD4"</span><span class="op">)</span>, denom_marker <span class="op">=</span> <span class="st">"CD3"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   subpopulation      n_num n_denom  perc CD4_POS CD3_POS_D</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> CD4_NEG_OF_CD3_NEG     3      50     6       0         0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> CD4_POS_OF_CD3_NEG    47      50    94       1         0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> CD4_NEG_OF_CD3_POS    42      50    84       0         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> CD4_POS_OF_CD3_POS     8      50    16       1         1</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

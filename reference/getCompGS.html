@@ -83,13 +83,206 @@ The format is a matrix where the col and row names correspond to the channel nam
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># This example does not contain all the pre-processing steps required in</span></span></span>
+<span class="r-in"><span><span class="co"># getting the GatingSet (gs) ready for compensation step</span></span></span>
+<span class="r-in"><span><span class="co"># To see the steps that are required to creating the (gs),</span></span></span>
+<span class="r-in"><span><span class="co"># please see the vignette for a full tutorial</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># To make this a runnable example, read in the FCS file to create gs and</span></span></span>
+<span class="r-in"><span><span class="co"># directly apply</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># File path to the FCS file</span></span></span>
+<span class="r-in"><span><span class="va">path_fcs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_fcs.fcs"</span>, package <span class="op">=</span> <span class="st">"staRgate"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">path_biexp_params</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"biexp_transf_parameters_x50.csv"</span>,</span></span>
+<span class="r-in"><span>                                 package<span class="op">=</span><span class="st">"staRgate"</span>, mustWork<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a cytoset then convert to gs</span></span></span>
+<span class="r-in"><span><span class="va">cs</span> <span class="op">=</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/load_cytoset_from_fcs.html" class="external-link">load_cytoset_from_fcs</a></span><span class="op">(</span><span class="va">path_fcs</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gs</span> <span class="op">=</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/GatingSet-class.html" class="external-link">GatingSet</a></span><span class="op">(</span><span class="va">cs</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">path_comp_mat</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"comp_mat_example_fcs.csv"</span>,</span></span>
-<span class="r-in"><span>                             package <span class="op">=</span> <span class="st">"staRgate"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                             package<span class="op">=</span><span class="st">"staRgate"</span>, mustWork<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># gs is a GatingSet object</span></span></span>
-<span class="r-in"><span><span class="va">gs</span> <span class="op">=</span> <span class="fu">getCompGS</span><span class="op">(</span><span class="va">gs</span>, path_comp_mat <span class="op">=</span> <span class="va">path_comp_mat</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="va">gs</span> <span class="op">=</span> <span class="fu">getCompGS</span><span class="op">(</span><span class="va">gs</span>, path_comp_mat<span class="op">=</span><span class="va">path_comp_mat</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Checks the comp mat was successfully applied</span></span></span>
+<span class="r-in"><span><span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_get_compensations.html" class="external-link">gh_get_compensations</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Compensation object 'defaultCompensation':</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 AF700-A        APC-A   APC-f750-A      BB515-A      BB660-A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AF700-A     1.00000e+00  2.48301e-02  2.49284e-01  0.009679220  2.68438e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> APC-A       1.32334e-01  1.00000e+00  3.37338e-02 -0.000160633  1.59855e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> APC-f750-A  8.68539e-02  1.38732e-01  1.00000e+00 -0.001767070  2.22729e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB515-A    -1.15670e-06  8.78380e-06 -3.46330e-06  1.000000000  7.37752e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB660-A     8.87227e-02  5.93124e-01  2.00381e-02  0.014618200  1.00000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB700-A     1.56721e-01  1.03493e-01  5.16101e-02  0.021794700  2.37588e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB790-A     7.68727e-03  1.93003e-02  3.49874e-02  0.052883600  7.10995e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV395-A   -3.97306e-05 -9.08601e-05 -4.80121e-05 -0.000354928 -3.02965e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV496-A   -1.70875e-04 -1.56429e-04 -7.28591e-05  0.095776400  1.33785e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV563-A   -3.03929e-05  1.56211e-05 -6.56100e-06  0.001668360  2.42316e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV615-A    1.88377e-03  1.04649e-02  4.46188e-04 -0.000136853  8.65835e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV661-A    7.16728e-02  4.13412e-01  1.59599e-02  0.000211115  1.44842e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV737-A    9.29380e-02  1.71690e-03  4.01840e-02 -0.000194453  1.74362e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV805-A    1.48820e-03  2.44068e-04  2.91305e-02 -0.000338491 -4.23913e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV421-A    -4.58681e-05 -3.74460e-05  4.48270e-06 -0.000231336 -1.08696e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV480-A    -3.92074e-05 -3.39299e-04 -1.30588e-04  0.074170000  1.02894e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV510-A     3.99142e-05  3.73202e-05  9.80330e-06  0.007911250  5.75615e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV570-A    -1.95859e-05 -4.32965e-05 -2.69880e-05 -0.000243723  3.05622e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV605-A     3.73103e-04  2.83992e-03  5.74537e-05 -0.000398720  2.06667e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV650-A     2.49470e-02  1.41986e-01  5.86113e-03 -0.000144804  7.52309e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV711-A     1.42797e-01  7.78301e-03  4.29540e-02 -0.000232658  5.99928e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV750-A     2.67505e-02 -1.90386e-04  3.20051e-02 -0.000578142 -4.42366e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV786-A     5.43321e-03  8.58750e-04  4.07434e-02 -0.000103106 -1.87470e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-A        2.42350e-06  4.56944e-05  1.70525e-05  0.001072310  1.07968e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-CF594-A  1.22079e-04  1.15465e-03  1.97960e-05  0.000422330  1.59573e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-Cy5-A    5.44479e-02  2.99784e-01  1.38827e-02  0.000808311  7.99483e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-Cy5.5-A  5.43460e-02  2.06764e-02  1.80785e-02  0.001296560  9.39576e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-Cy7-A    2.68890e-03  9.69828e-04  2.59495e-02  0.002524130  9.41381e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 BB700-A     BB790-A    BUV395-A     BUV496-A     BUV563-A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AF700-A     4.73248e-02 1.73077e-02 0.001813870  1.81722e-03  1.45041e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> APC-A       4.43383e-03 1.22597e-03 0.000471851 -5.18352e-05 -3.25396e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> APC-f750-A  1.35711e-03 5.27278e-02 0.007016350 -3.55365e-04 -1.00153e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB515-A     1.60540e-03 2.59797e-04 0.000488654  9.92731e-03  2.45334e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB660-A     2.99259e-01 7.25687e-02 0.000750601  4.69872e-04  5.91621e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB700-A     1.00000e+00 3.05046e-01 0.001371840  5.33863e-04  7.68645e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB790-A     5.02619e-02 1.00000e+00 0.002098810  2.45469e-03  1.13829e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV395-A   -1.53987e-04 3.18150e-06 1.000000000  5.54187e-02  7.64453e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV496-A   -4.51891e-05 6.25497e-05 0.098747400  1.00000e+00  3.65217e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV563-A    6.00392e-03 1.02481e-03 0.057067000  1.35061e-02  1.00000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV615-A    2.94497e-03 5.66486e-04 0.014661800  2.36745e-03  1.27502e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV661-A    5.32708e-03 1.11836e-03 0.020613000  4.04929e-03  3.19467e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV737-A    6.05855e-02 5.83387e-02 0.045702600  8.07775e-03  2.91077e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV805-A    6.19200e-06 7.86824e-03 0.152528000  2.55410e-02  8.81890e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV421-A    -2.56252e-05 2.24736e-05 0.001380780  2.03413e-02  3.32902e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV480-A     1.24956e-04 3.73860e-05 0.003972760  1.50035e-01  5.40699e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV510-A     1.83050e-04 6.42423e-05 0.000832350  1.42374e-01  7.81014e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV570-A     8.98102e-03 1.67519e-03 0.002127950  2.19612e-03  3.36621e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV605-A     6.32870e-03 1.46373e-03 0.001450870  3.21298e-04  1.24272e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV650-A     2.49028e-03 4.20274e-04 0.000569780  5.27449e-04  1.52040e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV711-A     5.23583e-02 2.12145e-02 0.001247390  1.21889e-03  3.18952e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV750-A     1.41867e-02 5.33999e-02 0.002543330  1.71614e-03  8.49586e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV786-A     7.40567e-04 3.27007e-02 0.002449540  2.19287e-03  1.40705e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-A        2.49105e-02 4.41402e-03 0.000817685  1.55200e-07  1.43966e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-CF594-A  3.54211e-02 6.29059e-03 0.000360426 -1.55097e-05  1.97198e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-Cy5-A    4.23019e-01 1.00346e-01 0.000627548 -3.54997e-05  1.16335e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-Cy5.5-A  8.58340e-01 2.62780e-01 0.000837972 -6.29106e-05  1.20731e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-Cy7-A    1.58009e-02 7.96257e-01 0.000479509  4.18652e-05  3.30418e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               BUV615-A    BUV661-A     BUV737-A     BUV805-A      BV421-A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AF700-A    0.002494550 0.002203370  1.38716e-01  3.31042e-02  5.11994e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> APC-A      0.001271670 0.114363000  2.21613e-02  5.27436e-03 -4.09868e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> APC-f750-A 0.000055023 0.013948700  3.17988e-02  2.49248e-01 -7.88098e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB515-A    0.001525590 0.000265054 -1.52650e-06 -1.18940e-05 -3.13395e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB660-A    0.013022400 0.199251000  3.28067e-02  8.41315e-03 -8.18947e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB700-A    0.012374800 0.042845800  1.02680e-01  3.47818e-02 -1.40587e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB790-A    0.016154000 0.014608200  4.38512e-02  2.00196e-01  3.00000e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV395-A   0.004780480 0.001071850  1.18867e-04  1.02188e-04  2.78182e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV496-A   0.268124000 0.062647400  7.57148e-03  2.09299e-03 -5.20714e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV563-A   0.801998000 0.176471000  1.60286e-02  4.16364e-03  1.75302e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV615-A   1.000000000 0.308511000  4.42630e-02  1.07449e-02 -2.39673e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV661-A   0.050497000 1.000000000  1.79399e-01  4.21779e-02 -2.48790e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV737-A   0.006115390 0.007730770  1.00000e+00  3.35491e-01 -6.34979e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV805-A   0.009796310 0.003424230  2.00370e-02  1.00000e+00  7.80230e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV421-A    0.002006550 0.000352226 -3.83712e-05 -9.46220e-06  1.00000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV480-A    0.044346200 0.011099600  1.18442e-03  9.03918e-05  3.28934e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV510-A    0.058545300 0.013467900  1.60638e-03  4.70613e-04  3.12078e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV570-A    0.325082000 0.093851200  1.18768e-02  3.12652e-03  2.94131e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV605-A    0.432763000 0.188787000  2.95693e-02  8.92535e-03  6.39988e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV650-A    0.063496300 0.379917000  5.09028e-02  1.20807e-02  7.45601e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV711-A    0.000281952 0.008343360  3.58429e-01  1.20486e-01  1.75048e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV750-A    0.000697057 0.000228257  3.97713e-01  2.31938e-01  1.64162e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV786-A    0.001364530 0.001438030  8.33593e-02  4.37018e-01  2.18063e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-A       0.084587700 0.019890000  1.79239e-03  3.72104e-04 -8.61543e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-CF594-A 0.089092500 0.022101900  2.17152e-03  4.54470e-04 -4.12173e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-Cy5-A   0.000960021 0.108923000  2.85432e-02  6.31031e-03 -7.45224e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-Cy5.5-A 0.007263900 0.013356100  5.52763e-02  1.95809e-02 -9.63066e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-Cy7-A   0.002259690 0.001000860  1.43824e-02  7.63386e-02  3.96796e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                BV480-A     BV510-A      BV570-A     BV605-A      BV650-A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AF700-A    3.39020e-03 2.60901e-03  2.45899e-03 3.58515e-03  4.45768e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> APC-A      1.13668e-04 4.37466e-05  5.85607e-05 8.50790e-04  1.38441e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> APC-f750-A 3.11889e-03 1.52763e-03 -9.31873e-04 1.73277e-04  1.63506e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB515-A    1.90708e-04 3.34812e-03  8.84301e-04 5.79157e-04  1.26033e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB660-A    3.88549e-04 2.12014e-03  2.71519e-02 4.90954e-02  6.92174e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB700-A    5.86408e-04 3.01256e-03  3.65599e-02 5.91123e-02  1.73298e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB790-A    1.37380e-02 4.94921e-03  2.97942e-02 4.35257e-02  4.88238e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV395-A   2.08318e-03 4.76822e-04  1.52133e-04 2.53224e-05 -8.20849e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV496-A   7.39427e-02 1.11638e-01  4.81571e-02 3.82096e-02  1.08770e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV563-A   7.79602e-04 2.83422e-04  3.19227e-02 2.53748e-02  6.98563e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV615-A   3.08100e-04 1.58664e-04  6.17956e-03 5.29439e-02  2.51154e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV661-A   4.93886e-04 1.92803e-04  2.63330e-04 1.72809e-03  8.21198e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV737-A   1.00461e-03 5.70701e-04  1.28647e-04 1.30938e-04  1.68492e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV805-A   2.35894e-03 5.99444e-04  4.38039e-04 2.38396e-04  2.55093e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV421-A    2.59112e-01 3.43013e-02  7.07011e-03 5.16549e-03  1.39979e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV480-A    1.00000e+00 5.09955e-01  2.08648e-01 1.83489e-01  5.17878e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV510-A    5.11981e-01 1.00000e+00  5.85075e-01 4.57877e-01  1.17909e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV570-A    7.71052e-02 1.05009e-02  1.00000e+00 9.38126e-01  3.66694e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV605-A    1.67879e-02 2.43152e-03  2.71032e-01 1.00000e+00  5.59945e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV650-A    1.96639e-02 2.67944e-03  4.09261e-03 1.02064e-01  1.00000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV711-A    4.55151e-02 6.38200e-03  1.93257e-03 1.81694e-03  2.58669e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV750-A    4.39226e-02 6.76290e-03  3.32289e-03 3.69302e-03  2.25377e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV786-A    5.73902e-02 8.97809e-03  4.39112e-03 5.06660e-03  6.18139e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-A       2.07971e-04 1.01976e-04  1.85304e-01 1.11878e-01  3.29431e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-CF594-A 9.85278e-05 3.54644e-05  2.32778e-02 1.02543e-01  3.57088e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-Cy5-A   1.89136e-04 9.74498e-05  1.61336e-03 1.27491e-03  1.77067e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-Cy5.5-A 2.70537e-04 1.59472e-04  1.65944e-02 1.04537e-02  2.36452e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-Cy7-A   2.81302e-04 1.48387e-04  4.82638e-03 3.54159e-03  2.06083e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 BV711-A      BV750-A      BV786-A         PE-A   PE-CF594-A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AF700-A     2.12730e-01  8.48399e-02  4.39476e-02  0.006840740  2.92636e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> APC-A       2.85134e-02  9.73321e-03  4.17643e-03  0.000280757  5.41964e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> APC-f750-A  5.86523e-03  6.38759e-02  2.26547e-01 -0.002460560  7.43340e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB515-A     8.56130e-06 -1.02317e-05 -1.94972e-05 -0.000126331 -7.83382e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB660-A     1.61692e-01  4.23041e-02  2.02054e-02  0.000124760  1.78335e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB700-A     5.56872e-01  1.49641e-01  8.27345e-02  0.000280215  7.49651e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB790-A     2.75898e-02  1.57377e-01  3.20000e-01  0.007845450  8.33031e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV395-A   -1.58152e-04  2.35720e-06 -4.73557e-05 -0.000820269 -5.78163e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV496-A    1.77501e-03  1.90057e-04 -3.06013e-04 -0.002193560 -1.56496e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV563-A    1.41310e-03  2.22890e-04  7.99360e-05  0.596597000  3.61606e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV615-A    6.40066e-03  1.53283e-03  6.37276e-04  0.150273000  5.24636e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV661-A    2.12455e-02  5.33407e-03  2.37470e-03  0.000904487  8.15890e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV737-A    2.89365e-02  3.30411e-02  1.64371e-02 -0.000219964  1.09293e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV805-A   -5.49240e-05  1.45854e-03  3.18866e-02  0.000166491  9.85399e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV421-A     3.43802e-04  1.06304e-04  6.16866e-05 -0.000634983 -4.00289e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV480-A     1.07909e-02  2.23720e-03  7.71069e-04 -0.002727040 -1.37957e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV510-A     1.98026e-02  4.38332e-03  2.06777e-03  0.000734193  7.17537e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV570-A     7.93858e-02  1.87543e-02  8.92960e-03  0.765370000  5.54055e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV605-A     1.29191e-01  3.40905e-02  1.78946e-02  0.254213000  4.53597e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV650-A     2.49314e-01  5.54632e-02  2.49019e-02  0.001398340  1.56155e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV711-A     1.00000e+00  3.53401e-01  2.29209e-01 -0.000155164 -1.08140e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV750-A     2.69688e-01  1.00000e+00  5.20676e-01 -0.001100440 -4.67482e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV786-A     2.94720e-02  3.83526e-01  1.00000e+00 -0.000328190  2.38060e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-A        6.48352e-03  1.12158e-03  4.41299e-04  1.000000000  5.14498e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-CF594-A  6.01004e-03  1.32874e-03  5.20298e-04  0.416582000  1.00000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-Cy5-A    6.54580e-02  1.78464e-02  7.15173e-03  0.039473100  2.31414e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-Cy5.5-A  1.60747e-01  4.01366e-02  2.26926e-02  0.247869000  1.32105e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-Cy7-A    2.53419e-03  3.97731e-02  9.87322e-02  0.102724000  5.67300e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                PE-Cy5-A   PE-Cy5.5-A     PE-Cy7-A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AF700-A     1.64829e-02  3.26051e-01  1.03233e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> APC-A       2.67747e-01  8.10869e-02  2.15633e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> APC-f750-A  4.93700e-02  2.25955e-02  6.09145e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB515-A    -6.68526e-05 -3.01727e-05 -1.21999e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB660-A     7.25687e-02  2.16664e-02  5.19117e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB700-A     2.13325e-02  6.47322e-02  1.92574e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BB790-A     5.86199e-03  2.73473e-03  2.39552e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV395-A   -3.16921e-04 -1.94081e-04 -6.82352e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV496-A   -1.03874e-03 -7.87568e-04 -3.83751e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV563-A    5.34820e-02  1.18256e-02  2.30218e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV615-A    1.27041e-01  3.87130e-02  8.33019e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV661-A    1.29609e-01  4.69461e-02  9.83433e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV737-A    1.05708e-03  1.55556e-02  1.20126e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUV805-A    2.41638e-05  8.65425e-05  9.39790e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV421-A    -1.95171e-04 -7.76933e-05 -3.45835e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV480-A    -8.99502e-04 -5.11925e-04 -3.20846e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV510-A     3.09406e-04  1.02978e-04  6.77227e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV570-A     1.09151e-01  2.85402e-02  6.54611e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV605-A     1.21365e-01  3.52925e-02  9.52471e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV650-A     7.23832e-02  2.28208e-02  4.93623e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV711-A     1.44939e-03  2.94488e-02  1.10223e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV750-A    -4.54062e-04  3.00004e-03  1.08283e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BV786-A     1.12239e-04  3.95568e-04  1.78838e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-A        8.31948e-02  1.84931e-02  3.40669e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-CF594-A  1.72793e-01  3.80472e-02  7.03978e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-Cy5-A    1.00000e+00  4.91045e-01  1.20956e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-Cy5.5-A  2.33135e-01  1.00000e+00  3.02046e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PE-Cy7-A    1.23589e-02  2.26059e-02  1.00000e+00</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
