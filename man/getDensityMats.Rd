@@ -37,12 +37,23 @@ default = 10}
 }
 \value{
 tibble of matrices for \code{marker} containing calculations for density gating
-for each unique subset found in \code{subset_col}
-rows correspond to unique values in \code{subset_col}, cols correspond to ?
+for each unique subset found in \code{subset_col} \cr
+rows correspond to unique values in \code{subset_col}, \cr
+cols correspond to the information for density gating
 }
 \description{
 Internal function for \code{getDensityGates}
 For each unique value in \code{subset_col}, there is a matrix for storing calculations for density gating
 contains: first to fourth derivatives of density,
 indicators for local peaks, "real peaks", plateau_pre and cutoff
+}
+\examples{
+# Create a fake dataset
+set.seed(100)
+intens_dat = tibble::tibble(
+               CD3_pos=rep(c(0, 1), each=50),
+               CD4 = rnorm(100, 100, 10),
+               CD8 = rnorm(100, 100, 10)
+)
+dens_df = getDensityMats(intens_dat, marker = "CD4", subset_col = "CD3_pos", bin_n = 40)
 }

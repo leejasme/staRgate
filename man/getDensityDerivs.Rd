@@ -10,7 +10,7 @@ getDensityDerivs(
   subset_col,
   bin_n = 512,
   peak_detect_ratio = 10,
-  pos_peak_threshold = 1600
+  pos_peak_threshold = 1800
 )
 }
 \arguments{
@@ -31,16 +31,30 @@ a peak that is < than the highest peak by \code{peak_detect_ratio} times will be
 default = 10}
 
 \item{pos_peak_threshold}{numeric for threshold to identify a positive peak
-'  default is 1600, which is on the biexponential scale}
+default is 1800, which is on the biexponential scale}
 }
 \value{
 list of dataframe with density estimation and corresponding 1st-4th derivatives,
-indicators of local peaks, plateau_pre
-each element corresponds to each unique value of \code{subset_col}
+indicators of local peaks, plateau_pre \cr
+each element corresponds to each unique value of \code{subset_col} \cr
 for each dataframe: rows correspond to each of the bins
 }
 \description{
 Internal function for \code{get_density_gates}
 For each unique value in \code{subset_col}, estimate the derivatives for
 \code{marker} (intensity values)
+}
+\examples{
+# Create a fake dataset
+set.seed(100)
+intens_dat = tibble::tibble(
+               CD3_pos=rep(c(0, 1), each=50),
+               CD4 = rnorm(100, 100, 10),
+               CD8 = rnorm(100, 100, 10)
+)
+
+# Run density gating, leaving other params at suggested defaults
+# number of bins suggested is 40 but default is at `bin_n = 512`,
+# which is the default for the R base density() function
+dens = getDensityDerivs(density(intens_dat$CD4), marker = "CD4", subset_col = "CD3_pos", bin_n = 40)
 }

@@ -10,7 +10,7 @@ getGatedDat(intens_dat = intensity_dat, cutoffs, subset_col)
 \item{intens_dat}{dataframe of pre-gated (compensated, biexp. transf, openCyto steps) intensity values where
 rows = each cell and cols are the intensity values for each marker}
 
-\item{cutoffs}{tibble of gates/cutoffs for all markers to gate
+\item{cutoffs}{tibble of gates/cutoffs for all markers to gate \cr
 Expects \code{cutoffs} to match format of output from \code{\link[=getDensityGates]{getDensityGates()}} with
 column corresponding to a marker, and rows to the subsets defined in the
 \code{subset_col}}
@@ -19,7 +19,7 @@ column corresponding to a marker, and rows to the subsets defined in the
 will perform operation on subsets corresponding to each unique value in column}
 }
 \value{
-\code{intens_dat} with additional cols attached for each marker in \code{cutoffs}
+\code{intens_dat} with additional columns attached for each marker in \code{cutoffs}
 }
 \description{
 Adds an indicator column (0/1) to \code{intens_dat} for each marker in \code{cutoffs}
@@ -32,9 +32,6 @@ The naming convention for the tagged on indicator columns will be
 1 indicates positivity or intensity > gate provided
 }
 \examples{
-\dontrun{
-library(dplyr)
-
 # Create a fake dataset
 set.seed(100)
 intens_dat = tibble::tibble(
@@ -44,12 +41,11 @@ intens_dat = tibble::tibble(
 )
 
 # Run getDensityGates to obtain the gates
-gates = getDensityGates(intens_dat, marker = "CD4", susbet_col = "CD3_pos", bin_n = 40)
+gates = getDensityGates(intens_dat, marker = "CD4", subset_col = "CD3_pos", bin_n = 40)
 
 # Tag on the 0/1 on intens_dat
 intens_dat_2 = getGatedDat(intens_dat, cutoffs = gates, subset_col = "CD3_pos")
 
 # intens_dat_2 now has the cd4_pos tagged on
 head(intens_dat_2)
-}
 }

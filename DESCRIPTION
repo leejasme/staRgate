@@ -36,9 +36,11 @@ Suggests:
     knitr,
     openCyto,
     ggcyto,
-    rmarkdown, 
-    data.table, 
-    here
+    rmarkdown,
+    data.table,
+    here,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
 BugReports: https://github.com/leejasme/staRgate/issues
 URL: https://leejasme.github.io/staRgate/, https://github.com/leejasme/staRgate
+Config/testthat/edition: 3

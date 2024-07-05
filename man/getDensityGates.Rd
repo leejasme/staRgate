@@ -2,7 +2,8 @@
 % Please edit documentation in R/getDensityGates.R
 \name{getDensityGates}
 \alias{getDensityGates}
-\title{Density gating of intensity values in \code{marker} for each unique subset of \code{subset_col}}
+\title{Density gating of intensity values in \code{marker} for each unique subset of
+\code{subset_col}}
 \usage{
 getDensityGates(
   intens_dat,
@@ -15,65 +16,78 @@ getDensityGates(
 )
 }
 \arguments{
-\item{intens_dat}{dataframe of pre-gated (compensated, biexp. transf, openCyto steps) intensity values where
+\item{intens_dat}{dataframe of pre-gated (compensated, biexp. transf,
+openCyto steps) intensity values where
 cols = intensity value per marker,
 rows = each sample}
 
 \item{marker}{string for the marker(s) to gate on
 the names need to match exactly the column name in \code{intens_dat}}
 
-\item{subset_col}{string for the column name to indicate the subsets to apply density gating on
-will perform operation on subsets corresponding to each unique value in column}
+\item{subset_col}{string for the column name to indicate the subsets to apply
+density gating on will perform operation on subsets
+corresponding to each unique value in column}
 
-\item{bin_n}{numeric to be passed to \code{n} parameter of \code{density(n = bin_n)} for
-number of equally spaced points at which the density is to be estimated
-default is 512, which is the default of \code{density(n = 512)}}
+\item{bin_n}{numeric to be passed to \code{n} parameter of \code{density(n = bin_n)}
+for number of equally spaced points at which the density is to
+be estimated \cr
+Default is 512, which is the default of
+\code{density(n = 512)}}
 
 \item{peak_detect_ratio}{numeric threshold for eliminating small peaks where
-a peak that is < than the highest peak by \code{peak_detect_ratio} times will be ignored
-default = 10}
+a peak that is < than the highest peak by \code{peak_detect_ratio}
+times will be ignored \cr
+Default = 10}
 
-\item{pos_peak_threshold}{either numeric for threshold to identify a positive peak for all or
-a dataframe if supplying multiple \code{marker} to gate
-Dataframe needs to be supplied with 2 columns named \code{marker} and \code{pos_peak_threshold}
-and rows for the corresponding \code{marker} to gate
-default is 1800 (note this is on the biexponential scale)}
+\item{pos_peak_threshold}{either:
+\itemize{
+\item numeric for threshold to identify a positive peak for all or
+\item a dataframe if supplying multiple \code{marker} to gate. The dataframe
+needs to be supplied with 2 columns named \code{marker} and
+\code{pos_peak_threshold} and rows for the \code{marker} to gate
+}
+Default is 1800 (note this is on the biexponential scale) for all \code{marker}}
 
-\item{neg_intensity_threshold}{numeric for threshold to filter out any "very negatively" expressed
-cells in the density estimation to avoid over-compression and difficulty in distinguishing
-peaks and the gates
-This is only applied as a filter for the density estimation, the cells < \verb{neg_intensity_threshold`` are retained in the intensity matrix for other steps Expects the }neg_intensity_threshold\verb{is on the same scale as the transformed data in}intens_dat\verb{Default is}NULL`: no filters applied and density estimation based on all cells in
-corresponding subsets.
-Suggested for biexp. transformed data is -1000 which corresponds to ~-3300 on the original intensity scale)}
+\item{neg_intensity_threshold}{numeric for threshold to filter out any
+"very negatively" expressed cells in the density estimation to
+avoid over-compression and difficulty in distinguishing peaks
+and the gates \cr
+This is only applied as a filter for the density estimation,
+the cells < \code{neg_intensity_threshold} are retained in the
+intensity matrix for other steps \cr
+Expects the \code{neg_intensity_threshold} is on the same scale as
+the transformed data in \code{intens_dat} \cr
+Default is \code{NULL}: no filters applied and density estimation
+based on all cells in corresponding subsets.\cr
+Suggested for biexp. transformed data is -1000 which corresponds
+to ~-3300 on the original intensity scale)}
 }
 \value{
-tibble of gates/cutoffs for \code{marker} for each unique subset found in \code{subset_col}
-rows correspond to unique values in \code{subset_col}, cols correspond to \code{marker}
+tibble of gates/cutoffs for \code{marker} for each unique subset found in
+\code{subset_col} where
+\itemize{
+\item rows correspond to unique values in \code{subset_col}
+\item , columns correspond to\code{marker}
+}
 }
 \description{
-For each unique value in \code{subset_col}, gate using density and estimated derivatives
-to identify cutoff at shoulder (i.e., point of tapering off) relative to the peak for
-\code{marker} (intensity values). The strategy of cutting at the shoulder mimics the strategy
-to gate relative to a unimodal background negative subpopulation, which is capable of
-capturing dim subpopulations.
+For each unique value in \code{subset_col}, gate using density and estimated
+derivatives to identify cutoff at shoulder (i.e., point of tapering off)
+relative to the peak for \code{marker} (intensity values). The strategy of cutting
+at the shoulder mimics the strategy to gate relative to a unimodal background
+negative subpopulation, which is capable of capturing dim subpopulations.
 }
 \examples{
-\dontrun{
-#' library(dplyr)
-
 # Create a fake dataset
 set.seed(100)
 intens_dat = tibble::tibble(
-               CD3_pos = rep(c(0, 1), each = 50),
+               CD3_pos=rep(c(0, 1), each=50),
                CD4 = rnorm(100, 100, 10),
                CD8 = rnorm(100, 100, 10)
 )
 
 # Run density gating, leaving other params at suggested defaults
-# number of bins suggested is 40 but default of the function is at `bin_n = 512`,
+# number of bins suggested is 40 but default is at `bin_n = 512`,
 # which is the default for the R base density() function
-getDensityGates(intens_dat, marker = "CD4", susbet_col = "CD3_pos", bin_n = 40)
-
-}
-
+getDensityGates(intens_dat, marker="CD4", subset_col="CD3_pos", bin_n=40)
 }

@@ -22,12 +22,30 @@ The format is a matrix where the col and row names correspond to the channel nam
 An example matrix is provided in the extdata/comp_mat_example_fcs.csv
 }
 \examples{
-\dontrun{
+# This example does not contain all the pre-processing steps required in
+# getting the GatingSet (gs) ready for compensation step
+# To see the steps that are required to creating the (gs),
+# please see the vignette for a full tutorial
+
+# To make this a runnable example, read in the FCS file to create gs and
+# directly apply
+
+# File path to the FCS file
+path_fcs = system.file("extdata", "example_fcs.fcs", package = "staRgate", mustWork = TRUE)
+path_biexp_params = system.file("extdata", "biexp_transf_parameters_x50.csv",
+                                 package="staRgate", mustWork=TRUE)
+
+# Create a cytoset then convert to gs
+cs = flowWorkspace::load_cytoset_from_fcs(path_fcs)
+gs = flowWorkspace::GatingSet(cs)
+
 path_comp_mat = system.file("extdata", "comp_mat_example_fcs.csv",
-                             package = "staRgate", mustWork = TRUE)
+                             package="staRgate", mustWork=TRUE)
 
 # gs is a GatingSet object
-gs = getCompGS(gs, path_comp_mat = path_comp_mat)
-}
+gs = getCompGS(gs, path_comp_mat=path_comp_mat)
+
+# Checks the comp mat was successfully applied
+flowWorkspace::gh_get_compensations(gs)
 
 }

@@ -11,7 +11,7 @@ getDensityDerivs = function(dens,
                             subset_col,
                             bin_n = 512,
                             peak_detect_ratio = 10,
-                            pos_peak_threshold = 1600){
+                            pos_peak_threshold = 1800){
 
 #' Internal function: Estimate derivatives for density of `marker` for each unique subset of `subset_col`
 #'
@@ -32,14 +32,26 @@ getDensityDerivs = function(dens,
 #'              a peak that is < than the highest peak by `peak_detect_ratio` times will be ignored
 #'              default = 10
 #' @param pos_peak_threshold numeric for threshold to identify a positive peak
-#'           '  default is 1600, which is on the biexponential scale
+#'              default is 1800, which is on the biexponential scale
 #'
 #' @return list of dataframe with density estimation and corresponding 1st-4th derivatives,
-#'         indicators of local peaks, plateau_pre
-#'         each element corresponds to each unique value of `subset_col`
+#'         indicators of local peaks, plateau_pre \cr
+#'         each element corresponds to each unique value of `subset_col` \cr
 #'         for each dataframe: rows correspond to each of the bins
 #'
+#' @examples
+#' # Create a fake dataset
+#' set.seed(100)
+#' intens_dat = tibble::tibble(
+#'                CD3_pos=rep(c(0, 1), each=50),
+#'                CD4 = rnorm(100, 100, 10),
+#'                CD8 = rnorm(100, 100, 10)
+#' )
 #'
+#' # Run density gating, leaving other params at suggested defaults
+#' # number of bins suggested is 40 but default is at `bin_n = 512`,
+#' # which is the default for the R base density() function
+#' dens = getDensityDerivs(density(intens_dat$CD4), marker = "CD4", subset_col = "CD3_pos", bin_n = 40)
 
   # Meant for internally calling within get_density_peaks and for debug/checking matrices/calculations
   # input data is diff- expecting the density obj for general subset_col
@@ -92,8 +104,9 @@ getDensityDerivs = function(dens,
     dplyr::mutate(
       # Due to how the diff and deriv are calculated, the point of interest is back tracked by 1 so check 2nd deriv of 1 point before
       plateau_pre = ((c(0, diff(third_deriv_sign)) == -2) & (sign(fourth_deriv)< 0)),
-      plateau_pre_2 = sapply(dplyr::row_number(),
-                             function(r){if(r >= 2){(plateau_pre[r] == TRUE & second_deriv_sign[(r-1)] > 0)}else{FALSE}})
+      plateau_pre_2 = vapply(dplyr::row_number(),
+                             function(r){if(r >= 2){(plateau_pre[r] == TRUE & second_deriv_sign[(r-1)] > 0)}else{FALSE}},
+                             logical(1))
     )
 
   return(new_d)
@@ -132,9 +145,19 @@ getDensityMats = function(intens_dat,
 #'           '  default is 1800, which is on the biexponential scale
 #'
 #' @return tibble of matrices for `marker` containing calculations for density gating
-#'         for each unique subset found in `subset_col`
-#'         rows correspond to unique values in `subset_col`, cols correspond to ?
-#'
+#'         for each unique subset found in `subset_col` \cr
+#'         rows correspond to unique values in `subset_col`, \cr
+#'         cols correspond to the information for density gating
+#' @examples
+#' # Create a fake dataset
+#' set.seed(100)
+#' intens_dat = tibble::tibble(
+#'                CD3_pos=rep(c(0, 1), each=50),
+#'                CD4 = rnorm(100, 100, 10),
+#'                CD8 = rnorm(100, 100, 10)
+#' )
+#' dens_df = getDensityMats(intens_dat, marker = "CD4", subset_col = "CD3_pos", bin_n = 40)
+
 # Meant for using internally in getDensityGates but also for debug
 # to grab the full matrix of density, peak and cutoff
 # rows is each bin for the density estimation
@@ -281,7 +304,7 @@ getDensityMats = function(intens_dat,
     ) %>%
     dplyr::mutate(
       dens_peaks_final =
-        if(all(sapply(dens_peaks_flip, is.null, simplify = TRUE))){
+        if(all(vapply(dens_peaks_flip, is.null, FUN.VALUE = logical(1)))){
           dens_peaks
         }else{
           purrr::pmap(
@@ -319,7 +342,7 @@ getDensityPeakCutoff = function(dens_binned_dat,
                                 subset_col,
                                 bin_n = 512,
                                 peak_detect_ratio = 10,
-                                pos_peak_threshold = 1600,
+                                pos_peak_threshold = 1800,
                                 dens_flip = FALSE){
 
 #' Internal function: Determine the "real peaks" and cutoff based on the density estimation and its derivs
@@ -338,7 +361,7 @@ getDensityPeakCutoff = function(dens_binned_dat,
 #'              a peak that is < than the highest peak by `peak_detect_ratio` times will be ignored
 #'              default = 10
 #' @param pos_peak_threshold numeric for threshold to identify a positive peak
-#'              default is 1600, which is on the biexponential scale
+#'              default is 1800, which is on the biexponential scale
 #' @param dens_flip logical for whether the gating should be applied "backwards" where the peak is
 #'              a positive peak and want to gate to the left of peak instead of right
 #'
@@ -346,7 +369,17 @@ getDensityPeakCutoff = function(dens_binned_dat,
 #'         peak(s) identified and the cutoff
 #'         each element corresponds to each unique value of `subset_col`
 #'         for each dataframe: rows correspond to each of the bins
+#' @examples
+#' # Create a fake dataset
+#' set.seed(100)
+#' intens_dat = tibble::tibble(
+#'                CD3_pos=rep(c(0, 1), each=50),
+#'                CD4 = rnorm(100, 100, 10),
+#'                CD8 = rnorm(100, 100, 10)
+#' )
+#' dens = getDensityDerivs(density(intens_dat$CD4), marker = "CD4", subset_col = "CD3_pos", bin_n = 40)
 #'
+#' dens_peak = getDensityPeakCutoff(dens, marker = "CD4", subset_col = "CD3_pos")
 #'
 
   # Identify "real peaks"
@@ -356,8 +389,9 @@ getDensityPeakCutoff = function(dens_binned_dat,
     dplyr::arrange(-y_avg) %>%
     # Get ratios relative to the highest peak
     dplyr::mutate(
-      ratio = sapply(dplyr::row_number(),
-                     function(r){y_avg[r]/y_avg[1]}
+      ratio = vapply(dplyr::row_number(),
+                     function(r){y_avg[r]/y_avg[1]},
+                     numeric(1)
       )
     ) %>%
     # Remove any peaks that are "too small"
