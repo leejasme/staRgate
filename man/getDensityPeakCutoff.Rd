@@ -46,16 +46,4 @@ for each dataframe: rows correspond to each of the bins
 \description{
 Internal function for \code{getDensityGates}
 }
-\examples{
-# Create a fake dataset
-set.seed(100)
-intens_dat = tibble::tibble(
-               CD3_pos=rep(c(0, 1), each=50),
-               CD4 = rnorm(100, 100, 10),
-               CD8 = rnorm(100, 100, 10)
-)
-dens = getDensityDerivs(density(intens_dat$CD4), marker = "CD4", subset_col = "CD3_pos", bin_n = 40)
-
-dens_peak = getDensityPeakCutoff(dens, marker = "CD4", subset_col = "CD3_pos")
-
-}
+\keyword{internal}

@@ -47,13 +47,4 @@ For each unique value in \code{subset_col}, there is a matrix for storing calcul
 contains: first to fourth derivatives of density,
 indicators for local peaks, "real peaks", plateau_pre and cutoff
 }
-\examples{
-# Create a fake dataset
-set.seed(100)
-intens_dat = tibble::tibble(
-               CD3_pos=rep(c(0, 1), each=50),
-               CD4 = rnorm(100, 100, 10),
-               CD8 = rnorm(100, 100, 10)
-)
-dens_df = getDensityMats(intens_dat, marker = "CD4", subset_col = "CD3_pos", bin_n = 40)
-}
+\keyword{internal}

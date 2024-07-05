@@ -39,19 +39,7 @@ getDensityDerivs = function(dens,
 #'         each element corresponds to each unique value of `subset_col` \cr
 #'         for each dataframe: rows correspond to each of the bins
 #'
-#' @examples
-#' # Create a fake dataset
-#' set.seed(100)
-#' intens_dat = tibble::tibble(
-#'                CD3_pos=rep(c(0, 1), each=50),
-#'                CD4 = rnorm(100, 100, 10),
-#'                CD8 = rnorm(100, 100, 10)
-#' )
-#'
-#' # Run density gating, leaving other params at suggested defaults
-#' # number of bins suggested is 40 but default is at `bin_n = 512`,
-#' # which is the default for the R base density() function
-#' dens = getDensityDerivs(density(intens_dat$CD4), marker = "CD4", subset_col = "CD3_pos", bin_n = 40)
+#' @keywords internal
 
   # Meant for internally calling within get_density_peaks and for debug/checking matrices/calculations
   # input data is diff- expecting the density obj for general subset_col
@@ -148,15 +136,7 @@ getDensityMats = function(intens_dat,
 #'         for each unique subset found in `subset_col` \cr
 #'         rows correspond to unique values in `subset_col`, \cr
 #'         cols correspond to the information for density gating
-#' @examples
-#' # Create a fake dataset
-#' set.seed(100)
-#' intens_dat = tibble::tibble(
-#'                CD3_pos=rep(c(0, 1), each=50),
-#'                CD4 = rnorm(100, 100, 10),
-#'                CD8 = rnorm(100, 100, 10)
-#' )
-#' dens_df = getDensityMats(intens_dat, marker = "CD4", subset_col = "CD3_pos", bin_n = 40)
+#' @keywords internal
 
 # Meant for using internally in getDensityGates but also for debug
 # to grab the full matrix of density, peak and cutoff
@@ -369,18 +349,7 @@ getDensityPeakCutoff = function(dens_binned_dat,
 #'         peak(s) identified and the cutoff
 #'         each element corresponds to each unique value of `subset_col`
 #'         for each dataframe: rows correspond to each of the bins
-#' @examples
-#' # Create a fake dataset
-#' set.seed(100)
-#' intens_dat = tibble::tibble(
-#'                CD3_pos=rep(c(0, 1), each=50),
-#'                CD4 = rnorm(100, 100, 10),
-#'                CD8 = rnorm(100, 100, 10)
-#' )
-#' dens = getDensityDerivs(density(intens_dat$CD4), marker = "CD4", subset_col = "CD3_pos", bin_n = 40)
-#'
-#' dens_peak = getDensityPeakCutoff(dens, marker = "CD4", subset_col = "CD3_pos")
-#'
+#' @keywords internal
 
   # Identify "real peaks"
   new_d =
