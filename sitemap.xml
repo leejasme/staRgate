@@ -1,57 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://leejasme.github.io/staRgate/404.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/articles/vignette_run_pipeline.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/index.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/reference/getBiexpTransformGS.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/reference/getCompGS.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/reference/getDensityDerivs.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/reference/getDensityGates.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/reference/getDensityMats.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/reference/getDensityPeakCutoff.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/reference/getGatedDat.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/reference/getPerc.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>https://leejasme.github.io/staRgate/reference/staRgate-package.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://leejasme.github.io/staRgate/404.html</loc></url>
+<url><loc>https://leejasme.github.io/staRgate/LICENSE-text.html</loc></url>
+<url><loc>https://leejasme.github.io/staRgate/LICENSE.html</loc></url>
+<url><loc>https://leejasme.github.io/staRgate/articles/index.html</loc></url>
+<url><loc>https://leejasme.github.io/staRgate/articles/vignette_run_pipeline.html</loc></url>
+<url><loc>https://leejasme.github.io/staRgate/authors.html</loc></url>
+<url><loc>https://leejasme.github.io/staRgate/index.html</loc></url>
+<url><loc>https://leejasme.github.io/staRgate/reference/getBiexpTransformGS.html</loc></url>
+<url><loc>https://leejasme.github.io/staRgate/reference/getCompGS.html</loc></url>
+<url><loc>https://leejasme.github.io/staRgate/reference/getDensityDerivs.html</loc></url>
+<url><loc>https://leejasme.github.io/staRgate/reference/getDensityGates.html</loc></url>
+<url><loc>https://leejasme.github.io/staRgate/reference/getDensityMats.html</loc></url>
+<url><loc>https://leejasme.github.io/staRgate/reference/getDensityPeakCutoff.html</loc></url>
+<url><loc>https://leejasme.github.io/staRgate/reference/getGatedDat.html</loc></url>
+<url><loc>https://leejasme.github.io/staRgate/reference/getPerc.html</loc></url>
+<url><loc>https://leejasme.github.io/staRgate/reference/index.html</loc></url>
+<url><loc>https://leejasme.github.io/staRgate/reference/pipe.html</loc></url>
+<url><loc>https://leejasme.github.io/staRgate/reference/staRgate-package.html</loc></url>
 </urlset>
+
