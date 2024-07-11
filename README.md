@@ -1,5 +1,5 @@
 # staRgate
-An R-based automated gating pipeline for flow cytometry data to characterize the lineage, differentiation, and functional states of T-cells
+An density-based automated gating pipeline for flow cytometry data to characterize the lineage, differentiation, and functional states of T-cells
 
 This GitHub stores the {staRgate} R package.
 
