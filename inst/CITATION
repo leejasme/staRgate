@@ -1,7 +1,0 @@
-bibentry(
-  bibtype  = "Manual",
-  title    = "staRgate: a density-based automated gating pipeline for flow cytometry analysis to characterize the lineage, differentiation, and functional states of T-cells",
-  author   = "Jasme Lee",
-  year     = "2024",
-  url = "https://github.com/leejasme/staRgate"
-)
