@@ -30,6 +30,11 @@ BiocManager::install(c("flowCore", "flowWorkspace"))
 BiocManager::install(c("openCyto", "flowAI", "ggcyto"))
 ```
 
+Some additional packages that are needed to run the vignette: 
+
+```
+install.packages("gt", "here")
+```
 
 To install staRgate (currently install from GitHub): 
 
