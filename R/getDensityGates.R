@@ -10,19 +10,20 @@ getDensityGates <- function(intens_dat,
   #'
   #' For each unique value in `subset_col`, gate using density and estimated
   #' derivatives to identify cutoff at shoulder (i.e., point of tapering off)
-  #' relative to the peak for `marker` (intensity values). The strategy of cutting
-  #' at the shoulder mimics the strategy to gate relative to a unimodal background
-  #' negative subpopulation, which is capable of capturing dim subpopulations.
+  #' relative to the peak for `marker` (intensity values).
+  #' The strategy of cutting at the shoulder mimics the strategy to gate
+  #' relative to a unimodal background negative subpopulation, which is capable
+  #' of capturing dim subpopulations.
   #'
   #' @param intens_dat dataframe of pre-gated (compensated, biexp. transf,
-  #'              openCyto steps) intensity values where
-  #'              cols=intensity value per marker,
-  #'              rows=each sample
-  #' @param marker string for the marker(s) to gate on
-  #'              the names need to match exactly the column name in `intens_dat`
-  #' @param subset_col string for the column name to indicate the subsets to apply
-  #'              density gating on will perform operation on subsets
-  #'              corresponding to each unique value in column
+  #'                   openCyto steps) intensity values where
+  #'                   cols=intensity value per marker,
+  #'                   rows=each sample
+  #' @param marker string for the marker(s) to gate on the names need to match
+  #'               exactly the column name in `intens_dat`
+  #' @param subset_col string for the column name to indicate the subsets to
+  #'                   apply density gating on will perform operation on subsets
+  #'                   corresponding to each unique value in column
   #' @param bin_n numeric to be passed to `n` parameter of `density(n=bin_n)`
   #'              for number of equally spaced points at which the density is to
   #'              be estimated \cr
@@ -51,11 +52,11 @@ getDensityGates <- function(intens_dat,
   #'              the transformed data in `intens_dat` \cr
   #'              Default is `NULL`: no filters applied and density estimation
   #'              based on all cells in corresponding subsets.\cr
-  #'              Suggested for biexp. transformed data is -1000 which corresponds
-  #'              to ~-3300 on the original intensity scale)
+  #'              Suggested for biexp. transformed data is -1000 which
+  #'              corresponds to ~-3300 on the original intensity scale)
   #'
-  #' @return tibble of gates/cutoffs for `marker` for each unique subset found in
-  #'         `subset_col` where
+  #' @return tibble of gates/cutoffs for `marker` for each unique subset found
+  #'         in `subset_col` where
   #' \itemize{
   #'     \item rows correspond to unique values in `subset_col`
   #'     \item , columns correspond to`marker`
@@ -79,7 +80,8 @@ getDensityGates <- function(intens_dat,
   # getDensityGates() calls a few internal functions but they are not exported
   # These functions are still included in the internal.R file that users can see
   # In case there are any debugging needs, etc.
-  # To keep the package functions clean and less confusing about which functions to use
+  # To keep the package functions clean and less confusing about which functions
+  # to use
   # Order of calls/operation:
   # (1) getDensityGates() (exported function) calls:
   # (2) getDensityMats (internal) calls (in the following order)
@@ -98,7 +100,8 @@ getDensityGates <- function(intens_dat,
 
   if (!(inherits(bin_n, "numeric"))) {
     rlang::warn(
-      message=c("Warning: `bin_n` not specified as numeric.", "i"="Default value `bin_n=512` will be used.")
+      message=c("Warning: `bin_n` not specified as numeric.",
+                "i"="Default value `bin_n=512` will be used.")
     )
 
     bin_n <- 512
@@ -133,9 +136,10 @@ getDensityGates <- function(intens_dat,
 
   if (!is.null(neg_intensity_threshold)) {
     i_dat <-
-      intens_dat %>%
+      intens_dat |>
       dplyr::filter(!(
-        dplyr::if_any(dplyr::all_of(marker), ~ .x < neg_intensity_threshold)
+        dplyr::if_any(dplyr::all_of(marker),
+                      ~ .x < neg_intensity_threshold)
       ))
   } else {
     i_dat <- intens_dat
@@ -158,7 +162,7 @@ getDensityGates <- function(intens_dat,
       # two columns with names marker and pos_peak_threshold
       # Change the colnames of pos_peak_thresholds to all caps if df
       pos_peak_threshold <-
-        pos_peak_threshold %>%
+        pos_peak_threshold |>
         janitor::clean_names(case="all_caps")
 
       chk1 <- all(colnames(pos_peak_threshold) %in% c("MARKER", "POS_PEAK_THRESHOLD"))
@@ -180,7 +184,7 @@ getDensityGates <- function(intens_dat,
 
         # dplyr::add_row should add a row per string in the nms_to_fill vector with pos_peak_threshold fixed
         pos_peak_threshold <-
-          pos_peak_threshold %>%
+          pos_peak_threshold |>
           dplyr::add_row(MARKER=nms_to_fill, POS_PEAK_THRESHOLD=1800)
       } else if (!(chk1 & chk2)) {
         rlang::abort(
@@ -211,10 +215,9 @@ getDensityGates <- function(intens_dat,
     lapply(marker, function(m) {
       # Grab the pos peak threshold corresponding to the current marker to gate
       p_threshold <-
-        pos_peak_threshold %>%
-        dplyr::filter(MARKER == m) %>%
-        dplyr::pull(.data$POS_PEAK_THRESHOLD)
-
+        pos_peak_threshold |>
+        dplyr::filter(MARKER == m) |>
+        dplyr::pull("POS_PEAK_THRESHOLD")
 
       # Still expects just 1 marker at a time and the pos peak threshold to be a numeric
       getDensityMats(
@@ -233,13 +236,13 @@ getDensityGates <- function(intens_dat,
   # Grab the cutoff or gates and return as a tibble
   cutoffs <-
     lapply(marker, function(m) {
-      dens_binned[[m]] %>%
+      dens_binned[[m]] |>
         dplyr::mutate("{m}" :=
           purrr::map(.data$dens_peaks_final, function(d) {
             c <-
-              d %>%
-              dplyr::filter(.data$cutoff == TRUE) %>%
-              dplyr::select(.data$x_avg)
+              d |>
+              dplyr::filter(cutoff == TRUE) |>
+              dplyr::select(x_avg)
 
             if (nrow(c) == 0) {
               return(NA_real_)

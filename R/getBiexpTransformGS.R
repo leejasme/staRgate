@@ -30,9 +30,14 @@ getBiexpTransformGS <- function(gs, path_biexp_params) {
   #' # directly apply
   #'
   #' # File path to the FCS file
-  #' path_fcs <- system.file("extdata", "example_fcs.fcs", package="staRgate", mustWork=TRUE)
-  #' path_biexp_params <- system.file("extdata", "biexp_transf_parameters_x50.csv",
-  #'                                  package="staRgate", mustWork=TRUE)
+  #' path_fcs <- system.file("extdata",
+  #'                         "example_fcs.fcs",
+  #'                         package="staRgate",
+  #'                         mustWork=TRUE)
+  #' path_biexp_params <- system.file("extdata",
+  #'                                  "biexp_transf_parameters_x50.csv",
+  #'                                  package="staRgate",
+  #'                                  mustWork=TRUE)
   #'
   #' # Create a cytoset then convert to gs
   #' cs <- flowWorkspace::load_cytoset_from_fcs(path_fcs)
@@ -47,7 +52,7 @@ getBiexpTransformGS <- function(gs, path_biexp_params) {
 
   ## Read in the table of parameters
   tbl_biexp_params <-
-    utils::read.csv(path_biexp_params) %>%
+    utils::read.csv(path_biexp_params) |>
     janitor::clean_names(case="all_caps")
 
   ## loop through all the channels and create a biexpTrans object per channel

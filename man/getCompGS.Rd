@@ -2,21 +2,24 @@
 % Please edit documentation in R/getCompGS.R
 \name{getCompGS}
 \alias{getCompGS}
-\title{Applies Compensation using specifications in csv file provided at \code{path_comp_mat}}
+\title{Applies Compensation using specifications in csv file provided at
+\code{path_comp_mat}}
 \usage{
 getCompGS(gs, path_comp_mat)
 }
 \arguments{
 \item{gs}{GatingSet to apply Biexponential Transformation to}
 
-\item{path_comp_mat}{file path for .csv file that specifies the Compensation Matrix}
+\item{path_comp_mat}{file path for .csv file that specifies the
+Compensation Matrix}
 }
 \value{
 GatingSet with compensated data
 }
 \description{
-The csv file at \code{path_comp_mat} should specify the channels to apply the compensation to.
-The format is a matrix where the col and row names correspond to the channel names
+The csv file at \code{path_comp_mat} should specify the channels to apply
+the compensation to. The format is a matrix where the col and row names
+correspond to the channel names
 }
 \details{
 An example matrix is provided in the extdata/comp_mat_example_fcs.csv
@@ -31,19 +34,25 @@ An example matrix is provided in the extdata/comp_mat_example_fcs.csv
 # directly apply
 
 # File path to the FCS file
-path_fcs = system.file("extdata", "example_fcs.fcs", package = "staRgate", mustWork = TRUE)
-path_biexp_params = system.file("extdata", "biexp_transf_parameters_x50.csv",
-                                 package="staRgate", mustWork=TRUE)
+path_fcs <- system.file("extdata",
+                        "example_fcs.fcs",
+                        package="staRgate",
+                        mustWork=TRUE)
+
+path_biexp_params <- system.file("extdata",
+                                 "biexp_transf_parameters_x50.csv",
+                                 package="staRgate",
+                                 mustWork=TRUE)
 
 # Create a cytoset then convert to gs
-cs = flowWorkspace::load_cytoset_from_fcs(path_fcs)
-gs = flowWorkspace::GatingSet(cs)
+cs <- flowWorkspace::load_cytoset_from_fcs(path_fcs)
+gs <- flowWorkspace::GatingSet(cs)
 
-path_comp_mat = system.file("extdata", "comp_mat_example_fcs.csv",
+path_comp_mat <- system.file("extdata", "comp_mat_example_fcs.csv",
                              package="staRgate", mustWork=TRUE)
 
 # gs is a GatingSet object
-gs = getCompGS(gs, path_comp_mat=path_comp_mat)
+gs <- getCompGS(gs, path_comp_mat=path_comp_mat)
 
 # Checks the comp mat was successfully applied
 flowWorkspace::gh_get_compensations(gs)

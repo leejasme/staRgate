@@ -22,8 +22,8 @@ the transformation to and the parameters
 (negative decades, width basis and positive decades).
 }
 \details{
-The default is negative decades = 0.5, width basis = -30 and
-positive decades = 4.5.
+The default is negative decades=0.5, width basis=-30 and
+positive decades=4.5.
 
 The Transformation can be applied to only a subset of the channels
 included in the GatingSet.
@@ -40,16 +40,21 @@ An example table is provided in the extdata/biexp_transf_parameters_x50.csv
 # directly apply
 
 # File path to the FCS file
-path_fcs = system.file("extdata", "example_fcs.fcs", package = "staRgate", mustWork = TRUE)
-path_biexp_params = system.file("extdata", "biexp_transf_parameters_x50.csv",
-                                 package="staRgate", mustWork=TRUE)
+path_fcs <- system.file("extdata",
+                        "example_fcs.fcs",
+                        package="staRgate",
+                        mustWork=TRUE)
+path_biexp_params <- system.file("extdata",
+                                 "biexp_transf_parameters_x50.csv",
+                                 package="staRgate",
+                                 mustWork=TRUE)
 
 # Create a cytoset then convert to gs
-cs = flowWorkspace::load_cytoset_from_fcs(path_fcs)
-gs = flowWorkspace::GatingSet(cs)
+cs <- flowWorkspace::load_cytoset_from_fcs(path_fcs)
+gs <- flowWorkspace::GatingSet(cs)
 
 # gs must be a GatingSet object
-gs = getBiexpTransformGS(gs, path_biexp_params=path_biexp_params)
+gs <- getBiexpTransformGS(gs, path_biexp_params=path_biexp_params)
 
 # To check the transformation parameters applied
 flowWorkspace::gh_get_transformations(gs)

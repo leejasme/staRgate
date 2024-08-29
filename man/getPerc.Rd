@@ -26,31 +26,31 @@ See \code{expand_num} argument and examples for how to specify}
 See \code{expand_denom} argument and examples for how to specify.}
 
 \item{expand_num}{logical, only accepts \code{TRUE} or \code{FALSE} with default of \code{FALSE} \cr
-if \code{expand_num = TRUE}, currently only considers up to pairs of markers
+if \code{expand_num=TRUE}, currently only considers up to pairs of markers
 specified in \code{num_marker} in the numerator of subpopulation calculations
 (e.g., CD4+ & CD8- of CD3+) \cr
-if \code{expand_num = FALSE}, only considers each marker specified in \code{num_marker}
+if \code{expand_num=FALSE}, only considers each marker specified in \code{num_marker}
 individually in the numerator of subpopulation calculations
 (e.g., CD4+ of CD3+)}
 
 \item{expand_denom}{logical, only accepts \code{TRUE} or \code{FALSE} with default of \code{FALSE} \cr
-if \code{expand_denom = TRUE}, currently considers up to 1 marker from the \code{num_marker} and
+if \code{expand_denom=TRUE}, currently considers up to 1 marker from the \code{num_marker} and
 the unique combinations of \code{denom_marker} to generate list of subpopulations \cr
-e.g., if \code{denom_marker = c("CD8")}, \code{num_marker = c("LAG3", "KI67")}, and \code{expand_denom = TRUE},
+e.g., if \code{denom_marker=c("CD8")}, \code{num_marker=c("LAG3", "KI67")}, and \code{expand_denom=TRUE},
 the subpopulations will include: \cr
 1. LAG3+ of CD8+, LAG3- of CD8+, LAG3+ of CD8-, LAG3- of CD8-, \cr
 2. KI67+ of CD8+, KI67- of CD8+, KI67+ of CD8-, KI67- of CD8-, \cr
 3. KI67+ of (LAG3+ & CD8+), KI67- of (LAG3+ & CD8+), KI67+ of (LAG3+ & CD8-), KI67- of (LAG3+ & CD8-)...etc., \cr
 4. LAG3+ of (KI67+ & CD8+), LAG3- of (KI67+ & CD8+), LAG3+ of (KI67+ & CD8-), LAG3- of (KI67+ & CD8-)...etc., \cr
-if \code{expand_denom = FALSE}, only generates the list of subpopulations based on
+if \code{expand_denom=FALSE}, only generates the list of subpopulations based on
 unique combinations of the \code{denom_marker}
-(e.g., \code{denom_marker = c("CD4")} and \code{expand_denom = FALSE} only considers subpopulations with
+(e.g., \code{denom_marker=c("CD4")} and \code{expand_denom=FALSE} only considers subpopulations with
 denominator CD4+ and CD4- whereas
-\verb{denom_marker = c("CD4", "CD8"} and \code{expand_denom = FALSE} will consider subpopulations with denominators
+\verb{denom_marker=c("CD4", "CD8"} and \code{expand_denom=FALSE} will consider subpopulations with denominators
 (CD4- & CD8-), (CD4+ & CD8-), (CD4- & CD8+) and (CD4+ & CD8+))}
 
 \item{keep_indicators}{logical, only accepts \code{TRUE} or \code{FALSE} with default of \code{TRUE} \cr
-if \code{keep_indicators = TRUE}, will return indicator columns of 0/1 to specify which markers are considered in the
+if \code{keep_indicators=TRUE}, will return indicator columns of 0/1 to specify which markers are considered in the
 numerator and denominators of the subpopulations.  \cr
 Naming convention for the numerator cols are \verb{<marker>_POS}
 and for denominator cols are \verb{<marker>_POS_D}. \cr
@@ -68,7 +68,7 @@ tibble containing the percentage of cells where
 \item rows correspond to each subpopulation specified in the \code{subpopulation},
 \item \code{n_num} indicates the number of cells that satisifies the numerator conditions,
 \item \code{n_denom} indicates the number of cells that satisifies the denominator conditions,
-\item \code{perc} = \code{n_num} divided by \code{n_denom} unless \code{n_denom} = 0, then \code{perc = NA_real_}
+\item \code{perc}=\code{n_num} divided by \code{n_denom} unless \code{n_denom}=0, then \code{perc=NA_real_}
 }
 }
 \description{
@@ -85,18 +85,18 @@ library(dplyr)
 
 # Create a fake dataset
 set.seed(100)
-intens_dat = tibble::tibble(
-               CD3_pos = rep(c(0, 1), each = 50),
-               CD4 = rnorm(100, 100, 10),
-               CD8 = rnorm(100, 100, 10)
+intens_dat <- tibble::tibble(
+               CD3_pos=rep(c(0, 1), each=50),
+               CD4=rnorm(100, 100, 10),
+               CD8=rnorm(100, 100, 10)
 )
 
 # Run getDensityGates to obtain the gates
-gates = getDensityGates(intens_dat, marker = "CD4", subset_col = "CD3_pos", bin_n = 40)
+gates <- getDensityGates(intens_dat, marker="CD4", subset_col="CD3_pos", bin_n=40)
 
 # Tag on the 0/1 on intens_dat
-intens_dat_2 = getGatedDat(intens_dat, cutoffs = gates, subset_col = "CD3_pos")
+intens_dat_2 <- getGatedDat(intens_dat, cutoffs=gates, subset_col="CD3_pos")
 
 # Get percentage for CD4 based on gating
-getPerc(intens_dat_2, num_marker = c("CD4"), denom_marker = "CD3")
+getPerc(intens_dat_2, num_marker=c("CD4"), denom_marker="CD3")
 }

@@ -18,26 +18,26 @@ getDensityGates(
 \arguments{
 \item{intens_dat}{dataframe of pre-gated (compensated, biexp. transf,
 openCyto steps) intensity values where
-cols = intensity value per marker,
-rows = each sample}
+cols=intensity value per marker,
+rows=each sample}
 
-\item{marker}{string for the marker(s) to gate on
-the names need to match exactly the column name in \code{intens_dat}}
+\item{marker}{string for the marker(s) to gate on the names need to match
+exactly the column name in \code{intens_dat}}
 
-\item{subset_col}{string for the column name to indicate the subsets to apply
-density gating on will perform operation on subsets
+\item{subset_col}{string for the column name to indicate the subsets to
+apply density gating on will perform operation on subsets
 corresponding to each unique value in column}
 
-\item{bin_n}{numeric to be passed to \code{n} parameter of \code{density(n = bin_n)}
+\item{bin_n}{numeric to be passed to \code{n} parameter of \code{density(n=bin_n)}
 for number of equally spaced points at which the density is to
 be estimated \cr
 Default is 512, which is the default of
-\code{density(n = 512)}}
+\code{density(n=512)}}
 
 \item{peak_detect_ratio}{numeric threshold for eliminating small peaks where
 a peak that is < than the highest peak by \code{peak_detect_ratio}
 times will be ignored \cr
-Default = 10}
+Default=10}
 
 \item{pos_peak_threshold}{either:
 \itemize{
@@ -59,12 +59,12 @@ Expects the \code{neg_intensity_threshold} is on the same scale as
 the transformed data in \code{intens_dat} \cr
 Default is \code{NULL}: no filters applied and density estimation
 based on all cells in corresponding subsets.\cr
-Suggested for biexp. transformed data is -1000 which corresponds
-to ~-3300 on the original intensity scale)}
+Suggested for biexp. transformed data is -1000 which
+corresponds to ~-3300 on the original intensity scale)}
 }
 \value{
-tibble of gates/cutoffs for \code{marker} for each unique subset found in
-\code{subset_col} where
+tibble of gates/cutoffs for \code{marker} for each unique subset found
+in \code{subset_col} where
 \itemize{
 \item rows correspond to unique values in \code{subset_col}
 \item , columns correspond to\code{marker}
@@ -73,21 +73,22 @@ tibble of gates/cutoffs for \code{marker} for each unique subset found in
 \description{
 For each unique value in \code{subset_col}, gate using density and estimated
 derivatives to identify cutoff at shoulder (i.e., point of tapering off)
-relative to the peak for \code{marker} (intensity values). The strategy of cutting
-at the shoulder mimics the strategy to gate relative to a unimodal background
-negative subpopulation, which is capable of capturing dim subpopulations.
+relative to the peak for \code{marker} (intensity values).
+The strategy of cutting at the shoulder mimics the strategy to gate
+relative to a unimodal background negative subpopulation, which is capable
+of capturing dim subpopulations.
 }
 \examples{
 # Create a fake dataset
 set.seed(100)
-intens_dat = tibble::tibble(
+intens_dat<-tibble::tibble(
                CD3_pos=rep(c(0, 1), each=50),
-               CD4 = rnorm(100, 100, 10),
-               CD8 = rnorm(100, 100, 10)
+               CD4=rnorm(100, 100, 10),
+               CD8=rnorm(100, 100, 10)
 )
 
 # Run density gating, leaving other params at suggested defaults
-# number of bins suggested is 40 but default is at `bin_n = 512`,
+# number of bins suggested is 40 but default is at `bin_n=512`,
 # which is the default for the R base density() function
 getDensityGates(intens_dat, marker="CD4", subset_col="CD3_pos", bin_n=40)
 }
