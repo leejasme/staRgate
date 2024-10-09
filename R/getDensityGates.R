@@ -249,7 +249,7 @@ getDensityGates <- function(intens_dat,
             } else {
               return(c)
             }
-          }) %>%
+          }) |>
           unlist()) %>%
         dplyr::select(dplyr::all_of(c(subset_col, m)))
     }) %>%
