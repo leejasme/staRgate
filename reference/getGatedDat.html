@@ -53,25 +53,28 @@ as indicated by the columns in <code>cutoffs</code></p>
 
 
 <dl><dt id="arg-intens-dat">intens_dat<a class="anchor" aria-label="anchor" href="#arg-intens-dat"></a></dt>
-<dd><p>dataframe of pre-gated (compensated, biexp. transf, openCyto steps) intensity values where
-rows=each cell and cols are the intensity values for each marker</p></dd>
+<dd><p>dataframe of pre-gated (compensated, biexp. transf,
+openCyto steps) intensity values where rows=each cell and
+cols are the intensity values for each marker</p></dd>
 
 
 <dt id="arg-cutoffs">cutoffs<a class="anchor" aria-label="anchor" href="#arg-cutoffs"></a></dt>
 <dd><p>tibble of gates/cutoffs for all markers to gate <br>
-Expects <code>cutoffs</code> to match format of output from <code><a href="getDensityGates.html">getDensityGates()</a></code> with
-column corresponding to a marker, and rows to the subsets defined in the
-<code>subset_col</code></p></dd>
+Expects <code>cutoffs</code> to match format of output from <code><a href="getDensityGates.html">getDensityGates()</a></code>
+with column corresponding to a marker, and rows to the subsets
+defined in the <code>subset_col</code></p></dd>
 
 
 <dt id="arg-subset-col">subset_col<a class="anchor" aria-label="anchor" href="#arg-subset-col"></a></dt>
-<dd><p>string for the column name to indicate the subsets to apply density gating on
-will perform operation on subsets corresponding to each unique value in column</p></dd>
+<dd><p>string for the column name to indicate the subsets to
+apply density gating on will perform operation on subsets
+corresponding to each unique value in column</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code>intens_dat</code> with additional columns attached for each marker in <code>cutoffs</code></p>
+    <p><code>intens_dat</code> with additional columns attached for each marker
+in <code>cutoffs</code></p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
