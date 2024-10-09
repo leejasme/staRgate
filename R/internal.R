@@ -46,11 +46,10 @@ getDensityDerivs <- function(dens,
 
   # x every 1
   x_binned <-
-    x %>%
-    range() %>%
-    {
-      seq(.[[1]], .[[2]], by = 1)
-    }
+    range(x) |>
+    (function(r){
+      seq(r[[1]], r[[2]], by = 1)
+    })()
 
   # Find interval
   new_d <-
@@ -58,18 +57,18 @@ getDensityDerivs <- function(dens,
       x = x,
       y = dens$y,
       x_int = findInterval(x, x_binned)
-    ) %>%
-    dplyr::group_by(.data$x_int) %>%
+    ) |>
+    dplyr::group_by(.data$x_int) |>
     dplyr::summarize(
       x_avg = mean(x),
       y_avg = mean(y)
-    ) %>%
-    dplyr::arrange(x_avg) %>%
+    ) |>
+    dplyr::arrange(x_avg) |>
     # 2022-09-06 add the original row num here
     # Want the original row num for merging back later
     # Based on the x continuous value might be problematic with rounding
-    tibble::rownames_to_column(var = "original_row_num") %>%
-    dplyr::mutate(original_row_num = as.numeric(original_row_num)) %>%
+    tibble::rownames_to_column(var = "original_row_num") |>
+    dplyr::mutate(original_row_num = as.numeric(original_row_num)) |>
     dplyr::mutate(
       first_deriv = c(0, diff(y_avg) / diff(x_avg)),
       first_deriv_sign = sign(first_deriv),
@@ -89,7 +88,7 @@ getDensityDerivs <- function(dens,
 
   # 2022-06-15 split out the plateau_pre step bc need to fix the off-by-1 for local_peak identified?
   new_d <-
-    new_d %>%
+    new_d |>
     dplyr::mutate(
       # Due to how the diff and deriv are calculated, the point of interest is back tracked by 1 so check 2nd deriv of 1 point before
       plateau_pre = ((c(0, diff(third_deriv_sign)) == -2) & (sign(fourth_deriv) < 0)),
@@ -158,10 +157,10 @@ getDensityMats <- function(intens_dat,
   ## Calc density ---
   # Need to separate out per subset
   dens <-
-    intens_dat %>%
-    dplyr::group_by(!!dplyr::sym(subset_col)) %>%
+    intens_dat |>
+    dplyr::group_by(!!dplyr::sym(subset_col)) |>
     # each subset's data is separated out in `data`
-    tidyr::nest() %>%
+    tidyr::nest() |>
     # calculate density for each subset separately
     dplyr::mutate(
       dens_obj = purrr::map(
@@ -170,14 +169,14 @@ getDensityMats <- function(intens_dat,
           n = bin_n
         )
       )
-    ) %>%
+    ) |>
     dplyr::ungroup()
 
   # Smooth the density by taking n bins = bin_n
   # calc 1st and 2nd deriv of each bin's avg y (density values) at avg x value
   # identify local peaks and plateuing
   dens_binned <-
-    dens %>%
+    dens |>
     dplyr::mutate(
       dens_binned =
         purrr::map(
@@ -214,7 +213,7 @@ getDensityMats <- function(intens_dat,
           function(d) {
             sum(d$peak)
           }
-        ) %>%
+        ) |>
           unlist(),
       # bin_width = bin_size,
       bin_n = bin_n
@@ -222,16 +221,16 @@ getDensityMats <- function(intens_dat,
 
   # Check the peak value against threshold
   flag_peak <-
-    dens_binned %>%
-    dplyr::select(!!dplyr::sym(subset_col), dens_peaks) %>%
+    dens_binned |>
+    dplyr::select(!!dplyr::sym(subset_col), dens_peaks) |>
     dplyr::mutate(
       peak_loc =
         purrr::map(
           dens_peaks,
           function(x) {
-            temp <- x %>%
-              dplyr::filter(peak == TRUE) %>%
-              dplyr::slice_min(x_avg) %>%
+            temp <- x |>
+              dplyr::filter(peak == TRUE) |>
+              dplyr::slice_min(x_avg) |>
               dplyr::pull(x_avg)
 
             # TO get around identifying 0 peaks
@@ -241,12 +240,12 @@ getDensityMats <- function(intens_dat,
               return(temp)
             }
           }
-        ) %>%
+        ) |>
           unlist(),
       flag_pos_peak =
         peak_loc > pos_peak_threshold
-    ) %>%
-    dplyr::select(-dens_peaks) %>%
+    ) |>
+    dplyr::select(-dens_peaks) |>
     dplyr::filter(flag_pos_peak == TRUE)
 
   # Recalculate with flipped binned intensity
@@ -257,12 +256,12 @@ getDensityMats <- function(intens_dat,
   # To prevent unexpected errors with empty rows
   if (nrow(flag_peak) > 0) {
     dens_flipped <-
-      dens_binned %>%
+      dens_binned |>
       # Only filter to the subsets that needed to be recalculated
       dplyr::filter(
         # need a glue::glue to work
         !!rlang::parse_expr(glue::glue("{subset_col} %in% flag_peak[[subset_col]]"))
-      ) %>%
+      ) |>
       dplyr::mutate(
         dens_peaks_flip =
           purrr::map(
@@ -280,15 +279,15 @@ getDensityMats <- function(intens_dat,
               )
             }
           )
-      ) %>%
+      ) |>
       dplyr::select(
         dplyr::all_of(subset_col),
         dens_peaks_flip
       )
   } else if (nrow(flag_peak) == 0) {
     dens_flipped <-
-      dens %>%
-      dplyr::select(!!dplyr::sym(subset_col)) %>%
+      dens |>
+      dplyr::select(!!dplyr::sym(subset_col)) |>
       dplyr::mutate(
         dens_peaks_flip =
           rep(list(NULL), length(unique(dens[, subset_col])))
@@ -301,7 +300,7 @@ getDensityMats <- function(intens_dat,
       dens_binned,
       dens_flipped,
       by = subset_col
-    ) %>%
+    ) |>
     dplyr::mutate(
       dens_peaks_final =
         if (all(vapply(dens_peaks_flip, is.null, FUN.VALUE = logical(1)))) {
@@ -315,9 +314,9 @@ getDensityMats <- function(intens_dat,
             function(dens_og, dens_f) {
               if (!is.null(dens_f)) {
                 dplyr::left_join(
-                  dens_og %>%
+                  dens_og |>
                     dplyr::select(-cutoff),
-                  dens_f %>%
+                  dens_f |>
                     dplyr::select(
                       original_row_num,
                       cutoff
@@ -330,7 +329,7 @@ getDensityMats <- function(intens_dat,
             }
           )
         }
-    ) %>%
+    ) |>
     # Try to remove unnecessary parts
     dplyr::select(-dens_binned)
 
@@ -374,9 +373,9 @@ getDensityPeakCutoff <- function(dens_binned_dat,
 
   # Identify "real peaks"
   new_d <-
-    dens_binned_dat %>%
-    dplyr::filter(local_peak == TRUE) %>%
-    dplyr::arrange(-y_avg) %>%
+    dens_binned_dat |>
+    dplyr::filter(local_peak == TRUE) |>
+    dplyr::arrange(-y_avg) |>
     # Get ratios relative to the highest peak
     dplyr::mutate(
       ratio = vapply(
@@ -386,38 +385,36 @@ getDensityPeakCutoff <- function(dens_binned_dat,
         },
         numeric(1)
       )
-    ) %>%
+    ) |>
     # Remove any peaks that are "too small"
     # threshold is at ratio < 1/peak_detect_ratio is "too small"
     # If the highest peak is > peak_detect_ratio times the height of the peak in question
     # then the peak is too small
-    dplyr::filter(ratio >= 1 / peak_detect_ratio) %>%
+    dplyr::filter(ratio >= 1 / peak_detect_ratio) |>
     # denoting these as "true peaks"
-    dplyr::mutate(peak = TRUE) %>%
-    dplyr::select(original_row_num, peak) %>%
+    dplyr::mutate(peak = TRUE) |>
+    dplyr::select(original_row_num, peak) |>
     dplyr::left_join(
       dens_binned_dat,
-      .,
+      y = _,
       by = "original_row_num"
-    ) %>%
+    ) |>
     # Replace the NA in the peak col to avoid confusion
     dplyr::mutate(
-      peak = # replace_na(peak, FALSE))
-      # Use ifelse instead to not rely on tidyr::replace_na
-        ifelse(is.na(peak), FALSE, peak)
+      peak = ifelse(is.na(peak), FALSE, peak)
     )
 
   # 2022-04-14 for all peaks need to correct off-by-one error where "peak" is identified at the
   #   # 1 index over from actual peak
   aux_ind_all_peaks <-
-    new_d %>%
-    dplyr::filter(peak == TRUE) %>%
+    new_d |>
+    dplyr::filter(peak == TRUE) |>
     # 2022-12-30 arrange by the height
-    dplyr::arrange(-y_avg) %>%
+    dplyr::arrange(-y_avg) |>
     dplyr::pull(original_row_num)
 
   new_d <-
-    new_d %>%
+    new_d |>
     dplyr::mutate(peak = dplyr::case_when(
       # set the aux_ind_neg_peak as peak = TRUE to correct for off-by-one error
       # 2022-06-15 fixed local_peak off-by-one so no need to -1
@@ -480,15 +477,17 @@ getDensityPeakCutoff <- function(dens_binned_dat,
   # 2022-04-14 the cutoff is at the start of the plateau after peak
   # plateau_pre == TRUE, min x_avg and then subtract 1 on the index
   aux_ind_cutoff_pre <-
-    new_d %>%
+    new_d |>
     # # 2023-03-14 Add a condition to check for right side of neg peak (left if flipped)
-    dplyr::filter((original_row_num > aux_ind_bound[1]) & (original_row_num <= aux_ind_bound[2])) %>%
-    dplyr::slice_max(plateau_pre_2) %>%
-    # 2022-09-07 when density flipped, want the x_avg that's max
-    purrr::when(
-      dens_flip == FALSE ~ dplyr::slice_min(., x_avg),
-      ~ dplyr::slice_max(., x_avg)
-    ) %>%
+    dplyr::filter((original_row_num > aux_ind_bound[1]) & (original_row_num <= aux_ind_bound[2])) |>
+    dplyr::slice_max(plateau_pre_2) |>
+    (function(df){
+      if(dens_flip == FALSE){
+        dplyr::slice_min(df, x_avg)
+      }else{
+        dplyr::slice_max(df, x_avg)
+      }
+    })()|>
     dplyr::pull(original_row_num)
 
   # 2023-03-30 Offset by 1 due to calculation of diff and derivs
@@ -497,11 +496,11 @@ getDensityPeakCutoff <- function(dens_binned_dat,
   # Creating a column for cutoff
   if (length(aux_ind_cutoff) == 0) {
     new_d <-
-      new_d %>%
+      new_d |>
       dplyr::mutate(cutoff = FALSE)
   } else if (length(aux_ind_cutoff) > 0) {
     new_d <-
-      new_d %>%
+      new_d |>
       dplyr::mutate(
         cutoff = dplyr::case_when(
           original_row_num == aux_ind_cutoff ~ TRUE,

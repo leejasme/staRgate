@@ -6,21 +6,26 @@ getPerc <- function(intens_dat,
                     keep_indicators=TRUE) {
   #' Calculate the percentage of positive cells for specific subpopulations
   #'
-  #' Expects data input same as the output from `get_gated_dat` with indicator columns of specific
-  #' naming convention (see below).
+  #' Expects data input same as the output from `get_gated_dat` with indicator
+  #' columns of specific naming convention (see below).
   #'
-  #' The subpopulations are defined as (num marker(s)) out of (denom marker(s)) where
-  #' num denotes numerator, and denom denotes denominator
+  #' The subpopulations are defined as (num marker(s)) out of
+  #' (denom marker(s)) where num denotes numerator, and
+  #' denom denotes denominator
   #' (these shorthands are used in the function arguments)
   #'
-  #' @param intens_dat dataframe of gated data with indicator columns per marker of interest
+  #' @param intens_dat dataframe of gated data with indicator columns per
+  #'                   marker of interest
   #'                   (specify in `num_marker` and `denom_marker`)
   #'                   with naming convention `marker_pos` per marker with
-  #'                   values of 0 to indicate negative-, 1 to indicate positive-expressing
-  #' @param num_marker string for the marker(s) to specify the numerator for subpopulations of interest \cr
+  #'                   values of 0 to indicate negative-, 1 to indicate
+  #'                   positive-expressing
+  #' @param num_marker string for the marker(s) to specify the numerator for
+  #'                   subpopulations of interest \cr
   #'                   See `expand_num` argument and examples for how to specify
-  #' @param denom_marker string for the marker(s) to specify the denominator for subpopulations of interest \cr
-  #'                     See `expand_denom` argument and examples for how to specify.
+  #' @param denom_marker string for the marker(s) to specify the denominator for
+  #'                   subpopulations of interest \cr
+  #'                   See `expand_denom` argument and examples for how to specify.
   #' @param expand_num logical, only accepts `TRUE` or `FALSE` with default of `FALSE` \cr
   #'                   if `expand_num=TRUE`, currently only considers up to pairs of markers
   #'                   specified in `num_marker` in the numerator of subpopulation calculations
@@ -89,12 +94,11 @@ getPerc <- function(intens_dat,
   # Check names in num_marker and denom_marker are in the data
   # more specifically, it's the <marker>_pos column that matters
   col_nms <-
-    toupper(colnames(intens_dat)) %>%
-    .[grepl("_POS$", .)]
+    toupper(colnames(intens_dat))[grepl("_POS$", (toupper(colnames(intens_dat))))]
 
   # Change all names to full caps to avoid errors?
   intens_dat <-
-    intens_dat %>%
+    intens_dat |>
     janitor::clean_names(case="all_caps")
 
   # Create the colnames that we expect for num_marker and denom_marker with _POS tagged on
@@ -228,28 +232,28 @@ getPerc <- function(intens_dat,
   # Tag on the indicators
   num <-
     purrr::map(num_cols, function(c) {
-      num_pre %>%
+      num_pre |>
         dplyr::mutate(!!c := ifelse(
           grepl(paste0(c, " == 1"), .data$num_filters),
           1,
           ifelse(grepl(paste0(c, " == 0"), .data$num_filters), 0, NA_real_)
         ))
-    }) %>%
-    purrr::reduce(dplyr::left_join, by="num_filters") %>%
+    }) |>
+    purrr::reduce(dplyr::left_join, by="num_filters") |>
     # for the numerator, only expand if expand_num=TRUE
     # If expand_num=TRUE, then tag on the expanded.
-    {
+    (function(df){
       if (expand_num) {
         dplyr::bind_rows(
-          .,
+          df,
           # Using utils::combn to grab pairs of num markers
-          utils::combn(num_pre$num_filters, 2) %>%
+          utils::combn(num_pre$num_filters, 2) |>
             # apply across cols to paste into 1 condition
             apply(MARGIN=2, function(x) {
               paste(x, collapse=" & ")
-            }) %>%
-            data.frame(num_filters=.)
-        ) %>%
+            }) |>
+            data.frame(num_filters=_)
+        ) |>
           # also parse back the 0/1 from the original cols to add indicators
           dplyr::mutate(dplyr::across(dplyr::ends_with("_POS"), ~
             ifelse(
@@ -258,22 +262,21 @@ getPerc <- function(intens_dat,
               ifelse(grepl(
                 paste0(dplyr::cur_column(), " == 1"), .data$num_filters
               ), 1, NA_real_)
-            ))) %>%
+            ))) |>
           # filter out: there are the same markers in the two combos -
           # such as ctla4_pos == 0 & ctla4_pos == 1
-          dplyr::rowwise() %>% # Need rowwise to work with c_across
+          dplyr::rowwise() |> # Need rowwise to work with c_across
           dplyr::filter(!(stringr::str_detect(.data$num_filters, "&") &
             (sum(
               1 * is.na(dplyr::c_across(dplyr::ends_with("_POS")))
             ) == (
               length(num_marker) - 1
-            )))) %>%
+            )))) |>
           dplyr::ungroup()
       } else {
-        .
+        df
       }
-    }
-
+    })()
 
   # Use dplyr filters with strings
   denom <-
@@ -283,94 +286,94 @@ getPerc <- function(intens_dat,
       stats::setNames(data.frame(c(
         paste(d, "0", sep=" == "), paste(d, "1", sep=" == ")
       )), d)
-    }) %>%
+    }) |>
     # Can use base expand.grid instead of tidyr::expand
     # But will do need tidyr for other functions
     # Equivalent as tidyr::expand(denom, denom[[1]], denom[[2]],...)
     # Except this should take care of all n cols
     # So far have tested denom with 1-3 markers
-    tidyr::expand(., !!!.) %>%
+    (function(x){tidyr::expand(x, !!!x)})() |>
     # form a col that puts together the conditions
-    tidyr::unite(.,
+    tidyr::unite(
       col=denom_filters,
       sep=" & ",
       remove=FALSE
-    ) %>%
+    ) |>
     # also parse back the 0/1 from the original cols to add indicators
-    dplyr::mutate(dplyr::across(dplyr::ends_with("_POS"), ~ ifelse(grepl("== 0", .x), 0, 1))) %>%
+    dplyr::mutate(dplyr::across(dplyr::ends_with("_POS"), ~ ifelse(grepl("== 0", .x), 0, 1))) |>
     # to identify the indicator is denominator, tag on the _D to create _POS_D cols
-    dplyr::rename_with(~ paste0(., "_D"), dplyr::ends_with("_POS")) %>%
+    # dplyr::rename_with(~ paste0("_D"), dplyr::ends_with("_POS")) |>
+    dplyr::rename_with(function(nms){paste0(nms, "_D")}, dplyr::ends_with("_POS")) |>
     # If expand_denom=TRUE then need to tag on 1 additional 0/1 for each numerator marker
-    {
+    (function(df){
       if (expand_denom == TRUE) {
-        denom_pre_expand <- .
+        denom_pre_expand <- df
 
         # Tag on this expanded set to the denom
         # expand.grid will create all combinations of the two vectors
         dplyr::bind_rows(
           denom_pre_expand,
-          expand.grid(denom_pre_expand$denom_filters, num_pre$num_filters) %>%
+          expand.grid(denom_pre_expand$denom_filters, num_pre$num_filters) |>
             tidyr::unite(
-              .,
               col=denom_filters,
               sep=" & ",
               remove=FALSE
-            ) %>%
+            ) |>
             # Use the original denom_filters to pull the 0/1 cols
-            dplyr::left_join(., denom_pre_expand, by=c("Var1"="denom_filters")) %>%
+            dplyr::left_join(denom_pre_expand, by=c("Var1"="denom_filters")) |>
             # same thing with the num 0/1s
-            dplyr::left_join(., num, by=c("Var2"="num_filters")) %>%
-            dplyr::select(-"Var1", -"Var2") %>%
+            dplyr::left_join(num, by=c("Var2"="num_filters")) |>
+            dplyr::select(-"Var1", -"Var2") |>
             # The numerator cols pulled from num need to be renamed with the _D
-            dplyr::rename_with(~ paste0(., "_D"), dplyr::ends_with("_POS"))
+            dplyr::rename_with(function(nms){paste0(nms, "_D")}, dplyr::ends_with("_POS"))
         )
       } else {
-        .
+        df
       }
-    }
+    })()
 
   # List out all the subpops by expanding grid of num and denom filters
   # Need to filter out any pairs that have marker in the numerator and denom
   # This should only happen if expand_denom == TRUE
   tbl_subpop <-
-    expand.grid(num$num_filters, denom$denom_filters) %>%
+    expand.grid(num$num_filters, denom$denom_filters) |>
     # This is a rowwise operation
-    dplyr::rowwise() %>%
+    dplyr::rowwise() |>
     dplyr::filter(!grepl(
       # Just need to detect the var name part
       stringr::str_remove(.data$Var1, pattern=" == [[:digit:]]"),
       .data$Var2
-    )) %>%
-    dplyr::ungroup() %>%
+    )) |>
+    dplyr::ungroup() |>
     dplyr::rename(
       num_filters="Var1",
       denom_filters="Var2"
-    ) %>%
+    ) |>
     # Grab the indicators again
-    dplyr::left_join(., num, by="num_filters") %>%
+    dplyr::left_join(num, by="num_filters") |>
     # Grab the indicators again
-    dplyr::left_join(., denom, by="denom_filters") %>%
+    dplyr::left_join(denom, by="denom_filters") |>
     # Drop any that have the same marker in num and denom
     # vapply() is used to create the conditions of checking if not NA in both num and denom
     # for each marker in num_cols,
     # this means there are repeated markers in num and denom
     # then use a paste() after the vapply() to collapse using collapse="|" for OR conditions
     # then finally paste with a ! in front before parsing expr with rlang
-    {
+    (function(df){
       if (expand_denom == TRUE) {
-        dplyr::filter(., !!rlang::parse_expr(
+        dplyr::filter(df, !!rlang::parse_expr(
           vapply(num_cols, function(x) {
             glue::glue("(!is.na({x}) & !is.na({x}_D))")
           },
           FUN.VALUE=character(1)
-          ) %>%
-            paste(., collapse="|") %>%
-            paste0("!(", ., ")")
+          ) |>
+            paste(collapse="|") |>
+            function(p){paste0("!(", p, ")")}
         ))
       } else {
-        .
+        df
       }
-    } %>%
+    })() |>
     # Get marker names
     dplyr::mutate(
       num_label =
@@ -400,13 +403,13 @@ getPerc <- function(intens_dat,
   tbl_counts <-
     purrr::map2_dfr(tbl_subpop$num_filters, tbl_subpop$denom_filters, function(n_filter, d_filter) {
       current_d <-
-        intens_dat %>%
+        intens_dat |>
         # First get our denom
         dplyr::filter(!!rlang::parse_expr(d_filter))
 
       N <- nrow(current_d)
       # n cells is how many out of the denom satisfy the numerator expression
-      n <- nrow(current_d %>% dplyr::filter(!!rlang::parse_expr(n_filter)))
+      n <- nrow(current_d |> dplyr::filter(!!rlang::parse_expr(n_filter)))
 
       data.frame(
         # Keep these to merge back onto tbl_subpop
@@ -426,19 +429,19 @@ getPerc <- function(intens_dat,
 
   # Merge on for final table
   tbl_final <-
-    dplyr::left_join(tbl_subpop, tbl_counts, by=c("denom_filters", "num_filters")) %>%
+    dplyr::left_join(tbl_subpop, tbl_counts, by=c("denom_filters", "num_filters")) |>
     # If not keep indicators, remove the POS cols
-    {
+    (function(df){
       if (!keep_indicators) {
         dplyr::select(
-          .,
+          df,
           -dplyr::ends_with("_POS"),
           -dplyr::ends_with("_POS_D")
         )
       } else {
-        .
+        df
       }
-    } %>%
+    })() |>
     # Move the marker col to front, and remove the num/denom label and filter columns
     dplyr::select(
       "subpopulation",
