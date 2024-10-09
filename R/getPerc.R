@@ -368,7 +368,7 @@ getPerc <- function(intens_dat,
           FUN.VALUE=character(1)
           ) |>
             paste(collapse="|") |>
-            function(p){paste0("!(", p, ")")}
+          (function(p){paste0("!(", p, ")")})()
         ))
       } else {
         df

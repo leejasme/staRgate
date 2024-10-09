@@ -7,19 +7,22 @@
 getGatedDat(intens_dat = intensity_dat, cutoffs, subset_col)
 }
 \arguments{
-\item{intens_dat}{dataframe of pre-gated (compensated, biexp. transf, openCyto steps) intensity values where
-rows=each cell and cols are the intensity values for each marker}
+\item{intens_dat}{dataframe of pre-gated (compensated, biexp. transf,
+openCyto steps) intensity values where rows=each cell and
+cols are the intensity values for each marker}
 
 \item{cutoffs}{tibble of gates/cutoffs for all markers to gate \cr
-Expects \code{cutoffs} to match format of output from \code{\link[=getDensityGates]{getDensityGates()}} with
-column corresponding to a marker, and rows to the subsets defined in the
-\code{subset_col}}
+Expects \code{cutoffs} to match format of output from \code{\link[=getDensityGates]{getDensityGates()}}
+with column corresponding to a marker, and rows to the subsets
+defined in the \code{subset_col}}
 
-\item{subset_col}{string for the column name to indicate the subsets to apply density gating on
-will perform operation on subsets corresponding to each unique value in column}
+\item{subset_col}{string for the column name to indicate the subsets to
+apply density gating on will perform operation on subsets
+corresponding to each unique value in column}
 }
 \value{
-\code{intens_dat} with additional columns attached for each marker in \code{cutoffs}
+\code{intens_dat} with additional columns attached for each marker
+in \code{cutoffs}
 }
 \description{
 Adds an indicator column (0/1) to \code{intens_dat} for each marker in \code{cutoffs}

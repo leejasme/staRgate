@@ -14,15 +14,19 @@ getPerc(
 )
 }
 \arguments{
-\item{intens_dat}{dataframe of gated data with indicator columns per marker of interest
+\item{intens_dat}{dataframe of gated data with indicator columns per
+marker of interest
 (specify in \code{num_marker} and \code{denom_marker})
 with naming convention \code{marker_pos} per marker with
-values of 0 to indicate negative-, 1 to indicate positive-expressing}
+values of 0 to indicate negative-, 1 to indicate
+positive-expressing}
 
-\item{num_marker}{string for the marker(s) to specify the numerator for subpopulations of interest \cr
+\item{num_marker}{string for the marker(s) to specify the numerator for
+subpopulations of interest \cr
 See \code{expand_num} argument and examples for how to specify}
 
-\item{denom_marker}{string for the marker(s) to specify the denominator for subpopulations of interest \cr
+\item{denom_marker}{string for the marker(s) to specify the denominator for
+subpopulations of interest \cr
 See \code{expand_denom} argument and examples for how to specify.}
 
 \item{expand_num}{logical, only accepts \code{TRUE} or \code{FALSE} with default of \code{FALSE} \cr
@@ -72,12 +76,13 @@ tibble containing the percentage of cells where
 }
 }
 \description{
-Expects data input same as the output from \code{get_gated_dat} with indicator columns of specific
-naming convention (see below).
+Expects data input same as the output from \code{get_gated_dat} with indicator
+columns of specific naming convention (see below).
 }
 \details{
-The subpopulations are defined as (num marker(s)) out of (denom marker(s)) where
-num denotes numerator, and denom denotes denominator
+The subpopulations are defined as (num marker(s)) out of
+(denom marker(s)) where num denotes numerator, and
+denom denotes denominator
 (these shorthands are used in the function arguments)
 }
 \examples{
