@@ -1,6 +1,8 @@
 ---
 title: "Tutorial: Running the pipeline"
-output: rmarkdown::html_vignette
+author: Jasme Lee
+output: 
+  BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{Tutorial: Running the pipeline}
   %\VignetteEngine{knitr::rmarkdown}
@@ -22,7 +24,7 @@ knitr::opts_chunk$set(
 
 staRgate is an automated gating pipeline to process and analyze flow cytometry data to characterize the lineage, differentiation and functional states of T-cells. 
 
-This pipeline is designed to mimic the manual gating of defining flow biomarker positive populations relative to a unimodal background population to include cells with varying intensities of marker expression. This is achieved via estimating the kernel density of the intensity distribution and corresponding derivatives. This pipeline integrates the density gating method in conjuction with some pre-processing steps achieved via the R package {openCyto} and an optional step with {flowAI}. The flow data is stored within R as a `GatingSet` object, which makes it easily transferable to other flow cytometry workflows available on BioConductor.
+This pipeline is designed to mimic the manual gating of defining flow biomarker positive populations relative to a unimodal background population to include cells with varying intensities of marker expression. This is achieved via estimating the kernel density of the intensity distribution and corresponding derivatives. This pipeline integrates the density gating method in conjuction with some pre-processing steps achieved via the R package `r Biocpkg("openCyto")` and an optional step with `r Biocpkg("flowAI")`. The flow data is stored within R as a `GatingSet` object, which makes it easily transferable to other flow cytometry workflows available on BioConductor.
 
 This vignette will walk through how to run the {staRgate} pipeline starting from importing an flow cytometry standard (FCS) file into R to preprocessing and gating, as well as identifying T-cell subpopulations for downstream analysis. This pipeline returns results at the single-cell level as well as the summarized sample-level data (for the percentages of T-cell cells when identifying the subpopulations).
 
@@ -46,33 +48,12 @@ if (!require("BiocManager", quietly = TRUE)) {
   install.packages("BiocManager")
 }
 
-# If running R4.3
-BiocManager::install(version = "3.18")
-
-# If running R4.4
-# BiocManager::install(version = "3.19")
-
-
-BiocManager::install(c(
-  "openCyto",
-  "flowAI",
-  "flowCore",
-  "flowWorkspace",
-  "ggcyto"
-))
 ```
 
 
-To install staRgate: 
+The essential dependencies for running the {staRgate} package include: `r Biocpkg("flowCore")`, and `r Biocpkg("flowWorkspace")`.
 
-```{r, echo = TRUE, eval = FALSE}
-devtools::install_github("leejasme/staRgate")
-```
-
-
-The essential dependencies for running the {staRgate} package include: {flowCore}, and {flowWorkspace}.
-
-The following packages are needed to fully run the pipeline as shown in this Tutorial, but not required for the {staRgate} code chunks to run: {openCyto}, {flowAI}, {ggplot2}, {ggCyto}, {gt}
+The following packages are needed to fully run the pipeline as shown in this Tutorial, but not required for the {staRgate} code chunks to run: `r Biocpkg("openCyto")`, `r Biocpkg("flowAI")`, `r CRANpkg("ggplot2")`, `r Biocpkg("ggcyto")`, `r CRANpkg("gt")`
 
 
 ```{r setup}
@@ -113,7 +94,7 @@ path_biexp_params <- system.file("extdata", "biexp_transf_parameters_x50.csv", p
 path_pos_peak_thresholds <- system.file("extdata", "pos_peak_thresholds.csv", package = "staRgate", mustWork = TRUE)
 ```
 
-```{r}
+```{r, echo = FALSE}
 # Some preferred ggplot settings.
 # Not required/relevant for gating
 
@@ -138,7 +119,7 @@ All of these input files are expected to be comma-separated values (csv) files. 
 + Biexponential transformation parameters-
     + This is a table specifying the parameters (negative decades, width basis and positive decades) to be applied to the listed channels
 + Gating template
-    + A gating template is required to run the pre-gating via {openCyto}
+    + A gating template is required to run the pre-gating via `r Biocpkg("openCyto")`
     + The package includes a gating template tailored for gating this panel of T-cell markers. 
     + For examples of how to modify the gating template, please refer to the [openCyto documentation](https://www.bioconductor.org/packages/devel/bioc/vignettes/openCyto/inst/doc/HowToWriteCSVTemplate.html).
 + Bin size 
@@ -146,7 +127,7 @@ All of these input files are expected to be comma-separated values (csv) files. 
 
 A few things to keep in mind when debugging/iterating through gating: 
 
-+ If saving at the same path with same name (i.e., rerunning the same code), the GatingSet folder from the `flowWorkspace::save_gs()` command needs to be deleted for {openCyto} to save again, otherwise, will encounter an error related to an invalid path from the `flowWorkspace::save_gs()` function
++ If saving at the same path with same name (i.e., rerunning the same code), the GatingSet folder from the `flowWorkspace::save_gs()` command needs to be deleted for `r Biocpkg("openCyto")` to save again, otherwise, will encounter an error related to an invalid path from the `flowWorkspace::save_gs()` function
 
 
 # Example
@@ -211,12 +192,12 @@ gs <- getCompGS(gs, path_comp_mat = path_comp_mat)
 chk_cm <- flowWorkspace::gh_get_compensations(gs)
 
 # Not aware of an accessor that we can use for this
-head(chk_cm@spillover)
+head(methods::slot(chk_cm, "spillover"))
 
 # **Optional**- save the comp mat matrix
 # Can grab with the @spillover from the compensation object
 samp_metadata$comp_mat <-
-  chk_cm@spillover
+  methods::slot(chk_cm, "spillover")
 ```
 
 ## Transformation
@@ -244,7 +225,7 @@ tbl_biexp_params %>%
 
 Currently, the package only supports biexponetial transformation for all channels with the `getBiexpTransformGS()` function. However, the user may choose to create a transformation list explicitly if other transformations (e.g., archsin) are desired.
 
-Note that the {flowWorkspace} package also allows for an automated transformation calculation "guessing" appropriate parameters. We chose to explicitly specify the biexponential transformation with fixed parameters for all channels to match the manual gating strategy used in flowJo for a more direct comparison of {staRgate} to the manual gating results.
+Note that the `r Biocpkg("flowWorkspace")` package also allows for an automated transformation calculation "guessing" appropriate parameters. We chose to explicitly specify the biexponential transformation with fixed parameters for all channels to match the manual gating strategy used in flowJo for a more direct comparison of {staRgate} to the manual gating results.
 
 ```{r}
 ## **Optional**-- to check what pre-transformed data against post
@@ -289,9 +270,9 @@ In this context, pre-gating is defined as gating from the root population up to 
 
 Then we will pass the data to the density gating step.
 
-The {flowAI} step serves as a quality control (QC) to match the first Time gate step that is typically done in  manual gating. It is possible, however, that the user may choose to skip this step if {flowAI} excludes too many cells. 
+The `r Biocpkg("flowAI")` step serves as a quality control (QC) to match the first Time gate step that is typically done in  manual gating. It is possible, however, that the user may choose to skip this step if `r Biocpkg("flowAI")` excludes too many cells. 
 
-The first step of the gating template is a QC step that is especially important to include if the user chooses to exclude the {flowAI} step.
+The first step of the gating template is a QC step that is especially important to include if the user chooses to exclude the `r Biocpkg("flowAI")` step.
 
 ```{r}
 flowAI_yn <- FALSE
@@ -337,7 +318,7 @@ if (flowAI_yn) {
 ```
 
 ```{r}
-# Pre-gating up to CD4/8+ with {openCyto}
+# Pre-gating up to CD4/8+ with `r Biocpkg("openCyto")`
 ## Set seed using today's date
 set.seed(glue::glue({
   format(Sys.Date(), format = "%Y%m%d")

@@ -6,39 +6,40 @@
 #     (3) getDensityDerivs() (internal)
 #     (4) getDensityPeakCutoff() (internal)
 
+#' Internal function: Estimate derivatives for density of `marker` for each unique subset of `subset_col`
+#'
+#' Internal function for `get_density_gates`
+#' For each unique value in `subset_col`, estimate the derivatives for
+#' `marker` (intensity values)
+#'
+#'
+#' @param dens `density` object from the \link[stats]{density}
+#' @param marker string for the marker to gate on
+#'              the name needs to match exactly the column name in `intens_dat`
+#' @param subset_col string for the column name to indicate the subsets to apply density gating on
+#'              will perform operation on subsets corresponding to each unique value in column
+#' @param bin_n numeric to be passed to `n` parameter of `density(n = bin_n)` for
+#'              number of equally spaced points at which the density is to be estimated
+#'              default is 512, which is the default of `density(n = 512)`
+#' @param peak_detect_ratio numeric threshold for eliminating small peaks where
+#'              a peak that is < than the highest peak by `peak_detect_ratio` times will be ignored
+#'              default = 10
+#' @param pos_peak_threshold numeric for threshold to identify a positive peak
+#'              default is 1800, which is on the biexponential scale
+#'
+#' @return list of dataframe with density estimation and corresponding 1st-4th derivatives,
+#'         indicators of local peaks, plateau_pre \cr
+#'         each element corresponds to each unique value of `subset_col` \cr
+#'         for each dataframe: rows correspond to each of the bins
+#'
+#' @keywords internal
+
 getDensityDerivs <- function(dens,
                              marker,
                              subset_col,
                              bin_n = 512,
                              peak_detect_ratio = 10,
                              pos_peak_threshold = 1800) {
-  #' Internal function: Estimate derivatives for density of `marker` for each unique subset of `subset_col`
-  #'
-  #' Internal function for `get_density_gates`
-  #' For each unique value in `subset_col`, estimate the derivatives for
-  #' `marker` (intensity values)
-  #'
-  #'
-  #' @param dens `density` object from the \link[stats]{density}
-  #' @param marker string for the marker to gate on
-  #'              the name needs to match exactly the column name in `intens_dat`
-  #' @param subset_col string for the column name to indicate the subsets to apply density gating on
-  #'              will perform operation on subsets corresponding to each unique value in column
-  #' @param bin_n numeric to be passed to `n` parameter of `density(n = bin_n)` for
-  #'              number of equally spaced points at which the density is to be estimated
-  #'              default is 512, which is the default of `density(n = 512)`
-  #' @param peak_detect_ratio numeric threshold for eliminating small peaks where
-  #'              a peak that is < than the highest peak by `peak_detect_ratio` times will be ignored
-  #'              default = 10
-  #' @param pos_peak_threshold numeric for threshold to identify a positive peak
-  #'              default is 1800, which is on the biexponential scale
-  #'
-  #' @return list of dataframe with density estimation and corresponding 1st-4th derivatives,
-  #'         indicators of local peaks, plateau_pre \cr
-  #'         each element corresponds to each unique value of `subset_col` \cr
-  #'         for each dataframe: rows correspond to each of the bins
-  #'
-  #' @keywords internal
 
   # Meant for internally calling within get_density_peaks and for debug/checking matrices/calculations
   # input data is diff- expecting the density obj for general subset_col
@@ -109,41 +110,42 @@ getDensityDerivs <- function(dens,
 }
 
 
+#' Internal function: Matrix of calculations for density gating of intensity values in `marker` for each unique subset of `subset_col`
+#'
+#' Internal function for `getDensityGates`
+#' For each unique value in `subset_col`, there is a matrix for storing calculations for density gating
+#' contains: first to fourth derivatives of density,
+#' indicators for local peaks, "real peaks", plateau_pre and cutoff
+#'
+#'
+#' @param intens_dat dataframe of pre-gated (compensated, biexp. transf, gated CD4/CD8) intensity values where
+#'              cols = intensity value per marker,
+#'              rows = each sample
+#' @param marker string for the marker to gate on
+#'              the name needs to match exactly the column name in `intens_dat`
+#' @param subset_col string for the column name to indicate the subsets to apply density gating on
+#'              will perform operation on subsets corresponding to each unique value in column
+#' @param bin_n numeric to be passed to `n` parameter of `density(n = bin_n)` for
+#'              number of equally spaced points at which the density is to be estimated
+#'              default is 512, which is the default of `density(n = 512)`
+#' @param peak_detect_ratio numeric threshold for eliminating small peaks where
+#'              a peak that is < than the highest peak by `peak_detect_ratio` times will be ignored
+#'              default = 10
+#' @param pos_peak_threshold numeric for threshold to identify a positive peak
+#'           '  default is 1800, which is on the biexponential scale
+#'
+#' @return tibble of matrices for `marker` containing calculations for density gating
+#'         for each unique subset found in `subset_col` \cr
+#'         rows correspond to unique values in `subset_col`, \cr
+#'         cols correspond to the information for density gating
+#' @keywords internal
+
 getDensityMats <- function(intens_dat,
                            marker,
                            subset_col,
                            bin_n = 512,
                            peak_detect_ratio = 10,
                            pos_peak_threshold = 1800) {
-  #' Internal function: Matrix of calculations for density gating of intensity values in `marker` for each unique subset of `subset_col`
-  #'
-  #' Internal function for `getDensityGates`
-  #' For each unique value in `subset_col`, there is a matrix for storing calculations for density gating
-  #' contains: first to fourth derivatives of density,
-  #' indicators for local peaks, "real peaks", plateau_pre and cutoff
-  #'
-  #'
-  #' @param intens_dat dataframe of pre-gated (compensated, biexp. transf, gated CD4/CD8) intensity values where
-  #'              cols = intensity value per marker,
-  #'              rows = each sample
-  #' @param marker string for the marker to gate on
-  #'              the name needs to match exactly the column name in `intens_dat`
-  #' @param subset_col string for the column name to indicate the subsets to apply density gating on
-  #'              will perform operation on subsets corresponding to each unique value in column
-  #' @param bin_n numeric to be passed to `n` parameter of `density(n = bin_n)` for
-  #'              number of equally spaced points at which the density is to be estimated
-  #'              default is 512, which is the default of `density(n = 512)`
-  #' @param peak_detect_ratio numeric threshold for eliminating small peaks where
-  #'              a peak that is < than the highest peak by `peak_detect_ratio` times will be ignored
-  #'              default = 10
-  #' @param pos_peak_threshold numeric for threshold to identify a positive peak
-  #'           '  default is 1800, which is on the biexponential scale
-  #'
-  #' @return tibble of matrices for `marker` containing calculations for density gating
-  #'         for each unique subset found in `subset_col` \cr
-  #'         rows correspond to unique values in `subset_col`, \cr
-  #'         cols correspond to the information for density gating
-  #' @keywords internal
 
   # Meant for using internally in getDensityGates but also for debug
   # to grab the full matrix of density, peak and cutoff
@@ -337,6 +339,31 @@ getDensityMats <- function(intens_dat,
   return(dens_final)
 }
 
+#' Internal function: Determine the "real peaks" and cutoff based on the density estimation and its derivs
+#'
+#' Internal function for `getDensityGates`
+#'
+#' @param dens_binned_dat list of dataframe output from the `getDensityDerivs`
+#' @param marker string for the marker to gate on
+#'              the name needs to match exactly the column name in `dens_binned_dat`
+#' @param subset_col string for the column name to indicate the subsets to apply density gating on
+#'              will perform operation on subsets corresponding to each unique value in column
+#' @param bin_n numeric to be passed to `n` parameter of `density(n = bin_n)` for
+#'              number of equally spaced points at which the density is to be estimated
+#'              default is 512, which is the default of `density(n = 512)`
+#' @param peak_detect_ratio numeric threshold for eliminating small peaks where
+#'              a peak that is < than the highest peak by `peak_detect_ratio` times will be ignored
+#'              default = 10
+#' @param pos_peak_threshold numeric for threshold to identify a positive peak
+#'              default is 1800, which is on the biexponential scale
+#' @param dens_flip logical for whether the gating should be applied "backwards" where the peak is
+#'              a positive peak and want to gate to the left of peak instead of right
+#'
+#' @return list of dataframe `dens_binned_dat` with additional columns added for
+#'         peak(s) identified and the cutoff
+#'         each element corresponds to each unique value of `subset_col`
+#'         for each dataframe: rows correspond to each of the bins
+#' @keywords internal
 
 getDensityPeakCutoff <- function(dens_binned_dat,
                                  marker,
@@ -345,31 +372,6 @@ getDensityPeakCutoff <- function(dens_binned_dat,
                                  peak_detect_ratio = 10,
                                  pos_peak_threshold = 1800,
                                  dens_flip = FALSE) {
-  #' Internal function: Determine the "real peaks" and cutoff based on the density estimation and its derivs
-  #'
-  #' Internal function for `getDensityGates`
-  #'
-  #' @param dens_binned_dat list of dataframe output from the `getDensityDerivs`
-  #' @param marker string for the marker to gate on
-  #'              the name needs to match exactly the column name in `dens_binned_dat`
-  #' @param subset_col string for the column name to indicate the subsets to apply density gating on
-  #'              will perform operation on subsets corresponding to each unique value in column
-  #' @param bin_n numeric to be passed to `n` parameter of `density(n = bin_n)` for
-  #'              number of equally spaced points at which the density is to be estimated
-  #'              default is 512, which is the default of `density(n = 512)`
-  #' @param peak_detect_ratio numeric threshold for eliminating small peaks where
-  #'              a peak that is < than the highest peak by `peak_detect_ratio` times will be ignored
-  #'              default = 10
-  #' @param pos_peak_threshold numeric for threshold to identify a positive peak
-  #'              default is 1800, which is on the biexponential scale
-  #' @param dens_flip logical for whether the gating should be applied "backwards" where the peak is
-  #'              a positive peak and want to gate to the left of peak instead of right
-  #'
-  #' @return list of dataframe `dens_binned_dat` with additional columns added for
-  #'         peak(s) identified and the cutoff
-  #'         each element corresponds to each unique value of `subset_col`
-  #'         for each dataframe: rows correspond to each of the bins
-  #' @keywords internal
 
   # Identify "real peaks"
   new_d <-

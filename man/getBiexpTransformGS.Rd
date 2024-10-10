@@ -20,14 +20,12 @@ GatingSet with Biexponentially Transformed data
 The csv file at \code{path_biexp_params} should specify the channels to apply
 the transformation to and the parameters
 (negative decades, width basis and positive decades).
-}
-\details{
 The default is negative decades=0.5, width basis=-30 and
 positive decades=4.5.
-
 The Transformation can be applied to only a subset of the channels
 included in the GatingSet.
-
+}
+\details{
 An example table is provided in the extdata/biexp_transf_parameters_x50.csv
 }
 \examples{

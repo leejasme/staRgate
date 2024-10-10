@@ -1,53 +1,53 @@
-getCompGS <- function(gs, path_comp_mat) {
-  #' Applies Compensation using specifications in csv file provided at
-  #' `path_comp_mat`
-  #'
-  #' The csv file at `path_comp_mat` should specify the channels to apply
-  #' the compensation to. The format is a matrix where the col and row names
-  #' correspond to the channel names
-  #'
-  #' An example matrix is provided in the extdata/comp_mat_example_fcs.csv
-  #'
-  #' @param gs GatingSet to apply Biexponential Transformation to
-  #' @param path_comp_mat file path for .csv file that specifies the
-  #'        Compensation Matrix
-  #'
-  #' @return GatingSet with compensated data
-  #' @examples
-  #' # This example does not contain all the pre-processing steps required in
-  #' # getting the GatingSet (gs) ready for compensation step
-  #' # To see the steps that are required to creating the (gs),
-  #' # please see the vignette for a full tutorial
-  #'
-  #' # To make this a runnable example, read in the FCS file to create gs and
-  #' # directly apply
-  #'
-  #' # File path to the FCS file
-  #' path_fcs <- system.file("extdata",
-  #'                         "example_fcs.fcs",
-  #'                         package="staRgate",
-  #'                         mustWork=TRUE)
-  #'
-  #' path_biexp_params <- system.file("extdata",
-  #'                                  "biexp_transf_parameters_x50.csv",
-  #'                                  package="staRgate",
-  #'                                  mustWork=TRUE)
-  #'
-  #' # Create a cytoset then convert to gs
-  #' cs <- flowWorkspace::load_cytoset_from_fcs(path_fcs)
-  #' gs <- flowWorkspace::GatingSet(cs)
-  #'
-  #' path_comp_mat <- system.file("extdata", "comp_mat_example_fcs.csv",
-  #'                              package="staRgate", mustWork=TRUE)
-  #'
-  #' # gs is a GatingSet object
-  #' gs <- getCompGS(gs, path_comp_mat=path_comp_mat)
-  #'
-  #' # Checks the comp mat was successfully applied
-  #' flowWorkspace::gh_get_compensations(gs)
-  #'
-  #' @export
+#' Applies Compensation using specifications in csv file provided at
+#' `path_comp_mat`
+#'
+#' The csv file at `path_comp_mat` should specify the channels to apply
+#' the compensation to. The format is a matrix where the col and row names
+#' correspond to the channel names
+#'
+#' An example matrix is provided in the extdata/comp_mat_example_fcs.csv
+#'
+#' @param gs GatingSet to apply Biexponential Transformation to
+#' @param path_comp_mat file path for .csv file that specifies the
+#'        Compensation Matrix
+#'
+#' @return GatingSet with compensated data
+#' @examples
+#' # This example does not contain all the pre-processing steps required in
+#' # getting the GatingSet (gs) ready for compensation step
+#' # To see the steps that are required to creating the (gs),
+#' # please see the vignette for a full tutorial
+#'
+#' # To make this a runnable example, read in the FCS file to create gs and
+#' # directly apply
+#'
+#' # File path to the FCS file
+#' path_fcs <- system.file("extdata",
+#'                         "example_fcs.fcs",
+#'                         package="staRgate",
+#'                         mustWork=TRUE)
+#'
+#' path_biexp_params <- system.file("extdata",
+#'                                  "biexp_transf_parameters_x50.csv",
+#'                                  package="staRgate",
+#'                                  mustWork=TRUE)
+#'
+#' # Create a cytoset then convert to gs
+#' cs <- flowWorkspace::load_cytoset_from_fcs(path_fcs)
+#' gs <- flowWorkspace::GatingSet(cs)
+#'
+#' path_comp_mat <- system.file("extdata", "comp_mat_example_fcs.csv",
+#'                              package="staRgate", mustWork=TRUE)
+#'
+#' # gs is a GatingSet object
+#' gs <- getCompGS(gs, path_comp_mat=path_comp_mat)
+#'
+#' # Checks the comp mat was successfully applied
+#' flowWorkspace::gh_get_compensations(gs)
+#'
+#' @export
 
+getCompGS <- function(gs, path_comp_mat) {
   ## Import comp. mat. csv exported from flowJo
   comp.mat <- utils::read.csv(path_comp_mat, header=TRUE, skip=0) |>
     ## Can remove the X col because that's the row names

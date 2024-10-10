@@ -20,7 +20,6 @@ biocViews: FlowCytometry, Preprocessing, ImmunoOncology
 Imports: 
     dplyr,
     janitor,
-    magrittr,
     purrr,
     rlang,
     stringr,
