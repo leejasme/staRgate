@@ -403,7 +403,8 @@ getDensityPeakCutoff <- function(dens_binned_dat,
     ) |>
     # Replace the NA in the peak col to avoid confusion
     dplyr::mutate(
-      peak = ifelse(is.na(peak), FALSE, peak)
+      peak = dplyr::case_when(is.na(peak) ~ FALSE,
+                              .default=peak)
     )
 
   # 2022-04-14 for all peaks need to correct off-by-one error where "peak" is identified at the

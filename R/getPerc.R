@@ -234,11 +234,13 @@ getPerc <- function(intens_dat,
   num <-
     purrr::map(num_cols, function(c) {
       num_pre |>
-        dplyr::mutate(!!c := ifelse(
-          grepl(paste0(c, " == 1"), .data$num_filters),
-          1,
-          ifelse(grepl(paste0(c, " == 0"), .data$num_filters), 0, NA_real_)
-        ))
+        dplyr::mutate(!!c :=
+                        dplyr::case_when(grepl(paste0(c, " == 1"),
+                                               .data$num_filters) ~ 1,
+                                         grepl(paste0(c, " == 0"),
+                                               .data$num_filters) ~ 0,
+                                         .default=NA_real_)
+        )
     }) |>
     purrr::reduce(dplyr::left_join, by="num_filters") |>
     # for the numerator, only expand if expand_num=TRUE
@@ -257,13 +259,20 @@ getPerc <- function(intens_dat,
         ) |>
           # also parse back the 0/1 from the original cols to add indicators
           dplyr::mutate(dplyr::across(dplyr::ends_with("_POS"), ~
-            ifelse(
-              grepl(paste0(dplyr::cur_column(), " == 0"), .data$num_filters),
-              0,
-              ifelse(grepl(
-                paste0(dplyr::cur_column(), " == 1"), .data$num_filters
-              ), 1, NA_real_)
-            ))) |>
+            # ifelse(
+            #   grepl(paste0(dplyr::cur_column(), " == 0"), .data$num_filters),
+            #   0,
+            #   ifelse(grepl(
+            #     paste0(dplyr::cur_column(), " == 1"), .data$num_filters
+            #   ), 1, NA_real_)
+            # )
+            dplyr::case_when(
+              grepl(paste0(dplyr::cur_column(), " == 0"), .data$num_filters) ~ 0,
+              grepl(paste0(dplyr::cur_column(), " == 1"), .data$num_filters) ~ 1,
+              .default=NA_real_
+            )
+            )
+            ) |>
           # filter out: there are the same markers in the two combos -
           # such as ctla4_pos == 0 & ctla4_pos == 1
           dplyr::rowwise() |> # Need rowwise to work with c_across
@@ -301,7 +310,10 @@ getPerc <- function(intens_dat,
       remove=FALSE
     ) |>
     # also parse back the 0/1 from the original cols to add indicators
-    dplyr::mutate(dplyr::across(dplyr::ends_with("_POS"), ~ ifelse(grepl("== 0", .x), 0, 1))) |>
+    dplyr::mutate(dplyr::across(dplyr::ends_with("_POS"),
+                                ~ dplyr::case_when(grepl("== 0", .x) ~ 0,
+                                                   .default=1)
+                                )) |>
     # to identify the indicator is denominator, tag on the _D to create _POS_D cols
     # dplyr::rename_with(~ paste0("_D"), dplyr::ends_with("_POS")) |>
     dplyr::rename_with(function(nms){paste0(nms, "_D")}, dplyr::ends_with("_POS")) |>

@@ -359,7 +359,9 @@ marker_chnl_names <-
   # Reorder the marker channel names to start with CD3, CD4, CD8 then the rest
   dplyr::arrange(match(marker_full, c("CD3", "CD4", "CD8"))) %>%
   # Clean up
-  dplyr::mutate(marker_full = ifelse(marker_full == "FOX_P3", "FOXP3", marker_full))
+  dplyr::mutate(marker_full = 
+                  dplyr::case_when(marker_full == "FOX_P3" ~ "FOXP3",
+                                   .default = marker_full))
 
 # For our Tcell panel, we only want to apply the density gating on
 # the `markers_to_gate` markers
