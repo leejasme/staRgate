@@ -56,6 +56,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Tutorial: Running the pipeline</h1>
+                        <h4 data-toc-skip class="author">Jasme Lee</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/leejasme/staRgate/blob/main/vignettes/vignette_run_pipeline.Rmd" class="external-link"><code>vignettes/vignette_run_pipeline.Rmd</code></a></small>
@@ -76,10 +77,11 @@ population to include cells with varying intensities of marker
 expression. This is achieved via estimating the kernel density of the
 intensity distribution and corresponding derivatives. This pipeline
 integrates the density gating method in conjuction with some
-pre-processing steps achieved via the R package {openCyto} and an
-optional step with {flowAI}. The flow data is stored within R as a
-<code>GatingSet</code> object, which makes it easily transferable to
-other flow cytometry workflows available on BioConductor.</p>
+pre-processing steps achieved via the R package <em><a href="https://bioconductor.org/packages/3.19/openCyto" class="external-link">openCyto</a></em>
+and an optional step with <em><a href="https://bioconductor.org/packages/3.19/flowAI" class="external-link">flowAI</a></em>.
+The flow data is stored within R as a <code>GatingSet</code> object,
+which makes it easily transferable to other flow cytometry workflows
+available on BioConductor.</p>
 <p>This vignette will walk through how to run the {staRgate} pipeline
 starting from importing an flow cytometry standard (FCS) file into R to
 preprocessing and gating, as well as identifying T-cell subpopulations
@@ -115,31 +117,18 @@ are instructions for installing Bioconductor</a></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://bioconductor.github.io/BiocManager/" class="external-link">"BiocManager"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># If running R4.3</span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span>version <span class="op">=</span> <span class="st">"3.18"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># If running R4.4</span></span>
-<span><span class="co"># BiocManager::install(version = "3.19")</span></span>
-<span></span>
-<span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"openCyto"</span>,</span>
-<span>  <span class="st">"flowAI"</span>,</span>
-<span>  <span class="st">"flowCore"</span>,</span>
-<span>  <span class="st">"flowWorkspace"</span>,</span>
-<span>  <span class="st">"ggcyto"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>To install staRgate:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"leejasme/staRgate"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">}</span></span></code></pre></div>
 <p>The essential dependencies for running the {staRgate} package
-include: {flowCore}, and {flowWorkspace}.</p>
+include: <em><a href="https://bioconductor.org/packages/3.19/flowCore" class="external-link">flowCore</a></em>,
+and <em><a href="https://bioconductor.org/packages/3.19/flowWorkspace" class="external-link">flowWorkspace</a></em>.</p>
 <p>The following packages are needed to fully run the pipeline as shown
 in this Tutorial, but not required for the {staRgate} code chunks to
-run: {openCyto}, {flowAI}, {ggplot2}, {ggCyto}, {gt}</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+run: <em><a href="https://bioconductor.org/packages/3.19/openCyto" class="external-link">openCyto</a></em>,
+<em><a href="https://bioconductor.org/packages/3.19/flowAI" class="external-link">flowAI</a></em>,
+<em><a href="https://CRAN.R-project.org/package=ggplot2" class="external-link">ggplot2</a></em>,
+<em><a href="https://bioconductor.org/packages/3.19/ggcyto" class="external-link">ggcyto</a></em>,
+<em><a href="https://CRAN.R-project.org/package=gt" class="external-link">gt</a></em></p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load libraries</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://leejasme.github.io/staRgate/">staRgate</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">openCyto</span><span class="op">)</span></span>
@@ -168,7 +157,7 @@ run: {openCyto}, {flowAI}, {ggplot2}, {ggCyto}, {gt}</p>
 <span><span class="va">path_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># Print the path_out for user to see</span></span>
 <span><span class="va">path_out</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmptcHHjT"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpkaOnAl"</span></span>
 <span></span>
 <span><span class="co">## File path Gating template</span></span>
 <span><span class="va">gtFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"gating_template_x50_tcell.csv"</span>, package <span class="op">=</span> <span class="st">"staRgate"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -181,18 +170,6 @@ run: {openCyto}, {flowAI}, {ggplot2}, {ggCyto}, {gt}</p>
 <span></span>
 <span><span class="co">## File path to positive peak thresholds</span></span>
 <span><span class="va">path_pos_peak_thresholds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"pos_peak_thresholds.csv"</span>, package <span class="op">=</span> <span class="st">"staRgate"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Some preferred ggplot settings.</span></span>
-<span><span class="co"># Not required/relevant for gating</span></span>
-<span></span>
-<span><span class="va">plot_font_size</span> <span class="op">&lt;-</span> <span class="fl">11</span></span>
-<span></span>
-<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html" class="external-link">theme_set</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
-<span>    text <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="va">plot_font_size</span><span class="op">)</span>,</span>
-<span>    axis.text <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span>,</span>
-<span>    legend.position <span class="op">=</span> <span class="st">"bottom"</span></span>
-<span>  <span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="input-files-and-function-parameters">Input files and function parameters<a class="anchor" aria-label="anchor" href="#input-files-and-function-parameters"></a>
@@ -219,8 +196,8 @@ basis and positive decades) to be applied to the listed channels</li>
 </li>
 <li>Gating template
 <ul>
-<li>A gating template is required to run the pre-gating via
-{openCyto}</li>
+<li>A gating template is required to run the pre-gating via <em><a href="https://bioconductor.org/packages/3.19/openCyto" class="external-link">openCyto</a></em>
+</li>
 <li>The package includes a gating template tailored for gating this
 panel of T-cell markers.</li>
 <li>For examples of how to modify the gating template, please refer to
@@ -241,9 +218,9 @@ gating:</p>
 <li>If saving at the same path with same name (i.e., rerunning the same
 code), the GatingSet folder from the
 <code><a href="https://rdrr.io/pkg/flowWorkspace/man/save_gs.html" class="external-link">flowWorkspace::save_gs()</a></code> command needs to be deleted for
-{openCyto} to save again, otherwise, will encounter an error related to
-an invalid path from the <code><a href="https://rdrr.io/pkg/flowWorkspace/man/save_gs.html" class="external-link">flowWorkspace::save_gs()</a></code>
-function</li>
+<em><a href="https://bioconductor.org/packages/3.19/openCyto" class="external-link">openCyto</a></em>
+to save again, otherwise, will encounter an error related to an invalid
+path from the <code><a href="https://rdrr.io/pkg/flowWorkspace/man/save_gs.html" class="external-link">flowWorkspace::save_gs()</a></code> function</li>
 </ul>
 </div>
 <div class="section level2">
@@ -253,13 +230,13 @@ function</li>
 <p>Optional: include a <code>samp_metadata</code> for saving out some
 properties of the FCS file and from the processing steps (e.g., the
 compensation matrix, the number of cells in the root population)</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Optional to save the samp_metadata</span></span>
 <span><span class="va">samp_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="import-fcs">Import FCS<a class="anchor" aria-label="anchor" href="#import-fcs"></a>
 </h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Read in gating template</span></span>
 <span><span class="va">dtTemplate</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">gtFile</span><span class="op">)</span></span>
 <span></span>
@@ -307,7 +284,7 @@ compensation matrix, the number of cells in the root population)</p>
 <div class="section level3">
 <h3 id="compensation">Compensation<a class="anchor" aria-label="anchor" href="#compensation"></a>
 </h3>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check no comp applied</span></span>
 <span><span class="va">chk_cm</span> <span class="op">&lt;-</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_get_compensations.html" class="external-link">gh_get_compensations</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span>
 <span></span>
@@ -321,7 +298,7 @@ compensation matrix, the number of cells in the root population)</p>
 <span><span class="va">chk_cm</span> <span class="op">&lt;-</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_get_compensations.html" class="external-link">gh_get_compensations</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Not aware of an accessor that we can use for this</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">chk_cm</span><span class="op">@</span><span class="va">spillover</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">methods</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/methods/slot.html" class="external-link">slot</a></span><span class="op">(</span><span class="va">chk_cm</span>, <span class="st">"spillover"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                 AF700-A       APC-A   APC-f750-A      BB515-A    BB660-A</span></span>
 <span><span class="co">#&gt; AF700-A     1.00000e+00 2.48301e-02  2.49284e-01  0.009679220 0.00268438</span></span>
 <span><span class="co">#&gt; APC-A       1.32334e-01 1.00000e+00  3.37338e-02 -0.000160633 0.01598550</span></span>
@@ -368,7 +345,7 @@ compensation matrix, the number of cells in the root population)</p>
 <span><span class="co"># **Optional**- save the comp mat matrix</span></span>
 <span><span class="co"># Can grab with the @spillover from the compensation object</span></span>
 <span><span class="va">samp_metadata</span><span class="op">$</span><span class="va">comp_mat</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">chk_cm</span><span class="op">@</span><span class="va">spillover</span></span></code></pre></div>
+<span>  <span class="fu">methods</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/methods/slot.html" class="external-link">slot</a></span><span class="op">(</span><span class="va">chk_cm</span>, <span class="st">"spillover"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="transformation">Transformation<a class="anchor" aria-label="anchor" href="#transformation"></a>
@@ -380,20 +357,18 @@ with <code>extra negative decades = 0.5</code>,
 <p>The structure of the table of parameters (as .csv format) should be
 first column for the flurochrome names corresponding to the panel,
 followed by the parameters.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tbl_biexp_params</span> <span class="op">&lt;-</span></span>
-<span>  <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">path_biexp_params</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">path_biexp_params</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/clean_names.html" class="external-link">clean_names</a></span><span class="op">(</span>case <span class="op">=</span> <span class="st">"all_caps"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># **Optional**-- saving out the table of parameters as format that's easier to read</span></span>
 <span><span class="co"># Below there is an option to save it out as the transformerList which is what</span></span>
 <span><span class="co"># getBiexpTransformGS() relies on to supply to flowWorkspace::transform</span></span>
-<span><span class="va">samp_metadata</span><span class="op">$</span><span class="va">biexp_params</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">tbl_biexp_params</span></span>
+<span><span class="va">samp_metadata</span><span class="op">$</span><span class="va">biexp_params</span> <span class="op">&lt;-</span> <span class="va">tbl_biexp_params</span></span>
 <span></span>
 <span><span class="co"># The biexp table</span></span>
-<span><span class="va">tbl_biexp_params</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="va">tbl_biexp_params</span><span class="op">)</span></span></code></pre></div>
 <div id="mwlefoodfi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#mwlefoodfi table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -1026,13 +1001,13 @@ followed by the parameters.</p>
 all channels with the <code><a href="../reference/getBiexpTransformGS.html">getBiexpTransformGS()</a></code> function.
 However, the user may choose to create a transformation list explicitly
 if other transformations (e.g., archsin) are desired.</p>
-<p>Note that the {flowWorkspace} package also allows for an automated
-transformation calculation “guessing” appropriate parameters. We chose
-to explicitly specify the biexponential transformation with fixed
-parameters for all channels to match the manual gating strategy used in
-flowJo for a more direct comparison of {staRgate} to the manual gating
-results.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<p>Note that the <em><a href="https://bioconductor.org/packages/3.19/flowWorkspace" class="external-link">flowWorkspace</a></em>
+package also allows for an automated transformation calculation
+“guessing” appropriate parameters. We chose to explicitly specify the
+biexponential transformation with fixed parameters for all channels to
+match the manual gating strategy used in flowJo for a more direct
+comparison of {staRgate} to the manual gating results.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## **Optional**-- to check what pre-transformed data against post</span></span>
 <span><span class="co"># Check no transformation before</span></span>
 <span><span class="va">chk_tf</span> <span class="op">&lt;-</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_get_transformations.html" class="external-link">gh_get_transformations</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span>
@@ -1041,8 +1016,7 @@ results.</p>
 <span><span class="co">#&gt; list()</span></span>
 <span></span>
 <span><span class="va">dat_pre_transform</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">gs</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_data.html" class="external-link">gh_pop_get_data</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_data.html" class="external-link">gh_pop_get_data</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">flowCore</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/exprs.html" class="external-link">exprs</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span></span>
@@ -1073,8 +1047,8 @@ results.</p>
 <span><span class="co">#&gt;         res[ind] &lt;- ifelse(deriv == 1, z$y[1L], 0)</span></span>
 <span><span class="co">#&gt;     res</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x555c181426c0&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x555c196469b0&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x563ce3b9a2e0&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x563ce2cdcf18&gt;</span></span>
 <span><span class="co">#&gt; attr(,"type")</span></span>
 <span><span class="co">#&gt; [1] "biexp"</span></span>
 <span><span class="co">#&gt; attr(,"parameters")</span></span>
@@ -1094,8 +1068,7 @@ results.</p>
 <span><span class="co">#&gt; [1] -30</span></span>
 <span></span>
 <span><span class="va">dat_post_transform</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">gs</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_data.html" class="external-link">gh_pop_get_data</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_data.html" class="external-link">gh_pop_get_data</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">flowCore</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/exprs.html" class="external-link">exprs</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## **Optional**-- to check that the transformation worked on all provided channels!</span></span>
@@ -1251,15 +1224,18 @@ results.</p>
 <p>In this context, pre-gating is defined as gating from the root
 population up to CD3+, or CD4+/CD8+ subsets</p>
 <p>Then we will pass the data to the density gating step.</p>
-<p>The {flowAI} step serves as a quality control (QC) to match the first
-Time gate step that is typically done in manual gating. It is possible,
-however, that the user may choose to skip this step if {flowAI} excludes
-too many cells.</p>
+<p>The <em><a href="https://bioconductor.org/packages/3.19/flowAI" class="external-link">flowAI</a></em>
+step serves as a quality control (QC) to match the first Time gate step
+that is typically done in manual gating. It is possible, however, that
+the user may choose to skip this step if <em><a href="https://bioconductor.org/packages/3.19/flowAI" class="external-link">flowAI</a></em>
+excludes too many cells.</p>
 <p>The first step of the gating template is a QC step that is especially
-important to include if the user chooses to exclude the {flowAI}
+important to include if the user chooses to exclude the <em><a href="https://bioconductor.org/packages/3.19/flowAI" class="external-link">flowAI</a></em>
 step.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">flowAI_yn</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Optional - flowAI step </span></span>
+<span><span class="co"># set to TRUE if want to include</span></span>
+<span><span class="va">flowAI_yn</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span></span>
 <span><span class="co"># Run flowAI if TRUE, run it</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="va">flowAI_yn</span><span class="op">)</span> <span class="op">{</span></span>
@@ -1274,18 +1250,13 @@ step.</p>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Convert to a flowSet in order to convert to GatingSet</span></span>
-<span>  <span class="va">qc_flowai</span> <span class="op">&lt;-</span></span>
-<span>    <span class="va">qc_flowai</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="co"># First convert to a flowSet</span></span>
-<span>    <span class="fu">flowCore</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowCore/man/flowSet-class.html" class="external-link">flowSet</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="va">qc_flowai</span> <span class="op">&lt;-</span> <span class="fu">flowCore</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowCore/man/flowSet-class.html" class="external-link">flowSet</a></span><span class="op">(</span><span class="va">qc_flowai</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Rnemae the sample</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/featureNames.html" class="external-link">sampleNames</a></span><span class="op">(</span><span class="va">qc_flowai</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">pt_samp_nm</span></span>
 <span></span>
 <span>  <span class="co"># convert the flowFrame obj returned in test_qc to a GatingSet to pass to openCyto</span></span>
-<span>  <span class="va">gs_qc</span> <span class="op">&lt;-</span></span>
-<span>    <span class="va">qc_flowai</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/GatingSet-class.html" class="external-link">GatingSet</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="va">gs_qc</span> <span class="op">&lt;-</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/GatingSet-class.html" class="external-link">GatingSet</a></span><span class="op">(</span><span class="va">qc_flowai</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Remove to save memory</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">qc_flowai</span><span class="op">)</span></span>
@@ -1299,8 +1270,8 @@ step.</p>
 <span>  <span class="va">gs_qc</span> <span class="op">&lt;-</span> <span class="va">gs</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Pre-gating up to CD4/8+ with {openCyto}</span></span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Pre-gating up to CD4/8+ with `r BiocStyle::Biocpkg("openCyto")`</span></span>
 <span><span class="co">## Set seed using today's date</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"%Y%m%d"</span><span class="op">)</span></span>
@@ -1340,103 +1311,96 @@ step.</p>
 <span><span class="co">#&gt; Population 'cd4+cd8+'</span></span>
 <span><span class="co">#&gt; done.</span></span>
 <span><span class="co">#&gt; finished.</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Check autoplot</span></span>
 <span><span class="fu">ggcyto</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">gs_qc</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-12-1.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-11-1.png" width="768" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="extract-intensity-matrix">Extract intensity matrix<a class="anchor" aria-label="anchor" href="#extract-intensity-matrix"></a>
 </h3>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract intensity matrix from GatingSet object</span></span>
 <span><span class="co">## Grab marker names from GatingSet for labeling col names in intensity matrix</span></span>
 <span><span class="co">## Can skip this step if you know the exact namings of the marker names in your FCS files</span></span>
 <span><span class="co"># In that case, supply a string is fine:</span></span>
 <span><span class="co"># marker_chnl_names = c("CD45RA", "CCR7", "LAG3", ...)</span></span>
 <span><span class="va">marker_chnl_names</span> <span class="op">&lt;-</span></span>
-<span>  <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_data.html" class="external-link">gh_pop_get_data</a></span><span class="op">(</span><span class="va">gs_qc</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowCore/man/markernames.html" class="external-link">markernames</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html" class="external-link">rownames_to_column</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
-<span>    chnl <span class="op">=</span> <span class="va">rowname</span>,</span>
-<span>    marker_full <span class="op">=</span> <span class="st">"."</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_data.html" class="external-link">gh_pop_get_data</a></span><span class="op">(</span><span class="va">gs_qc</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowCore/man/markernames.html" class="external-link">markernames</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"marker_full"</span> <span class="op">=</span> <span class="va">_</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html" class="external-link">rownames_to_column</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"chnl"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># clean up the names</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    marker_full <span class="op">=</span> <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/make_clean_names.html" class="external-link">make_clean_names</a></span><span class="op">(</span><span class="va">marker_full</span>, replace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-"</span> <span class="op">=</span> <span class="st">""</span>, <span class="st">"_"</span> <span class="op">=</span> <span class="st">""</span>, <span class="st">" "</span> <span class="op">=</span> <span class="st">""</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/chartr.html" class="external-link">toupper</a></span><span class="op">(</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    marker_full <span class="op">=</span> <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/make_clean_names.html" class="external-link">make_clean_names</a></span><span class="op">(</span><span class="va">marker_full</span>, replace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-"</span> <span class="op">=</span> <span class="st">""</span>, <span class="st">"_"</span> <span class="op">=</span> <span class="st">""</span>, <span class="st">" "</span> <span class="op">=</span> <span class="st">""</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/chartr.html" class="external-link">toupper</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># Reorder the marker channel names to start with CD3, CD4, CD8 then the rest</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">marker_full</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD3"</span>, <span class="st">"CD4"</span>, <span class="st">"CD8"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">marker_full</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD3"</span>, <span class="st">"CD4"</span>, <span class="st">"CD8"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="co"># Clean up</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>marker_full <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">marker_full</span> <span class="op">==</span> <span class="st">"FOX_P3"</span>, <span class="st">"FOXP3"</span>, <span class="va">marker_full</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>marker_full <span class="op">=</span> </span>
+<span>                  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">marker_full</span> <span class="op">==</span> <span class="st">"FOX_P3"</span> <span class="op">~</span> <span class="st">"FOXP3"</span>,</span>
+<span>                                   .default <span class="op">=</span> <span class="va">marker_full</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># For our Tcell panel, we only want to apply the density gating on</span></span>
 <span><span class="co"># the `markers_to_gate` markers</span></span>
-<span><span class="co"># Again, this can be made specified explicitly</span></span>
+<span><span class="co"># Again, this can be made specified explicitly as string</span></span>
 <span><span class="va">markers_to_gate</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">marker_chnl_names</span><span class="op">$</span><span class="va">marker_full</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="va">.</span><span class="op">[</span><span class="op">!</span><span class="op">(</span><span class="va">.</span> <span class="op"><a href="https://rdrr.io/pkg/flowCore/man/filter-in-methods.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD3"</span>, <span class="st">"CD4"</span>, <span class="st">"CD8"</span>, <span class="st">"LD"</span>, <span class="st">"CD1419"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
-<span></span>
+<span>  <span class="va">marker_chnl_names</span><span class="op">$</span><span class="va">marker_full</span> <span class="op">|&gt;</span> <span class="op">(</span>\<span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="va">x</span><span class="op">[</span><span class="op">!</span><span class="op">(</span><span class="va">x</span> <span class="op"><a href="https://rdrr.io/pkg/flowCore/man/filter-in-methods.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD3"</span>, <span class="st">"CD4"</span>, <span class="st">"CD8"</span>, <span class="st">"LD"</span>, <span class="st">"CD1419"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>  </span>
+<span>  <span class="op">}</span><span class="op">)</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Grab the intensity matrix from GatingSet</span></span>
 <span><span class="co">## the gh_pop_get_indices grabs the 0/1 for whether gated as CD3</span></span>
 <span><span class="va">intensity_dat</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">gs_qc</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># grab all indices from opencyto gating to be complete</span></span>
-<span>  <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_indices.html" class="external-link">gh_pop_get_indices</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">"fsc_ssc_qc"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_indices.html" class="external-link">gh_pop_get_indices</a></span><span class="op">(</span><span class="va">gs_qc</span>, y <span class="op">=</span> <span class="st">"fsc_ssc_qc"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
-<span>    <span class="va">gs_qc</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>      <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_data.html" class="external-link">gh_pop_get_data</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_data.html" class="external-link">gh_pop_get_data</a></span><span class="op">(</span><span class="va">gs_qc</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>      <span class="fu">flowCore</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/exprs.html" class="external-link">exprs</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    <span class="st">"fsc_ssc_qc"</span> <span class="op">=</span> <span class="va">.</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="st">"fsc_ssc_qc"</span> <span class="op">=</span> <span class="va">_</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># Add nondebris</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">.</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
 <span>    <span class="st">"nonDebris"</span> <span class="op">=</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_indices.html" class="external-link">gh_pop_get_indices</a></span><span class="op">(</span><span class="va">gs_qc</span>, y <span class="op">=</span> <span class="st">"nonDebris"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># singlets</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">.</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
 <span>    <span class="st">"singlets"</span> <span class="op">=</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_indices.html" class="external-link">gh_pop_get_indices</a></span><span class="op">(</span><span class="va">gs_qc</span>, y <span class="op">=</span> <span class="st">"singlets"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># cd14-19-</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">.</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
 <span>    <span class="st">"cd14_neg_19_neg"</span> <span class="op">=</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_indices.html" class="external-link">gh_pop_get_indices</a></span><span class="op">(</span><span class="va">gs_qc</span>, y <span class="op">=</span> <span class="st">"cd14-cd19-"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># add live</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">.</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
 <span>    <span class="st">"live"</span> <span class="op">=</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_indices.html" class="external-link">gh_pop_get_indices</a></span><span class="op">(</span><span class="va">gs_qc</span>, y <span class="op">=</span> <span class="st">"live"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># Add cd3+</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">.</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
 <span>    <span class="st">"cd3_pos"</span> <span class="op">=</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_indices.html" class="external-link">gh_pop_get_indices</a></span><span class="op">(</span><span class="va">gs_qc</span>, y <span class="op">=</span> <span class="st">"cd3"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># add on the cd4 and cd8 0/1s</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">.</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
 <span>    <span class="st">"cd4_pos"</span> <span class="op">=</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_indices.html" class="external-link">gh_pop_get_indices</a></span><span class="op">(</span><span class="va">gs_qc</span>, y <span class="op">=</span> <span class="st">"cd4+"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">.</span>,</span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
 <span>    <span class="st">"cd8_pos"</span> <span class="op">=</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_indices.html" class="external-link">gh_pop_get_indices</a></span><span class="op">(</span><span class="va">gs_qc</span>, y <span class="op">=</span> <span class="st">"cd8+"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># Rename with marker names</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">marker_chnl_names</span><span class="op">$</span><span class="va">chnl</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">marker_chnl_names</span><span class="op">$</span><span class="va">marker_full</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">marker_chnl_names</span><span class="op">$</span><span class="va">chnl</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">marker_chnl_names</span><span class="op">$</span><span class="va">marker_full</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    cd4_pos_cd8_pos <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
 <span>      <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">cd4_pos</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">cd8_pos</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">~</span> <span class="st">"cd4_pos_cd8_pos"</span>,</span>
 <span>      <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">cd4_pos</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">cd8_pos</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">~</span> <span class="st">"cd4_pos_cd8_neg"</span>,</span>
 <span>      <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">cd4_pos</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">cd8_pos</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">~</span> <span class="st">"cd4_neg_cd8_pos"</span>,</span>
 <span>      <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">cd4_pos</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">cd8_pos</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">~</span> <span class="st">"cd4_neg_cd8_neg"</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    <span class="co"># Add a subsetting col to do pooled</span></span>
-<span>    pooled_col <span class="op">=</span></span>
-<span>      <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">~</span> <span class="st">"cd3_pos"</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Preview of intensity matrix</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">intensity_dat</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 45</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 44</span></span></span>
 <span><span class="co">#&gt;   `FSC-A` `FSC-H` `FSC-W` `SSC-A` `SSC-H` `SSC-W`  KI67  TBET GZM_B   PD1  LAG3</span></span>
 <span><span class="co">#&gt;     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">14</span>579.  <span style="text-decoration: underline;">12</span>925.  <span style="text-decoration: underline;">91</span>156.   <span style="text-decoration: underline;">6</span>783.   <span style="text-decoration: underline;">6</span>899.  <span style="text-decoration: underline;">59</span>440.  898.  995.  949.  922. <span style="text-decoration: underline;">1</span>184.</span></span>
@@ -1445,13 +1409,13 @@ step.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> <span style="text-decoration: underline;">230</span>540.  <span style="text-decoration: underline;">99</span>239. <span style="text-decoration: underline;">192</span>036.  <span style="text-decoration: underline;">48</span>270.  <span style="text-decoration: underline;">23</span>680. <span style="text-decoration: underline;">129</span>099.  821. <span style="text-decoration: underline;">1</span>006. <span style="text-decoration: underline;">1</span>156. <span style="text-decoration: underline;">1</span>675. <span style="text-decoration: underline;">1</span>581.</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">65</span>184.  <span style="text-decoration: underline;">43</span>167. <span style="text-decoration: underline;">138</span>985.  <span style="text-decoration: underline;">25</span>413.  <span style="text-decoration: underline;">21</span>602.  <span style="text-decoration: underline;">88</span>339.  654. <span style="text-decoration: underline;">1</span>252. <span style="text-decoration: underline;">1</span>004. <span style="text-decoration: underline;">1</span>069. <span style="text-decoration: underline;">1</span>257.</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> <span style="text-decoration: underline;">138</span>285.  <span style="text-decoration: underline;">96</span>765. <span style="text-decoration: underline;">182</span>364.  <span style="text-decoration: underline;">37</span>571.  <span style="text-decoration: underline;">34</span>888.  <span style="text-decoration: underline;">93</span>352.  705. <span style="text-decoration: underline;">2</span>678.  984. <span style="text-decoration: underline;">1</span>034. <span style="text-decoration: underline;">1</span>011.</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 34 more variables: CD127 &lt;dbl&gt;, CD38 &lt;dbl&gt;, CD45RA &lt;dbl&gt;, CD4 &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 33 more variables: CD127 &lt;dbl&gt;, CD38 &lt;dbl&gt;, CD45RA &lt;dbl&gt;, CD4 &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   ICOS &lt;dbl&gt;, CD25 &lt;dbl&gt;, TIM3 &lt;dbl&gt;, CD27 &lt;dbl&gt;, CD8 &lt;dbl&gt;, CD57 &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   CXCR5 &lt;dbl&gt;, LD &lt;dbl&gt;, CD1419 &lt;dbl&gt;, CCR4 &lt;dbl&gt;, CCR7 &lt;dbl&gt;, HLADR &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   CD3 &lt;dbl&gt;, CD28 &lt;dbl&gt;, TIGIT &lt;dbl&gt;, EOMES &lt;dbl&gt;, CTLA4 &lt;dbl&gt;, FOXP3 &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   GITR &lt;dbl&gt;, Time &lt;dbl&gt;, fsc_ssc_qc &lt;dbl&gt;, nonDebris &lt;dbl&gt;, singlets &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   cd14_neg_19_neg &lt;dbl&gt;, live &lt;dbl&gt;, cd3_pos &lt;dbl&gt;, cd4_pos &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   cd8_pos &lt;dbl&gt;, cd4_pos_cd8_pos &lt;chr&gt;, pooled_col &lt;chr&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;">#   cd8_pos &lt;dbl&gt;, cd4_pos_cd8_pos &lt;chr&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="apply-density-gating">Apply density gating<a class="anchor" aria-label="anchor" href="#apply-density-gating"></a>
@@ -1464,7 +1428,7 @@ function</p>
 <code>40</code>.</p>
 <p>For illustration purposes, we will only apply density gating on a few
 markers.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Density gating parameters</span></span>
 <span><span class="va">peak_r</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
 <span><span class="va">bin_i</span> <span class="op">&lt;-</span> <span class="fl">40</span></span>
@@ -1476,21 +1440,19 @@ markers.</p>
 <span></span>
 <span><span class="co"># Read in positive peak thresholds</span></span>
 <span><span class="va">pos_thres</span> <span class="op">&lt;-</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">path_pos_peak_thresholds</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Show the exact output from the get_density_gates() function</span></span>
 <span><span class="va">dens_gates_pre</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">intensity_dat</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op"><a href="https://rdrr.io/pkg/flowCore/man/filter-in-methods.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">intensity_dat</span>, <span class="va">cd3_pos</span> <span class="op"><a href="https://rdrr.io/pkg/flowCore/man/filter-in-methods.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/getDensityGates.html">getDensityGates</a></span><span class="op">(</span></span>
-<span>    intens_dat <span class="op">=</span> <span class="va">.</span>,</span>
+<span>    intens_dat <span class="op">=</span> <span class="va">_</span>,</span>
 <span>    marker <span class="op">=</span> <span class="va">example_markers</span>,</span>
 <span>    subset_col <span class="op">=</span> <span class="st">"cd3_pos"</span>,</span>
 <span>    bin_n <span class="op">=</span> <span class="va">bin_i</span>,</span>
 <span>    peak_detect_ratio <span class="op">=</span> <span class="va">peak_r</span>,</span>
-<span>    pos_peak_threshold <span class="op">=</span> <span class="va">pos_thres</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">marker</span>, <span class="va">pos_peak_threshold</span><span class="op">)</span>,</span>
+<span>    pos_peak_threshold <span class="op">=</span> <span class="va">pos_thres</span>,</span>
 <span>    neg_intensity_threshold <span class="op">=</span> <span class="va">neg_intensity_thres</span></span>
 <span>  <span class="op">)</span></span>
-<span></span>
 <span></span>
 <span><span class="va">dens_gates_pre</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 5</span></span></span>
@@ -1503,13 +1465,11 @@ markers.</p>
 <span><span class="co"># Would like to calculate subpopulations with CD4+ and CD8+ as</span></span>
 <span><span class="co"># the starting parent population, we need to add corresponding rows</span></span>
 <span><span class="va">dens_gates</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">dens_gates_pre</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="co"># Since we</span></span>
-<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/add_row.html" class="external-link">add_row</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/add_row.html" class="external-link">add_row</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/add_row.html" class="external-link">add_row</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cd4_pos_cd8_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cd4_neg_cd8_neg"</span>, <span class="st">"cd4_pos_cd8_neg"</span>, <span class="st">"cd4_neg_cd8_pos"</span>, <span class="st">"cd4_pos_cd8_pos"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dens_gates_pre</span>, <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/add_row.html" class="external-link">add_row</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/add_row.html" class="external-link">add_row</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/add_row.html" class="external-link">add_row</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cd4_pos_cd8_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cd4_neg_cd8_neg"</span>, <span class="st">"cd4_pos_cd8_neg"</span>, <span class="st">"cd4_neg_cd8_pos"</span>, <span class="st">"cd4_pos_cd8_pos"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/fill.html" class="external-link">fill</a></span><span class="op">(</span><span class="va">cd3_pos</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">example_markers</span><span class="op">)</span>, .direction <span class="op">=</span> <span class="st">"down"</span><span class="op">)</span></span>
 <span></span>
 <span></span>
@@ -1532,12 +1492,11 @@ markers.</p>
 <span></span>
 <span></span>
 <span><span class="co"># Plot the gate for visual</span></span>
-<span></span>
-<span><span class="va">intensity_dat</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">intensity_dat</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># additional step to remove large intensity values only when density gating.</span></span>
 <span>  <span class="co"># Still kept in the data</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">if_any</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">markers_to_gate</span><span class="op">)</span>, <span class="op">~</span> <span class="va">.x</span> <span class="op">&lt;</span> <span class="va">neg_intensity_thres</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">if_any</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">markers_to_gate</span><span class="op">)</span>, <span class="op">~</span> <span class="va">.x</span> <span class="op">&lt;</span> <span class="va">neg_intensity_thres</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html" class="external-link">geom_density</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">LAG3</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span></span>
@@ -1547,15 +1506,15 @@ markers.</p>
 <span>    linetype <span class="op">=</span> <span class="st">"dashed"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of LAG3 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-15-1.png" width="768" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-14-1.png" width="768" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># If by CD4/CD8,</span></span>
-<span><span class="va">intensity_dat</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">intensity_dat</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># additional step to remove large intensity values only when density gating.</span></span>
 <span>  <span class="co"># Still kept in the data</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">if_any</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">markers_to_gate</span><span class="op">)</span>, <span class="op">~</span> <span class="va">.x</span> <span class="op">&lt;</span> <span class="va">neg_intensity_thres</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">if_any</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">markers_to_gate</span><span class="op">)</span>, <span class="op">~</span> <span class="va">.x</span> <span class="op">&lt;</span> <span class="va">neg_intensity_thres</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html" class="external-link">geom_density</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">LAG3</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span></span>
@@ -1566,16 +1525,16 @@ markers.</p>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of LAG3 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">cd4_pos_cd8_pos</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-15-2.png" width="768" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-14-2.png" width="768" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
 <span><span class="co"># For CCR7</span></span>
-<span><span class="va">intensity_dat</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">intensity_dat</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># additional step to remove large intensity values only when density gating.</span></span>
 <span>  <span class="co"># Still kept in the data</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">if_any</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">markers_to_gate</span><span class="op">)</span>, <span class="op">~</span> <span class="va">.x</span> <span class="op">&lt;</span> <span class="va">neg_intensity_thres</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">if_any</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">markers_to_gate</span><span class="op">)</span>, <span class="op">~</span> <span class="va">.x</span> <span class="op">&lt;</span> <span class="va">neg_intensity_thres</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html" class="external-link">geom_density</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">CCR7</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span></span>
@@ -1585,15 +1544,15 @@ markers.</p>
 <span>    linetype <span class="op">=</span> <span class="st">"dashed"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CCR7 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-15-3.png" width="768" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-14-3.png" width="768" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># If by CD4/CD8,</span></span>
-<span><span class="va">intensity_dat</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">intensity_dat</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># additional step to remove large intensity values only when density gating.</span></span>
 <span>  <span class="co"># Still kept in the data</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">if_any</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">markers_to_gate</span><span class="op">)</span>, <span class="op">~</span> <span class="va">.x</span> <span class="op">&lt;</span> <span class="va">neg_intensity_thres</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">if_any</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">markers_to_gate</span><span class="op">)</span>, <span class="op">~</span> <span class="va">.x</span> <span class="op">&lt;</span> <span class="va">neg_intensity_thres</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html" class="external-link">geom_density</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">CCR7</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span></span>
@@ -1604,15 +1563,15 @@ markers.</p>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CCR7 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">cd4_pos_cd8_pos</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-15-4.png" width="768" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-14-4.png" width="768" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># For CD45RA</span></span>
-<span><span class="va">intensity_dat</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">intensity_dat</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># additional step to remove large intensity values only when density gating.</span></span>
 <span>  <span class="co"># Still kept in the data</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">if_any</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">markers_to_gate</span><span class="op">)</span>, <span class="op">~</span> <span class="va">.x</span> <span class="op">&lt;</span> <span class="va">neg_intensity_thres</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">if_any</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">markers_to_gate</span><span class="op">)</span>, <span class="op">~</span> <span class="va">.x</span> <span class="op">&lt;</span> <span class="va">neg_intensity_thres</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html" class="external-link">geom_density</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">CD45RA</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span></span>
@@ -1622,15 +1581,15 @@ markers.</p>
 <span>    linetype <span class="op">=</span> <span class="st">"dashed"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CD45RA intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-15-5.png" width="768" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-14-5.png" width="768" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># If by CD4/CD8,</span></span>
-<span><span class="va">intensity_dat</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">intensity_dat</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># additional step to remove large intensity values only when density gating.</span></span>
 <span>  <span class="co"># Still kept in the data</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">if_any</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">markers_to_gate</span><span class="op">)</span>, <span class="op">~</span> <span class="va">.x</span> <span class="op">&lt;</span> <span class="va">neg_intensity_thres</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">if_any</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">markers_to_gate</span><span class="op">)</span>, <span class="op">~</span> <span class="va">.x</span> <span class="op">&lt;</span> <span class="va">neg_intensity_thres</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html" class="external-link">geom_density</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">CD45RA</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span></span>
@@ -1641,7 +1600,7 @@ markers.</p>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CD45RA intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">cd4_pos_cd8_pos</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-15-6.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-14-6.png" width="768" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="getting-percentage-data">Getting percentage data<a class="anchor" aria-label="anchor" href="#getting-percentage-data"></a>
@@ -1678,23 +1637,23 @@ numerator marker and parent populations specified in the
 denominator?</li>
 </ul>
 <p>Currently, we support the four scenarios listed below:</p>
-<div id="ieeprffejd" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ieeprffejd table {
+<div id="iflmpczufl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#iflmpczufl table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ieeprffejd thead, #ieeprffejd tbody, #ieeprffejd tfoot, #ieeprffejd tr, #ieeprffejd td, #ieeprffejd th {
+#iflmpczufl thead, #iflmpczufl tbody, #iflmpczufl tfoot, #iflmpczufl tr, #iflmpczufl td, #iflmpczufl th {
   border-style: none;
 }
 
-#ieeprffejd p {
+#iflmpczufl p {
   margin: 0;
   padding: 0;
 }
 
-#ieeprffejd .gt_table {
+#iflmpczufl .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1720,12 +1679,12 @@ denominator?</li>
   border-left-color: #D3D3D3;
 }
 
-#ieeprffejd .gt_caption {
+#iflmpczufl .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ieeprffejd .gt_title {
+#iflmpczufl .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1737,7 +1696,7 @@ denominator?</li>
   border-bottom-width: 0;
 }
 
-#ieeprffejd .gt_subtitle {
+#iflmpczufl .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1749,7 +1708,7 @@ denominator?</li>
   border-top-width: 0;
 }
 
-#ieeprffejd .gt_heading {
+#iflmpczufl .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1761,13 +1720,13 @@ denominator?</li>
   border-right-color: #D3D3D3;
 }
 
-#ieeprffejd .gt_bottom_border {
+#iflmpczufl .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ieeprffejd .gt_col_headings {
+#iflmpczufl .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1782,7 +1741,7 @@ denominator?</li>
   border-right-color: #D3D3D3;
 }
 
-#ieeprffejd .gt_col_heading {
+#iflmpczufl .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1802,7 +1761,7 @@ denominator?</li>
   overflow-x: hidden;
 }
 
-#ieeprffejd .gt_column_spanner_outer {
+#iflmpczufl .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1814,15 +1773,15 @@ denominator?</li>
   padding-right: 4px;
 }
 
-#ieeprffejd .gt_column_spanner_outer:first-child {
+#iflmpczufl .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ieeprffejd .gt_column_spanner_outer:last-child {
+#iflmpczufl .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ieeprffejd .gt_column_spanner {
+#iflmpczufl .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1834,11 +1793,11 @@ denominator?</li>
   width: 100%;
 }
 
-#ieeprffejd .gt_spanner_row {
+#iflmpczufl .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ieeprffejd .gt_group_heading {
+#iflmpczufl .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1864,7 +1823,7 @@ denominator?</li>
   text-align: left;
 }
 
-#ieeprffejd .gt_empty_group_heading {
+#iflmpczufl .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1879,15 +1838,15 @@ denominator?</li>
   vertical-align: middle;
 }
 
-#ieeprffejd .gt_from_md > :first-child {
+#iflmpczufl .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ieeprffejd .gt_from_md > :last-child {
+#iflmpczufl .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ieeprffejd .gt_row {
+#iflmpczufl .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1906,7 +1865,7 @@ denominator?</li>
   overflow-x: hidden;
 }
 
-#ieeprffejd .gt_stub {
+#iflmpczufl .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1919,7 +1878,7 @@ denominator?</li>
   padding-right: 5px;
 }
 
-#ieeprffejd .gt_stub_row_group {
+#iflmpczufl .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1933,15 +1892,15 @@ denominator?</li>
   vertical-align: top;
 }
 
-#ieeprffejd .gt_row_group_first td {
+#iflmpczufl .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ieeprffejd .gt_row_group_first th {
+#iflmpczufl .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ieeprffejd .gt_summary_row {
+#iflmpczufl .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1951,16 +1910,16 @@ denominator?</li>
   padding-right: 5px;
 }
 
-#ieeprffejd .gt_first_summary_row {
+#iflmpczufl .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ieeprffejd .gt_first_summary_row.thick {
+#iflmpczufl .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ieeprffejd .gt_last_summary_row {
+#iflmpczufl .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1970,7 +1929,7 @@ denominator?</li>
   border-bottom-color: #D3D3D3;
 }
 
-#ieeprffejd .gt_grand_summary_row {
+#iflmpczufl .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1980,7 +1939,7 @@ denominator?</li>
   padding-right: 5px;
 }
 
-#ieeprffejd .gt_first_grand_summary_row {
+#iflmpczufl .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1990,7 +1949,7 @@ denominator?</li>
   border-top-color: #D3D3D3;
 }
 
-#ieeprffejd .gt_last_grand_summary_row_top {
+#iflmpczufl .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2000,11 +1959,11 @@ denominator?</li>
   border-bottom-color: #D3D3D3;
 }
 
-#ieeprffejd .gt_striped {
+#iflmpczufl .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ieeprffejd .gt_table_body {
+#iflmpczufl .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2013,7 +1972,7 @@ denominator?</li>
   border-bottom-color: #D3D3D3;
 }
 
-#ieeprffejd .gt_footnotes {
+#iflmpczufl .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2027,7 +1986,7 @@ denominator?</li>
   border-right-color: #D3D3D3;
 }
 
-#ieeprffejd .gt_footnote {
+#iflmpczufl .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2036,7 +1995,7 @@ denominator?</li>
   padding-right: 5px;
 }
 
-#ieeprffejd .gt_sourcenotes {
+#iflmpczufl .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2050,7 +2009,7 @@ denominator?</li>
   border-right-color: #D3D3D3;
 }
 
-#ieeprffejd .gt_sourcenote {
+#iflmpczufl .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2058,72 +2017,72 @@ denominator?</li>
   padding-right: 5px;
 }
 
-#ieeprffejd .gt_left {
+#iflmpczufl .gt_left {
   text-align: left;
 }
 
-#ieeprffejd .gt_center {
+#iflmpczufl .gt_center {
   text-align: center;
 }
 
-#ieeprffejd .gt_right {
+#iflmpczufl .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ieeprffejd .gt_font_normal {
+#iflmpczufl .gt_font_normal {
   font-weight: normal;
 }
 
-#ieeprffejd .gt_font_bold {
+#iflmpczufl .gt_font_bold {
   font-weight: bold;
 }
 
-#ieeprffejd .gt_font_italic {
+#iflmpczufl .gt_font_italic {
   font-style: italic;
 }
 
-#ieeprffejd .gt_super {
+#iflmpczufl .gt_super {
   font-size: 65%;
 }
 
-#ieeprffejd .gt_footnote_marks {
+#iflmpczufl .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ieeprffejd .gt_asterisk {
+#iflmpczufl .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ieeprffejd .gt_indent_1 {
+#iflmpczufl .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ieeprffejd .gt_indent_2 {
+#iflmpczufl .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ieeprffejd .gt_indent_3 {
+#iflmpczufl .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ieeprffejd .gt_indent_4 {
+#iflmpczufl .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ieeprffejd .gt_indent_5 {
+#iflmpczufl .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ieeprffejd .katex-display {
+#iflmpczufl .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ieeprffejd div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#iflmpczufl div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2267,12 +2226,12 @@ to illustrate the columns we get for the <code>_POS</code> and
 Expand example for <code>expand_num = FALSE</code> and
 <code>expand_denom = FALSE</code>, and
 <code>keep_indicators = TRUE</code>
-</summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc1</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">example_intensity_gated</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># Should only count the CD3+ cells</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/getPerc.html">getPerc</a></span><span class="op">(</span><span class="va">.</span>,</span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">example_intensity_gated</span>, <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="../reference/getPerc.html">getPerc</a></span><span class="op">(</span></span>
+<span>    intens_dat <span class="op">=</span> <span class="va">_</span>,</span>
 <span>    num_marker <span class="op">=</span> <span class="va">example_markers</span>,</span>
 <span>    denom_marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD4"</span>, <span class="st">"CD8"</span><span class="op">)</span>,</span>
 <span>    expand_num <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -2282,37 +2241,37 @@ Expand example for <code>expand_num = FALSE</code> and
 <span></span>
 <span><span class="co"># For display only, group based on the denominators and</span></span>
 <span><span class="co"># simplify the names to be numerators</span></span>
-<span><span class="va">example_perc1</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">example_perc1</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate_wider_delim.html" class="external-link">separate_wider_delim</a></span><span class="op">(</span><span class="va">subpopulation</span>,</span>
 <span>    delim <span class="op">=</span> <span class="st">"_OF_"</span>,</span>
 <span>    names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"num"</span>, <span class="st">"denom"</span><span class="op">)</span>,</span>
 <span>    cols_remove <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>denom <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Denom = "</span>, <span class="va">denom</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">denom</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">subpopulation</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>denom <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Denom = "</span>, <span class="va">denom</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">denom</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">subpopulation</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/fmt_number.html" class="external-link">fmt_number</a></span><span class="op">(</span></span>
 <span>    columns <span class="op">=</span> <span class="st">"perc"</span>,</span>
 <span>    decimals <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div id="xtrzezsggw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#xtrzezsggw table {
+<div id="oozlkadoto" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#oozlkadoto table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#xtrzezsggw thead, #xtrzezsggw tbody, #xtrzezsggw tfoot, #xtrzezsggw tr, #xtrzezsggw td, #xtrzezsggw th {
+#oozlkadoto thead, #oozlkadoto tbody, #oozlkadoto tfoot, #oozlkadoto tr, #oozlkadoto td, #oozlkadoto th {
   border-style: none;
 }
 
-#xtrzezsggw p {
+#oozlkadoto p {
   margin: 0;
   padding: 0;
 }
 
-#xtrzezsggw .gt_table {
+#oozlkadoto .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2338,12 +2297,12 @@ Expand example for <code>expand_num = FALSE</code> and
   border-left-color: #D3D3D3;
 }
 
-#xtrzezsggw .gt_caption {
+#oozlkadoto .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#xtrzezsggw .gt_title {
+#oozlkadoto .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2355,7 +2314,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-width: 0;
 }
 
-#xtrzezsggw .gt_subtitle {
+#oozlkadoto .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2367,7 +2326,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-top-width: 0;
 }
 
-#xtrzezsggw .gt_heading {
+#oozlkadoto .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2379,13 +2338,13 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#xtrzezsggw .gt_bottom_border {
+#oozlkadoto .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#xtrzezsggw .gt_col_headings {
+#oozlkadoto .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2400,7 +2359,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#xtrzezsggw .gt_col_heading {
+#oozlkadoto .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2420,7 +2379,7 @@ Expand example for <code>expand_num = FALSE</code> and
   overflow-x: hidden;
 }
 
-#xtrzezsggw .gt_column_spanner_outer {
+#oozlkadoto .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2432,15 +2391,15 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 4px;
 }
 
-#xtrzezsggw .gt_column_spanner_outer:first-child {
+#oozlkadoto .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#xtrzezsggw .gt_column_spanner_outer:last-child {
+#oozlkadoto .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#xtrzezsggw .gt_column_spanner {
+#oozlkadoto .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2452,11 +2411,11 @@ Expand example for <code>expand_num = FALSE</code> and
   width: 100%;
 }
 
-#xtrzezsggw .gt_spanner_row {
+#oozlkadoto .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#xtrzezsggw .gt_group_heading {
+#oozlkadoto .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2482,7 +2441,7 @@ Expand example for <code>expand_num = FALSE</code> and
   text-align: left;
 }
 
-#xtrzezsggw .gt_empty_group_heading {
+#oozlkadoto .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2497,15 +2456,15 @@ Expand example for <code>expand_num = FALSE</code> and
   vertical-align: middle;
 }
 
-#xtrzezsggw .gt_from_md > :first-child {
+#oozlkadoto .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#xtrzezsggw .gt_from_md > :last-child {
+#oozlkadoto .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#xtrzezsggw .gt_row {
+#oozlkadoto .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2524,7 +2483,7 @@ Expand example for <code>expand_num = FALSE</code> and
   overflow-x: hidden;
 }
 
-#xtrzezsggw .gt_stub {
+#oozlkadoto .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2537,7 +2496,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#xtrzezsggw .gt_stub_row_group {
+#oozlkadoto .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2551,15 +2510,15 @@ Expand example for <code>expand_num = FALSE</code> and
   vertical-align: top;
 }
 
-#xtrzezsggw .gt_row_group_first td {
+#oozlkadoto .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#xtrzezsggw .gt_row_group_first th {
+#oozlkadoto .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#xtrzezsggw .gt_summary_row {
+#oozlkadoto .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2569,16 +2528,16 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#xtrzezsggw .gt_first_summary_row {
+#oozlkadoto .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#xtrzezsggw .gt_first_summary_row.thick {
+#oozlkadoto .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#xtrzezsggw .gt_last_summary_row {
+#oozlkadoto .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2588,7 +2547,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#xtrzezsggw .gt_grand_summary_row {
+#oozlkadoto .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2598,7 +2557,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#xtrzezsggw .gt_first_grand_summary_row {
+#oozlkadoto .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2608,7 +2567,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-top-color: #D3D3D3;
 }
 
-#xtrzezsggw .gt_last_grand_summary_row_top {
+#oozlkadoto .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2618,11 +2577,11 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#xtrzezsggw .gt_striped {
+#oozlkadoto .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#xtrzezsggw .gt_table_body {
+#oozlkadoto .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2631,7 +2590,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#xtrzezsggw .gt_footnotes {
+#oozlkadoto .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2645,7 +2604,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#xtrzezsggw .gt_footnote {
+#oozlkadoto .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2654,7 +2613,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#xtrzezsggw .gt_sourcenotes {
+#oozlkadoto .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2668,7 +2627,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#xtrzezsggw .gt_sourcenote {
+#oozlkadoto .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2676,72 +2635,72 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#xtrzezsggw .gt_left {
+#oozlkadoto .gt_left {
   text-align: left;
 }
 
-#xtrzezsggw .gt_center {
+#oozlkadoto .gt_center {
   text-align: center;
 }
 
-#xtrzezsggw .gt_right {
+#oozlkadoto .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#xtrzezsggw .gt_font_normal {
+#oozlkadoto .gt_font_normal {
   font-weight: normal;
 }
 
-#xtrzezsggw .gt_font_bold {
+#oozlkadoto .gt_font_bold {
   font-weight: bold;
 }
 
-#xtrzezsggw .gt_font_italic {
+#oozlkadoto .gt_font_italic {
   font-style: italic;
 }
 
-#xtrzezsggw .gt_super {
+#oozlkadoto .gt_super {
   font-size: 65%;
 }
 
-#xtrzezsggw .gt_footnote_marks {
+#oozlkadoto .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#xtrzezsggw .gt_asterisk {
+#oozlkadoto .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#xtrzezsggw .gt_indent_1 {
+#oozlkadoto .gt_indent_1 {
   text-indent: 5px;
 }
 
-#xtrzezsggw .gt_indent_2 {
+#oozlkadoto .gt_indent_2 {
   text-indent: 10px;
 }
 
-#xtrzezsggw .gt_indent_3 {
+#oozlkadoto .gt_indent_3 {
   text-indent: 15px;
 }
 
-#xtrzezsggw .gt_indent_4 {
+#oozlkadoto .gt_indent_4 {
   text-indent: 20px;
 }
 
-#xtrzezsggw .gt_indent_5 {
+#oozlkadoto .gt_indent_5 {
   text-indent: 25px;
 }
 
-#xtrzezsggw .katex-display {
+#oozlkadoto .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#xtrzezsggw div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#oozlkadoto div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -3162,12 +3121,12 @@ Expand example for <code>expand_num = FALSE</code> and
 Expand example for <code>expand_num = TRUE</code> and
 <code>expand_denom = FALSE</code>, and
 <code>keep_indicators = FALSE</code>
-</summary><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+</summary><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc2</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">example_intensity_gated</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># Should only count the CD3+ cells</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/getPerc.html">getPerc</a></span><span class="op">(</span><span class="va">.</span>,</span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">example_intensity_gated</span>, <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/getPerc.html">getPerc</a></span><span class="op">(</span></span>
+<span>    intens_dat <span class="op">=</span> <span class="va">_</span>,</span>
 <span>    num_marker <span class="op">=</span> <span class="va">example_markers</span>,</span>
 <span>    denom_marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD4"</span>, <span class="st">"CD8"</span><span class="op">)</span>,</span>
 <span>    expand_num <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -3177,37 +3136,37 @@ Expand example for <code>expand_num = TRUE</code> and
 <span></span>
 <span><span class="co"># For display only, group based on the denominators and</span></span>
 <span><span class="co"># simplify the names to be numerators</span></span>
-<span><span class="va">example_perc2</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">example_perc2</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate_wider_delim.html" class="external-link">separate_wider_delim</a></span><span class="op">(</span><span class="va">subpopulation</span>,</span>
 <span>    delim <span class="op">=</span> <span class="st">"_OF_"</span>,</span>
 <span>    names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"num"</span>, <span class="st">"denom"</span><span class="op">)</span>,</span>
 <span>    cols_remove <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>denom <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Denom = "</span>, <span class="va">denom</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">denom</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">subpopulation</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>denom <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Denom = "</span>, <span class="va">denom</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">denom</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">subpopulation</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/fmt_number.html" class="external-link">fmt_number</a></span><span class="op">(</span></span>
 <span>    columns <span class="op">=</span> <span class="st">"perc"</span>,</span>
 <span>    decimals <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div id="bkbxsciytk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#bkbxsciytk table {
+<div id="xspwpkczhc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#xspwpkczhc table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#bkbxsciytk thead, #bkbxsciytk tbody, #bkbxsciytk tfoot, #bkbxsciytk tr, #bkbxsciytk td, #bkbxsciytk th {
+#xspwpkczhc thead, #xspwpkczhc tbody, #xspwpkczhc tfoot, #xspwpkczhc tr, #xspwpkczhc td, #xspwpkczhc th {
   border-style: none;
 }
 
-#bkbxsciytk p {
+#xspwpkczhc p {
   margin: 0;
   padding: 0;
 }
 
-#bkbxsciytk .gt_table {
+#xspwpkczhc .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3233,12 +3192,12 @@ Expand example for <code>expand_num = TRUE</code> and
   border-left-color: #D3D3D3;
 }
 
-#bkbxsciytk .gt_caption {
+#xspwpkczhc .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#bkbxsciytk .gt_title {
+#xspwpkczhc .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3250,7 +3209,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-width: 0;
 }
 
-#bkbxsciytk .gt_subtitle {
+#xspwpkczhc .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3262,7 +3221,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-top-width: 0;
 }
 
-#bkbxsciytk .gt_heading {
+#xspwpkczhc .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3274,13 +3233,13 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#bkbxsciytk .gt_bottom_border {
+#xspwpkczhc .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#bkbxsciytk .gt_col_headings {
+#xspwpkczhc .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3295,7 +3254,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#bkbxsciytk .gt_col_heading {
+#xspwpkczhc .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3315,7 +3274,7 @@ Expand example for <code>expand_num = TRUE</code> and
   overflow-x: hidden;
 }
 
-#bkbxsciytk .gt_column_spanner_outer {
+#xspwpkczhc .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3327,15 +3286,15 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 4px;
 }
 
-#bkbxsciytk .gt_column_spanner_outer:first-child {
+#xspwpkczhc .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#bkbxsciytk .gt_column_spanner_outer:last-child {
+#xspwpkczhc .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#bkbxsciytk .gt_column_spanner {
+#xspwpkczhc .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3347,11 +3306,11 @@ Expand example for <code>expand_num = TRUE</code> and
   width: 100%;
 }
 
-#bkbxsciytk .gt_spanner_row {
+#xspwpkczhc .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#bkbxsciytk .gt_group_heading {
+#xspwpkczhc .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3377,7 +3336,7 @@ Expand example for <code>expand_num = TRUE</code> and
   text-align: left;
 }
 
-#bkbxsciytk .gt_empty_group_heading {
+#xspwpkczhc .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3392,15 +3351,15 @@ Expand example for <code>expand_num = TRUE</code> and
   vertical-align: middle;
 }
 
-#bkbxsciytk .gt_from_md > :first-child {
+#xspwpkczhc .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#bkbxsciytk .gt_from_md > :last-child {
+#xspwpkczhc .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#bkbxsciytk .gt_row {
+#xspwpkczhc .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3419,7 +3378,7 @@ Expand example for <code>expand_num = TRUE</code> and
   overflow-x: hidden;
 }
 
-#bkbxsciytk .gt_stub {
+#xspwpkczhc .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3432,7 +3391,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#bkbxsciytk .gt_stub_row_group {
+#xspwpkczhc .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3446,15 +3405,15 @@ Expand example for <code>expand_num = TRUE</code> and
   vertical-align: top;
 }
 
-#bkbxsciytk .gt_row_group_first td {
+#xspwpkczhc .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#bkbxsciytk .gt_row_group_first th {
+#xspwpkczhc .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#bkbxsciytk .gt_summary_row {
+#xspwpkczhc .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3464,16 +3423,16 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#bkbxsciytk .gt_first_summary_row {
+#xspwpkczhc .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#bkbxsciytk .gt_first_summary_row.thick {
+#xspwpkczhc .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#bkbxsciytk .gt_last_summary_row {
+#xspwpkczhc .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3483,7 +3442,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#bkbxsciytk .gt_grand_summary_row {
+#xspwpkczhc .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3493,7 +3452,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#bkbxsciytk .gt_first_grand_summary_row {
+#xspwpkczhc .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3503,7 +3462,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-top-color: #D3D3D3;
 }
 
-#bkbxsciytk .gt_last_grand_summary_row_top {
+#xspwpkczhc .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3513,11 +3472,11 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#bkbxsciytk .gt_striped {
+#xspwpkczhc .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#bkbxsciytk .gt_table_body {
+#xspwpkczhc .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3526,7 +3485,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#bkbxsciytk .gt_footnotes {
+#xspwpkczhc .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3540,7 +3499,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#bkbxsciytk .gt_footnote {
+#xspwpkczhc .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3549,7 +3508,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#bkbxsciytk .gt_sourcenotes {
+#xspwpkczhc .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3563,7 +3522,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#bkbxsciytk .gt_sourcenote {
+#xspwpkczhc .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3571,72 +3530,72 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#bkbxsciytk .gt_left {
+#xspwpkczhc .gt_left {
   text-align: left;
 }
 
-#bkbxsciytk .gt_center {
+#xspwpkczhc .gt_center {
   text-align: center;
 }
 
-#bkbxsciytk .gt_right {
+#xspwpkczhc .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#bkbxsciytk .gt_font_normal {
+#xspwpkczhc .gt_font_normal {
   font-weight: normal;
 }
 
-#bkbxsciytk .gt_font_bold {
+#xspwpkczhc .gt_font_bold {
   font-weight: bold;
 }
 
-#bkbxsciytk .gt_font_italic {
+#xspwpkczhc .gt_font_italic {
   font-style: italic;
 }
 
-#bkbxsciytk .gt_super {
+#xspwpkczhc .gt_super {
   font-size: 65%;
 }
 
-#bkbxsciytk .gt_footnote_marks {
+#xspwpkczhc .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#bkbxsciytk .gt_asterisk {
+#xspwpkczhc .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#bkbxsciytk .gt_indent_1 {
+#xspwpkczhc .gt_indent_1 {
   text-indent: 5px;
 }
 
-#bkbxsciytk .gt_indent_2 {
+#xspwpkczhc .gt_indent_2 {
   text-indent: 10px;
 }
 
-#bkbxsciytk .gt_indent_3 {
+#xspwpkczhc .gt_indent_3 {
   text-indent: 15px;
 }
 
-#bkbxsciytk .gt_indent_4 {
+#xspwpkczhc .gt_indent_4 {
   text-indent: 20px;
 }
 
-#bkbxsciytk .gt_indent_5 {
+#xspwpkczhc .gt_indent_5 {
   text-indent: 25px;
 }
 
-#bkbxsciytk .katex-display {
+#xspwpkczhc .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#bkbxsciytk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#xspwpkczhc div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -4435,12 +4394,12 @@ Expand example for <code>expand_num = TRUE</code> and
 Expand example for <code>expand_num = FALSE</code> and
 <code>expand_denom = TRUE</code>, and
 <code>keep_indicators = FALSE</code>
-</summary><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+</summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc3</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">example_intensity_gated</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># Should only count the CD3+ cells</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/getPerc.html">getPerc</a></span><span class="op">(</span><span class="va">.</span>,</span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">example_intensity_gated</span>, <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/getPerc.html">getPerc</a></span><span class="op">(</span></span>
+<span>    intens_dat <span class="op">=</span> <span class="va">_</span>,</span>
 <span>    num_marker <span class="op">=</span> <span class="va">example_markers</span>,</span>
 <span>    denom_marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD4"</span>, <span class="st">"CD8"</span><span class="op">)</span>,</span>
 <span>    expand_num <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -4450,37 +4409,37 @@ Expand example for <code>expand_num = FALSE</code> and
 <span></span>
 <span><span class="co"># For display only, group based on the denominators and</span></span>
 <span><span class="co"># simplify the names to be numerators</span></span>
-<span><span class="va">example_perc3</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">example_perc3</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate_wider_delim.html" class="external-link">separate_wider_delim</a></span><span class="op">(</span><span class="va">subpopulation</span>,</span>
 <span>    delim <span class="op">=</span> <span class="st">"_OF_"</span>,</span>
 <span>    names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"num"</span>, <span class="st">"denom"</span><span class="op">)</span>,</span>
 <span>    cols_remove <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>denom <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Denom = "</span>, <span class="va">denom</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">denom</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">subpopulation</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>denom <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Denom = "</span>, <span class="va">denom</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">denom</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">subpopulation</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/fmt_number.html" class="external-link">fmt_number</a></span><span class="op">(</span></span>
 <span>    columns <span class="op">=</span> <span class="st">"perc"</span>,</span>
 <span>    decimals <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div id="baiiiucgzt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#baiiiucgzt table {
+<div id="dugxmofgpw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#dugxmofgpw table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#baiiiucgzt thead, #baiiiucgzt tbody, #baiiiucgzt tfoot, #baiiiucgzt tr, #baiiiucgzt td, #baiiiucgzt th {
+#dugxmofgpw thead, #dugxmofgpw tbody, #dugxmofgpw tfoot, #dugxmofgpw tr, #dugxmofgpw td, #dugxmofgpw th {
   border-style: none;
 }
 
-#baiiiucgzt p {
+#dugxmofgpw p {
   margin: 0;
   padding: 0;
 }
 
-#baiiiucgzt .gt_table {
+#dugxmofgpw .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -4506,12 +4465,12 @@ Expand example for <code>expand_num = FALSE</code> and
   border-left-color: #D3D3D3;
 }
 
-#baiiiucgzt .gt_caption {
+#dugxmofgpw .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#baiiiucgzt .gt_title {
+#dugxmofgpw .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -4523,7 +4482,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-width: 0;
 }
 
-#baiiiucgzt .gt_subtitle {
+#dugxmofgpw .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -4535,7 +4494,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-top-width: 0;
 }
 
-#baiiiucgzt .gt_heading {
+#dugxmofgpw .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -4547,13 +4506,13 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#baiiiucgzt .gt_bottom_border {
+#dugxmofgpw .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#baiiiucgzt .gt_col_headings {
+#dugxmofgpw .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4568,7 +4527,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#baiiiucgzt .gt_col_heading {
+#dugxmofgpw .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4588,7 +4547,7 @@ Expand example for <code>expand_num = FALSE</code> and
   overflow-x: hidden;
 }
 
-#baiiiucgzt .gt_column_spanner_outer {
+#dugxmofgpw .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4600,15 +4559,15 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 4px;
 }
 
-#baiiiucgzt .gt_column_spanner_outer:first-child {
+#dugxmofgpw .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#baiiiucgzt .gt_column_spanner_outer:last-child {
+#dugxmofgpw .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#baiiiucgzt .gt_column_spanner {
+#dugxmofgpw .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -4620,11 +4579,11 @@ Expand example for <code>expand_num = FALSE</code> and
   width: 100%;
 }
 
-#baiiiucgzt .gt_spanner_row {
+#dugxmofgpw .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#baiiiucgzt .gt_group_heading {
+#dugxmofgpw .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4650,7 +4609,7 @@ Expand example for <code>expand_num = FALSE</code> and
   text-align: left;
 }
 
-#baiiiucgzt .gt_empty_group_heading {
+#dugxmofgpw .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -4665,15 +4624,15 @@ Expand example for <code>expand_num = FALSE</code> and
   vertical-align: middle;
 }
 
-#baiiiucgzt .gt_from_md > :first-child {
+#dugxmofgpw .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#baiiiucgzt .gt_from_md > :last-child {
+#dugxmofgpw .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#baiiiucgzt .gt_row {
+#dugxmofgpw .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4692,7 +4651,7 @@ Expand example for <code>expand_num = FALSE</code> and
   overflow-x: hidden;
 }
 
-#baiiiucgzt .gt_stub {
+#dugxmofgpw .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4705,7 +4664,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#baiiiucgzt .gt_stub_row_group {
+#dugxmofgpw .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4719,15 +4678,15 @@ Expand example for <code>expand_num = FALSE</code> and
   vertical-align: top;
 }
 
-#baiiiucgzt .gt_row_group_first td {
+#dugxmofgpw .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#baiiiucgzt .gt_row_group_first th {
+#dugxmofgpw .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#baiiiucgzt .gt_summary_row {
+#dugxmofgpw .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4737,16 +4696,16 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#baiiiucgzt .gt_first_summary_row {
+#dugxmofgpw .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#baiiiucgzt .gt_first_summary_row.thick {
+#dugxmofgpw .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#baiiiucgzt .gt_last_summary_row {
+#dugxmofgpw .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4756,7 +4715,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#baiiiucgzt .gt_grand_summary_row {
+#dugxmofgpw .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4766,7 +4725,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#baiiiucgzt .gt_first_grand_summary_row {
+#dugxmofgpw .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4776,7 +4735,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-top-color: #D3D3D3;
 }
 
-#baiiiucgzt .gt_last_grand_summary_row_top {
+#dugxmofgpw .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4786,11 +4745,11 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#baiiiucgzt .gt_striped {
+#dugxmofgpw .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#baiiiucgzt .gt_table_body {
+#dugxmofgpw .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4799,7 +4758,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#baiiiucgzt .gt_footnotes {
+#dugxmofgpw .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4813,7 +4772,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#baiiiucgzt .gt_footnote {
+#dugxmofgpw .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -4822,7 +4781,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#baiiiucgzt .gt_sourcenotes {
+#dugxmofgpw .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4836,7 +4795,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#baiiiucgzt .gt_sourcenote {
+#dugxmofgpw .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -4844,72 +4803,72 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#baiiiucgzt .gt_left {
+#dugxmofgpw .gt_left {
   text-align: left;
 }
 
-#baiiiucgzt .gt_center {
+#dugxmofgpw .gt_center {
   text-align: center;
 }
 
-#baiiiucgzt .gt_right {
+#dugxmofgpw .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#baiiiucgzt .gt_font_normal {
+#dugxmofgpw .gt_font_normal {
   font-weight: normal;
 }
 
-#baiiiucgzt .gt_font_bold {
+#dugxmofgpw .gt_font_bold {
   font-weight: bold;
 }
 
-#baiiiucgzt .gt_font_italic {
+#dugxmofgpw .gt_font_italic {
   font-style: italic;
 }
 
-#baiiiucgzt .gt_super {
+#dugxmofgpw .gt_super {
   font-size: 65%;
 }
 
-#baiiiucgzt .gt_footnote_marks {
+#dugxmofgpw .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#baiiiucgzt .gt_asterisk {
+#dugxmofgpw .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#baiiiucgzt .gt_indent_1 {
+#dugxmofgpw .gt_indent_1 {
   text-indent: 5px;
 }
 
-#baiiiucgzt .gt_indent_2 {
+#dugxmofgpw .gt_indent_2 {
   text-indent: 10px;
 }
 
-#baiiiucgzt .gt_indent_3 {
+#dugxmofgpw .gt_indent_3 {
   text-indent: 15px;
 }
 
-#baiiiucgzt .gt_indent_4 {
+#dugxmofgpw .gt_indent_4 {
   text-indent: 20px;
 }
 
-#baiiiucgzt .gt_indent_5 {
+#dugxmofgpw .gt_indent_5 {
   text-indent: 25px;
 }
 
-#baiiiucgzt .katex-display {
+#dugxmofgpw .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#baiiiucgzt div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#dugxmofgpw div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -6380,12 +6339,12 @@ Expand example for <code>expand_num = FALSE</code> and
 Expand example for <code>expand_num = TRUE</code> and
 <code>expand_denom = TRUE</code> , and
 <code>keep_indicators = FALSE</code>
-</summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+</summary><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc4</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">example_intensity_gated</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co"># Should only count the CD3+ cells</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/getPerc.html">getPerc</a></span><span class="op">(</span><span class="va">.</span>,</span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">example_intensity_gated</span>, <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/getPerc.html">getPerc</a></span><span class="op">(</span></span>
+<span>    intens_dat <span class="op">=</span> <span class="va">_</span>,</span>
 <span>    num_marker <span class="op">=</span> <span class="va">example_markers</span>,</span>
 <span>    denom_marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD4"</span>, <span class="st">"CD8"</span><span class="op">)</span>,</span>
 <span>    expand_num <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -6393,40 +6352,39 @@ Expand example for <code>expand_num = TRUE</code> and
 <span>    keep_indicators <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span></span>
 <span><span class="co"># For display only, group based on the denominators and</span></span>
 <span><span class="co"># simplify the names to be numerators</span></span>
-<span><span class="va">example_perc4</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">example_perc4</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate_wider_delim.html" class="external-link">separate_wider_delim</a></span><span class="op">(</span><span class="va">subpopulation</span>,</span>
 <span>    delim <span class="op">=</span> <span class="st">"_OF_"</span>,</span>
 <span>    names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"num"</span>, <span class="st">"denom"</span><span class="op">)</span>,</span>
 <span>    cols_remove <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>denom <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Denom = "</span>, <span class="va">denom</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">denom</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">subpopulation</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>denom <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Denom = "</span>, <span class="va">denom</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">denom</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">subpopulation</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">gt</span><span class="fu">::</span><span class="fu"><a href="https://gt.rstudio.com/reference/fmt_number.html" class="external-link">fmt_number</a></span><span class="op">(</span></span>
 <span>    columns <span class="op">=</span> <span class="st">"perc"</span>,</span>
 <span>    decimals <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div id="eugljdqqia" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#eugljdqqia table {
+<div id="sbnrbwwmzk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#sbnrbwwmzk table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#eugljdqqia thead, #eugljdqqia tbody, #eugljdqqia tfoot, #eugljdqqia tr, #eugljdqqia td, #eugljdqqia th {
+#sbnrbwwmzk thead, #sbnrbwwmzk tbody, #sbnrbwwmzk tfoot, #sbnrbwwmzk tr, #sbnrbwwmzk td, #sbnrbwwmzk th {
   border-style: none;
 }
 
-#eugljdqqia p {
+#sbnrbwwmzk p {
   margin: 0;
   padding: 0;
 }
 
-#eugljdqqia .gt_table {
+#sbnrbwwmzk .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -6452,12 +6410,12 @@ Expand example for <code>expand_num = TRUE</code> and
   border-left-color: #D3D3D3;
 }
 
-#eugljdqqia .gt_caption {
+#sbnrbwwmzk .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#eugljdqqia .gt_title {
+#sbnrbwwmzk .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -6469,7 +6427,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-width: 0;
 }
 
-#eugljdqqia .gt_subtitle {
+#sbnrbwwmzk .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -6481,7 +6439,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-top-width: 0;
 }
 
-#eugljdqqia .gt_heading {
+#sbnrbwwmzk .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -6493,13 +6451,13 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#eugljdqqia .gt_bottom_border {
+#sbnrbwwmzk .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#eugljdqqia .gt_col_headings {
+#sbnrbwwmzk .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -6514,7 +6472,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#eugljdqqia .gt_col_heading {
+#sbnrbwwmzk .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6534,7 +6492,7 @@ Expand example for <code>expand_num = TRUE</code> and
   overflow-x: hidden;
 }
 
-#eugljdqqia .gt_column_spanner_outer {
+#sbnrbwwmzk .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6546,15 +6504,15 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 4px;
 }
 
-#eugljdqqia .gt_column_spanner_outer:first-child {
+#sbnrbwwmzk .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#eugljdqqia .gt_column_spanner_outer:last-child {
+#sbnrbwwmzk .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#eugljdqqia .gt_column_spanner {
+#sbnrbwwmzk .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -6566,11 +6524,11 @@ Expand example for <code>expand_num = TRUE</code> and
   width: 100%;
 }
 
-#eugljdqqia .gt_spanner_row {
+#sbnrbwwmzk .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#eugljdqqia .gt_group_heading {
+#sbnrbwwmzk .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6596,7 +6554,7 @@ Expand example for <code>expand_num = TRUE</code> and
   text-align: left;
 }
 
-#eugljdqqia .gt_empty_group_heading {
+#sbnrbwwmzk .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -6611,15 +6569,15 @@ Expand example for <code>expand_num = TRUE</code> and
   vertical-align: middle;
 }
 
-#eugljdqqia .gt_from_md > :first-child {
+#sbnrbwwmzk .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#eugljdqqia .gt_from_md > :last-child {
+#sbnrbwwmzk .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#eugljdqqia .gt_row {
+#sbnrbwwmzk .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6638,7 +6596,7 @@ Expand example for <code>expand_num = TRUE</code> and
   overflow-x: hidden;
 }
 
-#eugljdqqia .gt_stub {
+#sbnrbwwmzk .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6651,7 +6609,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#eugljdqqia .gt_stub_row_group {
+#sbnrbwwmzk .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6665,15 +6623,15 @@ Expand example for <code>expand_num = TRUE</code> and
   vertical-align: top;
 }
 
-#eugljdqqia .gt_row_group_first td {
+#sbnrbwwmzk .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#eugljdqqia .gt_row_group_first th {
+#sbnrbwwmzk .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#eugljdqqia .gt_summary_row {
+#sbnrbwwmzk .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -6683,16 +6641,16 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#eugljdqqia .gt_first_summary_row {
+#sbnrbwwmzk .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#eugljdqqia .gt_first_summary_row.thick {
+#sbnrbwwmzk .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#eugljdqqia .gt_last_summary_row {
+#sbnrbwwmzk .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6702,7 +6660,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#eugljdqqia .gt_grand_summary_row {
+#sbnrbwwmzk .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -6712,7 +6670,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#eugljdqqia .gt_first_grand_summary_row {
+#sbnrbwwmzk .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6722,7 +6680,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-top-color: #D3D3D3;
 }
 
-#eugljdqqia .gt_last_grand_summary_row_top {
+#sbnrbwwmzk .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6732,11 +6690,11 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#eugljdqqia .gt_striped {
+#sbnrbwwmzk .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#eugljdqqia .gt_table_body {
+#sbnrbwwmzk .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -6745,7 +6703,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#eugljdqqia .gt_footnotes {
+#sbnrbwwmzk .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -6759,7 +6717,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#eugljdqqia .gt_footnote {
+#sbnrbwwmzk .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -6768,7 +6726,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#eugljdqqia .gt_sourcenotes {
+#sbnrbwwmzk .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -6782,7 +6740,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#eugljdqqia .gt_sourcenote {
+#sbnrbwwmzk .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -6790,72 +6748,72 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#eugljdqqia .gt_left {
+#sbnrbwwmzk .gt_left {
   text-align: left;
 }
 
-#eugljdqqia .gt_center {
+#sbnrbwwmzk .gt_center {
   text-align: center;
 }
 
-#eugljdqqia .gt_right {
+#sbnrbwwmzk .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#eugljdqqia .gt_font_normal {
+#sbnrbwwmzk .gt_font_normal {
   font-weight: normal;
 }
 
-#eugljdqqia .gt_font_bold {
+#sbnrbwwmzk .gt_font_bold {
   font-weight: bold;
 }
 
-#eugljdqqia .gt_font_italic {
+#sbnrbwwmzk .gt_font_italic {
   font-style: italic;
 }
 
-#eugljdqqia .gt_super {
+#sbnrbwwmzk .gt_super {
   font-size: 65%;
 }
 
-#eugljdqqia .gt_footnote_marks {
+#sbnrbwwmzk .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#eugljdqqia .gt_asterisk {
+#sbnrbwwmzk .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#eugljdqqia .gt_indent_1 {
+#sbnrbwwmzk .gt_indent_1 {
   text-indent: 5px;
 }
 
-#eugljdqqia .gt_indent_2 {
+#sbnrbwwmzk .gt_indent_2 {
   text-indent: 10px;
 }
 
-#eugljdqqia .gt_indent_3 {
+#sbnrbwwmzk .gt_indent_3 {
   text-indent: 15px;
 }
 
-#eugljdqqia .gt_indent_4 {
+#sbnrbwwmzk .gt_indent_4 {
   text-indent: 20px;
 }
 
-#eugljdqqia .gt_indent_5 {
+#sbnrbwwmzk .gt_indent_5 {
   text-indent: 25px;
 }
 
-#eugljdqqia .katex-display {
+#sbnrbwwmzk .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#eugljdqqia div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#sbnrbwwmzk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -11210,11 +11168,11 @@ Expand example for <code>expand_num = TRUE</code> and
 <p>Let’s add the gate for LAG3 of CD4+ and CD8+. This is a good
 visualization to see all sequential gating steps applied to the
 sample.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Grab gate as a numeric</span></span>
 <span><span class="va">current_gate</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">dens_gates</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd4_pos_cd8_pos</span> <span class="op">==</span> <span class="st">"cd4_neg_cd8_pos"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="va">dens_gates</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd4_pos_cd8_pos</span> <span class="op">==</span> <span class="st">"cd4_neg_cd8_pos"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">LAG3</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Apply using gs_add_gating-method and</span></span>
@@ -11230,8 +11188,8 @@ sample.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">current_gate</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">dens_gates</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd4_pos_cd8_pos</span> <span class="op">==</span> <span class="st">"cd4_pos_cd8_neg"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="va">dens_gates</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd4_pos_cd8_pos</span> <span class="op">==</span> <span class="st">"cd4_pos_cd8_neg"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">LAG3</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">openCyto</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/openCyto/man/gs_add_gating_method.html" class="external-link">gs_add_gating_method</a></span><span class="op">(</span></span>
@@ -11245,7 +11203,7 @@ sample.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">ggcyto</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">gs_qc</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-22-1.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-21-1.png" width="768" style="display: block; margin: auto;"></p>
 <p>After running {staRgate} to gate flow cytometry data, it is
 recommended to perform some quality checks (QC) on the gate placements
 to ensure they are reasonable. We suggest to use ridgeplots in addition
@@ -11265,7 +11223,7 @@ additional QC steps as well, stay tuned!</p>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.4.1 (2024-06-14)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
@@ -11289,7 +11247,7 @@ additional QC steps as well, stay tuned!</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
 <span><span class="co">#&gt; [1] ggplot2_3.5.1        flowCore_2.16.0      flowWorkspace_4.16.0</span></span>
-<span><span class="co">#&gt; [4] openCyto_2.16.1      staRgate_0.99.3     </span></span>
+<span><span class="co">#&gt; [4] openCyto_2.16.1      staRgate_0.99.3      BiocStyle_2.32.1    </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] gtable_0.3.5        xfun_0.48           bslib_0.8.0        </span></span>
@@ -11297,7 +11255,7 @@ additional QC steps as well, stay tuned!</p>
 <span><span class="co">#&gt;  [7] vctrs_0.6.5         tools_4.4.1         generics_0.1.3     </span></span>
 <span><span class="co">#&gt; [10] stats4_4.4.1        parallel_4.4.1      tibble_3.2.1       </span></span>
 <span><span class="co">#&gt; [13] fansi_1.0.6         highr_0.11          pkgconfig_2.0.3    </span></span>
-<span><span class="co">#&gt; [16] data.table_1.16.0   RColorBrewer_1.1-3  desc_1.4.3         </span></span>
+<span><span class="co">#&gt; [16] data.table_1.16.2   RColorBrewer_1.1-3  desc_1.4.3         </span></span>
 <span><span class="co">#&gt; [19] S4Vectors_0.42.1    gt_0.11.1           graph_1.82.0       </span></span>
 <span><span class="co">#&gt; [22] lifecycle_1.0.4     farver_2.1.2        compiler_4.4.1     </span></span>
 <span><span class="co">#&gt; [25] stringr_1.5.1       textshaping_0.4.0   munsell_0.5.1      </span></span>
@@ -11307,18 +11265,19 @@ additional QC steps as well, stay tuned!</p>
 <span><span class="co">#&gt; [37] tidyr_1.3.1         cachem_1.1.0        RProtoBufLib_2.16.0</span></span>
 <span><span class="co">#&gt; [40] commonmark_1.9.2    tidyselect_1.2.1    digest_0.6.37      </span></span>
 <span><span class="co">#&gt; [43] stringi_1.8.4       dplyr_1.1.4         purrr_1.0.2        </span></span>
-<span><span class="co">#&gt; [46] labeling_0.4.3      flowClust_3.42.0    fastmap_1.2.0      </span></span>
-<span><span class="co">#&gt; [49] grid_4.4.1          colorspace_2.1-1    cli_3.6.3          </span></span>
-<span><span class="co">#&gt; [52] magrittr_2.0.3      ncdfFlow_2.50.0     RBGL_1.80.0        </span></span>
-<span><span class="co">#&gt; [55] XML_3.99-0.17       utf8_1.2.4          withr_3.0.1        </span></span>
-<span><span class="co">#&gt; [58] scales_1.3.0        lubridate_1.9.3     timechange_0.3.0   </span></span>
-<span><span class="co">#&gt; [61] rmarkdown_2.28      matrixStats_1.4.1   gridExtra_2.3      </span></span>
-<span><span class="co">#&gt; [64] cytolib_2.16.0      ragg_1.3.3          evaluate_1.0.0     </span></span>
-<span><span class="co">#&gt; [67] knitr_1.48          markdown_1.13       rlang_1.1.4        </span></span>
-<span><span class="co">#&gt; [70] Rcpp_1.0.13         glue_1.8.0          xml2_1.3.6         </span></span>
-<span><span class="co">#&gt; [73] Rgraphviz_2.48.0    BiocGenerics_0.50.0 jsonlite_1.8.9     </span></span>
-<span><span class="co">#&gt; [76] plyr_1.8.9          R6_2.5.1            ggcyto_1.32.0      </span></span>
-<span><span class="co">#&gt; [79] systemfonts_1.1.0   fs_1.6.4            zlibbioc_1.50.0</span></span></code></pre></div>
+<span><span class="co">#&gt; [46] bookdown_0.41       labeling_0.4.3      flowClust_3.42.0   </span></span>
+<span><span class="co">#&gt; [49] fastmap_1.2.0       grid_4.4.1          colorspace_2.1-1   </span></span>
+<span><span class="co">#&gt; [52] cli_3.6.3           magrittr_2.0.3      ncdfFlow_2.50.0    </span></span>
+<span><span class="co">#&gt; [55] RBGL_1.80.0         XML_3.99-0.17       utf8_1.2.4         </span></span>
+<span><span class="co">#&gt; [58] withr_3.0.1         scales_1.3.0        lubridate_1.9.3    </span></span>
+<span><span class="co">#&gt; [61] timechange_0.3.0    rmarkdown_2.28      matrixStats_1.4.1  </span></span>
+<span><span class="co">#&gt; [64] gridExtra_2.3       cytolib_2.16.0      ragg_1.3.3         </span></span>
+<span><span class="co">#&gt; [67] evaluate_1.0.1      knitr_1.48          markdown_1.13      </span></span>
+<span><span class="co">#&gt; [70] rlang_1.1.4         Rcpp_1.0.13         glue_1.8.0         </span></span>
+<span><span class="co">#&gt; [73] xml2_1.3.6          Rgraphviz_2.48.0    BiocManager_1.30.25</span></span>
+<span><span class="co">#&gt; [76] BiocGenerics_0.50.0 jsonlite_1.8.9      plyr_1.8.9         </span></span>
+<span><span class="co">#&gt; [79] R6_2.5.1            ggcyto_1.32.0       systemfonts_1.1.0  </span></span>
+<span><span class="co">#&gt; [82] fs_1.6.4            zlibbioc_1.50.0</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
