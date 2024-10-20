@@ -87,7 +87,8 @@ getDensityDerivs <- function(dens,
   new_d$local_peak <-
     c(new_d$local_peak[-1], FALSE)
 
-  # 2022-06-15 split out the plateau_pre step bc need to fix the off-by-1 for local_peak identified?
+  # 2024-10-15 Add criteria to identify 1st deriv < 0 for max 2nd deriv
+  # 2022-06-15 split out the plateau_pre step bc need to fix the off-by-1 for local_peak identified
   new_d <-
     new_d |>
     dplyr::mutate(

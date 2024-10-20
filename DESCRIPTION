@@ -38,7 +38,8 @@ Suggests:
     rmarkdown,
     data.table,
     here,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    BiocStyle
 VignetteBuilder: knitr
 BugReports: https://github.com/leejasme/staRgate/issues
 URL: https://leejasme.github.io/staRgate/, https://github.com/leejasme/staRgate
