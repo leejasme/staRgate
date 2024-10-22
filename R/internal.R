@@ -496,7 +496,7 @@ getDensityPeakCutoff <- function(dens_binned_dat,
           df
         }else{
           # Else, need to filter to only 1st deriv <0 before searching
-          dplyr::filter(df, original_row_num < original_row_num[new_anchor == TRUE])
+          dplyr::filter(df, original_row_num < min(original_row_num[new_anchor == TRUE]))
         }
       })() |>
       # cutoff at max of 2nd deriv
@@ -513,14 +513,14 @@ getDensityPeakCutoff <- function(dens_binned_dat,
       dplyr::filter((original_row_num > aux_ind_bound[1]) & (original_row_num <= aux_ind_bound[2])) |>
       dplyr::arrange(-original_row_num) |>
       dplyr::mutate(first_deriv_change = c(0, diff(first_deriv_sign)),
-                    new_anchor = (first_deriv_change != 0) & (lag(first_deriv_sign) > 0)) |>
+                    new_anchor = (first_deriv_change != 0) & (stats::lag(first_deriv_sign) > 0)) |>
       (function(df){
         # If 1st deriv <0 for all of search region, no need to additional filter
         if(all(df$new_anchor == FALSE)){
           df
         }else{
           # Else, need to filter to only 1st deriv >0 before searching
-          dplyr::filter(df, original_row_num > original_row_num[new_anchor == TRUE])
+          dplyr::filter(df, original_row_num > max(original_row_num[new_anchor == TRUE]))
         }
       })() |>
       # cutoff at max of 2nd deriv
