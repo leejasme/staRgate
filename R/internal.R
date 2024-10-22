@@ -87,25 +87,24 @@ getDensityDerivs <- function(dens,
   new_d$local_peak <-
     c(new_d$local_peak[-1], FALSE)
 
-  # 2024-10-15 Add criteria to identify 1st deriv < 0 for max 2nd deriv
-  # 2022-06-15 split out the plateau_pre step bc need to fix the off-by-1 for local_peak identified
-  new_d <-
-    new_d |>
-    dplyr::mutate(
-      # Due to how the diff and deriv are calculated, the point of interest is back tracked by 1 so check 2nd deriv of 1 point before
-      plateau_pre = ((c(0, diff(third_deriv_sign)) == -2) & (sign(fourth_deriv) < 0)),
-      plateau_pre_2 = vapply(
-        dplyr::row_number(),
-        function(r) {
-          if (r >= 2) {
-            (plateau_pre[r] == TRUE & second_deriv_sign[(r - 1)] > 0)
-          } else {
-            FALSE
-          }
-        },
-        logical(1)
-      )
-    )
+  # # 2022-06-15 split out the plateau_pre step bc need to fix the off-by-1 for local_peak identified
+  # new_d <-
+  #   new_d |>
+  #   dplyr::mutate(
+  #     # Due to how the diff and deriv are calculated, the point of interest is back tracked by 1 so check 2nd deriv of 1 point before
+  #     plateau_pre = ((c(0, diff(third_deriv_sign)) == -2) & (sign(fourth_deriv) < 0)),
+  #     plateau_pre_2 = vapply(
+  #       dplyr::row_number(),
+  #       function(r) {
+  #         if (r >= 2) {
+  #           (plateau_pre[r] == TRUE & second_deriv_sign[(r - 1)] > 0)
+  #         } else {
+  #           FALSE
+  #         }
+  #       },
+  #       logical(1)
+  #     )
+  #   )
 
   return(new_d)
 }
@@ -432,12 +431,9 @@ getDensityPeakCutoff <- function(dens_binned_dat,
   aux_ind_neg_peak <-
     min(aux_ind_all_peaks)
 
-  # 2022-12-30 try to anchor the location for finding cutoff between the neg peak and the next closest
-  # Added arrange() above for aux_ind_all_peaks so we can grab the 2nd value for the second peak if it exists
-  # 2023-03-23: Missing piece might be first checking if it's a flipped case -
+  # Grab other peaks locations for anchoring the search for cutoff
   # For flipped case, only keep all indices to the left of the peak,
   # for regular case, keep all indices to the right of the peak
-  # This method of subsetting should retain the order of the original vector
   if (dens_flip == TRUE) {
     # Keep only the indices to the left of the peak (smaller)
     aux_ind_check_peaks <-
@@ -448,10 +444,11 @@ getDensityPeakCutoff <- function(dens_binned_dat,
       aux_ind_all_peaks[aux_ind_all_peaks >= aux_ind_neg_peak]
   }
 
-
+  # Anchor search points
   if (length(aux_ind_check_peaks) > 1) {
     bound_cutoff <- TRUE
-    # If the most neg peak is = highest peak then take the next highest, otherwise take the highest peak
+    # If the most neg peak is = highest peak then take the next highest,
+    # otherwise take the highest peak
     if (aux_ind_check_peaks[1] == aux_ind_neg_peak) {
       aux_ind_second_peak <- aux_ind_check_peaks[2]
     } else {
@@ -460,15 +457,18 @@ getDensityPeakCutoff <- function(dens_binned_dat,
   } else {
     bound_cutoff <- FALSE
     if (dens_flip == TRUE) {
-      # Upper bound of the search when only 1 peak and dens flip is till the min row of the dataframe
+      # Upper bound of the search when only 1 peak and dens flip is till
+      # the min row of the dataframe
       aux_ind_second_peak <- -Inf
     } else {
-      # Upper bound of the search when only 1 peak and no dens flip is till the max row of the dataframe
+      # Upper bound of the search when only 1 peak and no dens flip is till
+      # the max row of the dataframe
       aux_ind_second_peak <- Inf
     }
   }
 
-  # 2022-12-30: Rearrange the aux_ind_second_peak and aux_ind_neg_peak in case the ordering is flipped
+  # 2022-12-30: Rearrange the aux_ind_second_peak and aux_ind_neg_peak in
+  # case the ordering is flipped
   # due to the location of highest peak != neg peak
   aux_ind_bound <-
     if (dens_flip == FALSE) {
@@ -477,25 +477,76 @@ getDensityPeakCutoff <- function(dens_binned_dat,
       range(c(aux_ind_neg_peak - 1, aux_ind_second_peak))
     }
 
-  # 2022-12-30: cutoff is max 2nd deriv/max curvature
-  # 2022-04-14 the cutoff is at the start of the plateau after peak
-  # plateau_pre == TRUE, min x_avg and then subtract 1 on the index
-  aux_ind_cutoff_pre <-
-    new_d |>
-    # # 2023-03-14 Add a condition to check for right side of neg peak (left if flipped)
-    dplyr::filter((original_row_num > aux_ind_bound[1]) & (original_row_num <= aux_ind_bound[2])) |>
-    dplyr::slice_max(plateau_pre_2) |>
-    (function(df){
-      if(dens_flip == FALSE){
-        dplyr::slice_min(df, x_avg)
-      }else{
-        dplyr::slice_max(df, x_avg)
-      }
-    })()|>
-    dplyr::pull(original_row_num)
+  # IF `dens_flip` == FALSE
+  # Place cutoff at max 2nd deriv where 1st deriv is still < 0
+  # There are some instances where the 1st deriv > 0 so we need to filter
+  # more specifically before finding max(2nd deriv)
+  if(dens_flip == FALSE){
+    aux_ind_cutoff <-
+      new_d |>
+      # In case there are multiple, would not want to simple subset to 1st deriv < 0
+      # instead subset to the first set of rows where 1st deriv < 0
+      dplyr::filter((original_row_num > aux_ind_bound[1]) & (original_row_num <= aux_ind_bound[2])) |>
+      dplyr::arrange(original_row_num) |>
+      dplyr::mutate(first_deriv_change = c(0, diff(first_deriv_sign)),
+                    new_anchor = (first_deriv_change != 0) & (lag(first_deriv_sign) < 0)) |>
+      (function(df){
+        # If 1st deriv <0 for all of search region, no need to additional filter
+        if(all(df$new_anchor == FALSE)){
+          df
+        }else{
+          # Else, need to filter to only 1st deriv <0 before searching
+          dplyr::filter(df, original_row_num < min(original_row_num[new_anchor == TRUE]))
+        }
+      })() |>
+      # cutoff at max of 2nd deriv
+      dplyr::slice_max(second_deriv) |>
+      # There is no need to offset by 1 here because we are not calculating
+      # diff in the derivs
+      dplyr::pull(original_row_num)
+  }else{
+    # if `dens_flip` == TRUE, place cutoff at max 2nd deriv where 1st deriv >0
+    aux_ind_cutoff <-
+      new_d |>
+      # In case there are multiple, would not want to simple subset to 1st deriv > 0
+      # instead subset to the first set of rows where 1st deriv > 0
+      dplyr::filter((original_row_num > aux_ind_bound[1]) & (original_row_num <= aux_ind_bound[2])) |>
+      dplyr::arrange(-original_row_num) |>
+      dplyr::mutate(first_deriv_change = c(0, diff(first_deriv_sign)),
+                    new_anchor = (first_deriv_change != 0) & (stats::lag(first_deriv_sign) > 0)) |>
+      (function(df){
+        # If 1st deriv <0 for all of search region, no need to additional filter
+        if(all(df$new_anchor == FALSE)){
+          df
+        }else{
+          # Else, need to filter to only 1st deriv >0 before searching
+          dplyr::filter(df, original_row_num > max(original_row_num[new_anchor == TRUE]))
+        }
+      })() |>
+      # cutoff at max of 2nd deriv
+      dplyr::slice_max(second_deriv) |>
+      # There is no need to offset by 1 here because we are not calculating
+      # diff in the derivs
+      dplyr::pull(original_row_num)
+  }
 
-  # 2023-03-30 Offset by 1 due to calculation of diff and derivs
-  aux_ind_cutoff <- aux_ind_cutoff_pre - 1
+
+  # aux_ind_cutoff_pre <-
+  #   new_d |>
+  #   # # 2023-03-14 Add a condition to check for right side of neg peak (left if flipped)
+  #   dplyr::filter((original_row_num > aux_ind_bound[1]) & (original_row_num <= aux_ind_bound[2])) |>
+  #   dplyr::slice_max(plateau_pre_2) |>
+  #   (function(df){
+  #     if(dens_flip == FALSE){
+  #       dplyr::slice_min(df, x_avg)
+  #     }else{
+  #       dplyr::slice_max(df, x_avg)
+  #     }
+  #   })()|>
+  #   dplyr::pull(original_row_num)
+  #
+  # # 2023-03-30 Offset by 1 due to calculation of diff and derivs
+  # aux_ind_cutoff <- aux_ind_cutoff_pre - 1
 
   # Creating a column for cutoff
   if (length(aux_ind_cutoff) == 0) {
