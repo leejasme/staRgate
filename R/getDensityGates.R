@@ -90,125 +90,15 @@ getDensityGates <- function(intens_dat,
   #     (4) getDensityPeakCutoff() (internal)
 
   ## Check inputs ---
-  if (!(inherits(intens_dat, "data.frame"))) {
-    rlang::abort(message="Error: `intens_dat` must be of data.frame class")
-  }
-
-  if (!all(marker %in% colnames(intens_dat))) {
-    rlang::abort(message="Error: `marker` must be string matching column name(s) of `intens_dat`")
-  }
-
-
-  if (!(inherits(bin_n, "numeric"))) {
-    rlang::warn(
-      message=c("Warning: `bin_n` not specified as numeric.",
-                "i"="Default value `bin_n=512` will be used.")
-    )
-
-    bin_n <- 512
-  }
-
-  if (!(inherits(peak_detect_ratio, "numeric"))) {
-    rlang::warn(
-      message=c(
-        "Warning: `peak_detect_ratio` not specified as numeric.",
-        "i"="Default value `peak_detect_ratio=10` will be used."
-      )
-    )
-    # Set back to default-- have tested and is corrected
-    peak_detect_ratio <- 10
-  }
-
-  if (!(subset_col %in% colnames(intens_dat))) {
-    rlang::abort(message="Error: `subset_col` must be string matching column name of `intens_dat`")
-  }
-
-  if (!is.null(neg_intensity_threshold) &
-    !(inherits(neg_intensity_threshold, "numeric"))) {
-    rlang::warn(
-      message=c(
-        "Warning: `neg_intensity_threshold` must be a numeric if supplied",
-        "i"="Default value `neg_intensity_threshold=NULL` will be used (no filtering)."
-      )
-    )
-
-    neg_intensity_threshold <- NULL
-  }
-
-  if (!is.null(neg_intensity_threshold)) {
-    i_dat <-
-      intens_dat |>
-      dplyr::filter(!(
-        dplyr::if_any(dplyr::all_of(marker),
-                      ~ .x < neg_intensity_threshold)
-      ))
-  } else {
-    i_dat <- intens_dat
-  }
-
-  if (!(inherits(pos_peak_threshold, "numeric"))) {
-    # If not a single numeric, then check if its a df of correct format, otherwise warn
-    if (!(inherits(pos_peak_threshold, "data.frame"))) {
-      rlang::warn(
-        message=c(
-          "Warning: `pos_peak_threshold` must be a numeric or dataframe",
-          "i"="Default value `pos_peak_threshold=1800` will be used."
-        )
-      )
-
-      pos_peak_threshold <-
-        tibble::tibble(MARKER=marker, POS_PEAK_THRESHOLD=1800)
-    } else {
-      # If dataframe, then check if structured correctly
-      # two columns with names marker and pos_peak_threshold
-      # Change the colnames of pos_peak_thresholds to all caps if df
-      pos_peak_threshold <-
-        pos_peak_threshold |>
-        janitor::clean_names(case="all_caps")
-
-      chk1 <- all(colnames(pos_peak_threshold) %in% c("MARKER", "POS_PEAK_THRESHOLD"))
-
-      # Also check if all the names in marker column match those in the `marker` arg
-      chk2 <- all(marker %in% pos_peak_threshold$MARKER)
-
-      # If the col names of pos_peak_threshold are correct but not all markers have a corresponding threshold
-      if (!chk2 & chk1) {
-        rlang::warn(
-          message=c(
-            "Error: Not all markers in `marker` argument have a `pos_peak_threshold` supplied",
-            "i"="Default value of `pos_peak_threshold=1800` will be used for the markers without a value supplied."
-          )
-        )
-
-        # which names are not in the `marker` arg?
-        nms_to_fill <- marker[!(marker %in% pos_peak_threshold$MARKER)]
-
-        # dplyr::add_row should add a row per string in the nms_to_fill vector with pos_peak_threshold fixed
-        pos_peak_threshold <-
-          pos_peak_threshold |>
-          dplyr::add_row(MARKER=nms_to_fill, POS_PEAK_THRESHOLD=1800)
-      } else if (!(chk1 & chk2)) {
-        rlang::abort(
-          message=c(
-            "Error: `pos_peak_threshold` is not of correct format",
-            "i"="Column names for `pos_peak_threshold` should be `marker` and `pos_peak_threshold`",
-            "i"="Not all markers in `marker` argument have a `pos_peak_threshold` supplied."
-          )
-        )
-      } else if (!chk1) {
-        rlang::abort(
-          message=c(
-            "Error: `pos_peak_threshold` is not of correct format",
-            "i"="Column names for `pos_peak_threshold` should be `marker` and `pos_peak_threshold`"
-          )
-        )
-      }
-    }
-  } else {
-    pos_peak_threshold <-
-      tibble::tibble(MARKER=marker, POS_PEAK_THRESHOLD=pos_peak_threshold)
-  }
-
+  check_inputs(getDensityGates,
+               arg_list =
+                 list("intens_dat"=intens_dat,
+                      "marker"=marker,
+                      "subset_col"=subset_col,
+                      "bin_n"=bin_n,
+                      "peak_detect_ratio"=peak_detect_ratio,
+                      "pos_peak_threshold"=pos_peak_threshold,
+                      "neg_intensity_threshold"=neg_intensity_threshold))
 
   # Wrap around the `marker` supplied
   # make them lists
