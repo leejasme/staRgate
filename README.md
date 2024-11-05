@@ -3,7 +3,7 @@ A density-based automated gating pipeline for flow cytometry data to characteriz
 
 This GitHub stores the {staRgate} R package. 
 
-# Installation
+# Installation 
 
 The {staRgate} package relies on a few Biocondcutor R packages.
 Before installing {staRgate}, first setup Bioconductor and install all packages. 
