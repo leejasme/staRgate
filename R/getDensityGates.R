@@ -90,15 +90,23 @@ getDensityGates <- function(intens_dat,
   #     (4) getDensityPeakCutoff() (internal)
 
   ## Check inputs ---
-  check_inputs(getDensityGates,
-               arg_list =
-                 list("intens_dat"=intens_dat,
-                      "marker"=marker,
-                      "subset_col"=subset_col,
-                      "bin_n"=bin_n,
-                      "peak_detect_ratio"=peak_detect_ratio,
-                      "pos_peak_threshold"=pos_peak_threshold,
-                      "neg_intensity_threshold"=neg_intensity_threshold))
+  chk_inputs =
+    check_inputs("getDensityGates",
+                 arg_list =
+                   list("intens_dat"=intens_dat,
+                        "marker"=marker,
+                        "subset_col"=subset_col,
+                        "bin_n"=bin_n,
+                        "peak_detect_ratio"=peak_detect_ratio,
+                        "pos_peak_threshold"=pos_peak_threshold,
+                        "neg_intensity_threshold"=neg_intensity_threshold))
+
+  # If nothing returned, all inputs are good. Otherwise, set defaults
+  if(length(chk_inputs) != 0){
+    list2env(chk_inputs, env = environment())
+  }
+
+  # print(chk_inputs)
 
   # Wrap around the `marker` supplied
   # make them lists

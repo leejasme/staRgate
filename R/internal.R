@@ -2,9 +2,12 @@
 #' Internal function: Check the argument inputs for functions
 #'
 #' @keywords internal
+#' @noRd
 
 check_inputs <- function(fun_name,
                          arg_list){
+
+  list2env(arg_list, env = environment())
 
   # Create a list of args that need to be set to default values
   return_list <- list()
@@ -12,16 +15,16 @@ check_inputs <- function(fun_name,
   # Based on the different function names, the checks are diff
 
   if(fun_name == "getDensityGates"){
-    if (!(inherits(arg_list[["intens_dat"]], "data.frame"))) {
+    if (!(is.data.frame(intens_dat))) {
       rlang::abort(message="Error: `intens_dat` must be of data.frame class")
     }
 
-    if (!all(arg_list[["marker"]] %in% colnames(arg_list[["intens_dat"]]))) {
+    if (!all(marker %in% colnames(intens_dat))) {
       rlang::abort(message="Error: `marker` must be string matching column name(s) of `intens_dat`")
     }
 
 
-    if (!(inherits(arg_list[["bin_n"]], "numeric"))) {
+    if (!(is.numeric(bin_n))) {
       rlang::warn(
         message=c("Warning: `bin_n` not specified as numeric.",
                   "i"="Default value `bin_n = 512` will be used.")
@@ -30,7 +33,7 @@ check_inputs <- function(fun_name,
       return_list <- append(return_list, list("bin_n"=512))
     }
 
-    if (!(inherits(peak_detect_ratio, "numeric"))) {
+    if (!(is.numeric(peak_detect_ratio))) {
       rlang::warn(
         message=c(
           "Warning: `peak_detect_ratio` not specified as numeric.",
@@ -46,7 +49,7 @@ check_inputs <- function(fun_name,
     }
 
     if (!is.null(neg_intensity_threshold) &
-        !(inherits(neg_intensity_threshold, "numeric"))) {
+        !(is.numeric(neg_intensity_threshold))) {
       rlang::warn(
         message=c(
           "Warning: `neg_intensity_threshold` must be a numeric if supplied",
@@ -68,9 +71,12 @@ check_inputs <- function(fun_name,
       i_dat <- intens_dat
     }
 
-    if (!(inherits(pos_peak_threshold, "numeric"))) {
+
+    return_list <- append(i_dat, list("i_dat"=i_dat))
+
+    if (!(is.numeric(pos_peak_threshold))) {
       # If not a single numeric, then check if its a df of correct format, otherwise warn
-      if (!(inherits(pos_peak_threshold, "data.frame"))) {
+      if (!(is.data.frame(pos_peak_threshold))) {
         rlang::warn(
           message=c(
             "Warning: `pos_peak_threshold` must be a numeric or dataframe",
@@ -131,7 +137,7 @@ check_inputs <- function(fun_name,
         tibble::tibble(MARKER=marker, POS_PEAK_THRESHOLD=pos_peak_threshold)
     }
 
-
+    return_list <- append(return_list, list("pos_peak_threshold"=pos_peak_threshold))
   }
 
   return(return_list)
@@ -628,7 +634,7 @@ getDensityPeakCutoff <- function(dens_binned_dat,
       dplyr::filter((original_row_num > aux_ind_bound[1]) & (original_row_num <= aux_ind_bound[2])) |>
       dplyr::arrange(original_row_num) |>
       dplyr::mutate(first_deriv_change = c(0, diff(first_deriv_sign)),
-                    new_anchor = (first_deriv_change != 0) & (lag(first_deriv_sign) < 0)) |>
+                    new_anchor = (first_deriv_change != 0) & (dplyr::lag(first_deriv_sign) < 0)) |>
       (function(df){
         # If 1st deriv <0 for all of search region, no need to additional filter
         if(all(df$new_anchor == FALSE)){
