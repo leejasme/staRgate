@@ -90,23 +90,41 @@ getDensityGates <- function(intens_dat,
   #     (4) getDensityPeakCutoff() (internal)
 
   ## Check inputs ---
-  chk_inputs =
-    check_inputs("getDensityGates",
-                 arg_list =
-                   list("intens_dat"=intens_dat,
-                        "marker"=marker,
-                        "subset_col"=subset_col,
-                        "bin_n"=bin_n,
-                        "peak_detect_ratio"=peak_detect_ratio,
-                        "pos_peak_threshold"=pos_peak_threshold,
-                        "neg_intensity_threshold"=neg_intensity_threshold))
+  check_inputs("getDensityGates",
+               arg_list =
+                 list("intens_dat"=intens_dat,
+                      "marker"=marker,
+                      "subset_col"=subset_col,
+                      "bin_n"=bin_n,
+                      "peak_detect_ratio"=peak_detect_ratio,
+                      "pos_peak_threshold"=pos_peak_threshold,
+                      "neg_intensity_threshold"=neg_intensity_threshold))
 
-  # If nothing returned, all inputs are good. Otherwise, set defaults
-  if(length(chk_inputs) != 0){
-    list2env(chk_inputs, env = environment())
+  # Apply the filtering if any
+  if (!is.null(neg_intensity_threshold)) {
+    i_dat <-
+      intens_dat |>
+      dplyr::filter(!(
+        dplyr::if_any(dplyr::all_of(marker),
+                      ~ .x < neg_intensity_threshold)
+      ))
+  } else {
+    i_dat <- intens_dat
   }
 
-  # print(chk_inputs)
+  # Clean up the `pos_peak_threshold` data
+  if(is.numeric(pos_peak_threshold)){
+    pos_peak_threshold <-
+      tibble::tibble(MARKER=marker, POS_PEAK_THRESHOLD=pos_peak_threshold)
+  }else{
+    nms_to_fill <- marker[!(marker %in% pos_peak_threshold$MARKER)]
+
+    # dplyr::add_row should add a row per string in the nms_to_fill vector with pos_peak_threshold fixed
+    pos_peak_threshold <-
+      pos_peak_threshold |>
+      janitor::clean_names(case="all_caps") |>
+      dplyr::add_row(MARKER=nms_to_fill, POS_PEAK_THRESHOLD=1800)
+  }
 
   # Wrap around the `marker` supplied
   # make them lists

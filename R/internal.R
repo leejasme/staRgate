@@ -9,9 +9,6 @@ check_inputs <- function(fun_name,
 
   list2env(arg_list, env = environment())
 
-  # Create a list of args that need to be set to default values
-  return_list <- list()
-
   # Based on the different function names, the checks are diff
 
   if(fun_name == "getDensityGates"){
@@ -23,14 +20,11 @@ check_inputs <- function(fun_name,
       rlang::abort(message="Error: `marker` must be string matching column name(s) of `intens_dat`")
     }
 
-
     if (!(is.numeric(bin_n))) {
       rlang::warn(
         message=c("Warning: `bin_n` not specified as numeric.",
                   "i"="Default value `bin_n = 512` will be used.")
       )
-
-      return_list <- append(return_list, list("bin_n"=512))
     }
 
     if (!(is.numeric(peak_detect_ratio))) {
@@ -40,8 +34,6 @@ check_inputs <- function(fun_name,
           "i"="Default value `peak_detect_ratio = 10` will be used."
         )
       )
-      # Set back to default
-      return_list <- append(return_list, list("peak_detect_ratio"=10))
     }
 
     if (!(subset_col %in% colnames(intens_dat))) {
@@ -56,23 +48,7 @@ check_inputs <- function(fun_name,
           "i"="Default value `neg_intensity_threshold = NULL` will be used (no filtering)."
         )
       )
-
-      return_list <- append(return_list, list("neg_intensity_threshold"=NULL))
     }
-
-    if (!is.null(neg_intensity_threshold)) {
-      i_dat <-
-        intens_dat |>
-        dplyr::filter(!(
-          dplyr::if_any(dplyr::all_of(marker),
-                        ~ .x < neg_intensity_threshold)
-        ))
-    } else {
-      i_dat <- intens_dat
-    }
-
-
-    return_list <- append(i_dat, list("i_dat"=i_dat))
 
     if (!(is.numeric(pos_peak_threshold))) {
       # If not a single numeric, then check if its a df of correct format, otherwise warn
@@ -108,13 +84,13 @@ check_inputs <- function(fun_name,
             )
           )
 
-          # which names are not in the `marker` arg?
-          nms_to_fill <- marker[!(marker %in% pos_peak_threshold$MARKER)]
-
-          # dplyr::add_row should add a row per string in the nms_to_fill vector with pos_peak_threshold fixed
-          pos_peak_threshold <-
-            pos_peak_threshold |>
-            dplyr::add_row(MARKER=nms_to_fill, POS_PEAK_THRESHOLD=1800)
+          # # which names are not in the `marker` arg?
+          # nms_to_fill <- marker[!(marker %in% pos_peak_threshold$MARKER)]
+          #
+          # # dplyr::add_row should add a row per string in the nms_to_fill vector with pos_peak_threshold fixed
+          # pos_peak_threshold <-
+          #   pos_peak_threshold |>
+          #   dplyr::add_row(MARKER=nms_to_fill, POS_PEAK_THRESHOLD=1800)
         } else if (!(chk1 & chk2)) {
           rlang::abort(
             message=c(
@@ -132,15 +108,11 @@ check_inputs <- function(fun_name,
           )
         }
       }
-    } else {
-      pos_peak_threshold <-
-        tibble::tibble(MARKER=marker, POS_PEAK_THRESHOLD=pos_peak_threshold)
-    }
-
-    return_list <- append(return_list, list("pos_peak_threshold"=pos_peak_threshold))
+    }# else {
+    #   pos_peak_threshold <-
+    #     tibble::tibble(MARKER=marker, POS_PEAK_THRESHOLD=pos_peak_threshold)
+    # }
   }
-
-  return(return_list)
 }
 
 # getDensityGates() calls a few internal functions but they are not exported
