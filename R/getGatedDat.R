@@ -39,32 +39,16 @@
 #' # intens_dat_2 now has the cd4_pos tagged on
 #' head(intens_dat_2)
 
-getGatedDat <- function(intens_dat=intensity_dat, cutoffs, subset_col) {
+getGatedDat <- function(intens_dat, cutoffs, subset_col) {
 
   ## Grab the markers in cutoffs
   c_nms <- colnames(cutoffs)
   mrks <- c_nms[!(c_nms %in% c(subset_col, "subpop"))]
 
   ## Check inputs ---
-  if (!(inherits(intens_dat, "data.frame"))) {
-    rlang::abort(message="Error: `intens_dat` must be of data.frame class")
-  }
-
-  if (!(inherits(cutoffs, "data.frame"))) {
-    rlang::abort(message="Error: `cutoffs` must be of data.frame class")
-  }
-
-  if (!all((mrks %in% colnames(intens_dat)))) {
-    rlang::abort(message="Error: `cutoffs` must have marker names matching names in `intens_dat`")
-  }
-
-  if (!(subset_col %in% colnames(intens_dat))) {
-    rlang::abort(message="Error: `subset_col` must be string matching column name of `intens_dat`")
-  }
-
-  if (!(subset_col %in% colnames(cutoffs))) {
-    rlang::abort(message="Error: `subset_col` must be string matching column name of `cutoffs`")
-  }
+  checkInputs(intens_dat=intens_dat,
+              cutoffs=cutoffs,
+              subset_col=subset_col)
 
   ## use nest() to subset into separate dfs
   intens_dat |>

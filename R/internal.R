@@ -4,29 +4,49 @@
 #' @keywords internal
 #' @noRd
 
-check_inputs <- function(fun_name,
-                         arg_list){
+checkInputs <- function(intens_dat=NULL,
+                        marker=NULL,
+                        subset_col=NULL,
+                        bin_n=NULL,
+                        peak_detect_ratio=NULL,
+                        pos_peak_threshold=NULL,
+                        neg_intensity_threshold=NULL,
+                        cutoffs=NULL,
+                        num_marker=NULL,
+                        denom_marker=NULL,
+                        expand_num=NULL,
+                        expand_denom=NULL,
+                        keep_indicators=NULL
+                         ){
 
-  list2env(arg_list, env = environment())
-
-  # Based on the different function names, the checks are diff
-
-  if(fun_name == "getDensityGates"){
+  if (!is.null(intens_dat)) {
     if (!(is.data.frame(intens_dat))) {
       rlang::abort(message="Error: `intens_dat` must be of data.frame class")
+      }
     }
 
+  if (!is.null(marker)) {
     if (!all(marker %in% colnames(intens_dat))) {
       rlang::abort(message="Error: `marker` must be string matching column name(s) of `intens_dat`")
     }
+  }
 
+  if (!is.null(subset_col)) {
+    if (!(subset_col %in% colnames(intens_dat))) {
+      rlang::abort(message="Error: `subset_col` must be string matching column name of `intens_dat`")
+    }
+  }
+
+  if (!is.null(bin_n)) {
     if (!(is.numeric(bin_n))) {
       rlang::warn(
         message=c("Warning: `bin_n` not specified as numeric.",
                   "i"="Default value `bin_n = 512` will be used.")
       )
     }
+  }
 
+  if (!is.null(peak_detect_ratio)) {
     if (!(is.numeric(peak_detect_ratio))) {
       rlang::warn(
         message=c(
@@ -35,23 +55,12 @@ check_inputs <- function(fun_name,
         )
       )
     }
+  }
 
-    if (!(subset_col %in% colnames(intens_dat))) {
-      rlang::abort(message="Error: `subset_col` must be string matching column name of `intens_dat`")
-    }
-
-    if (!is.null(neg_intensity_threshold) &
-        !(is.numeric(neg_intensity_threshold))) {
-      rlang::warn(
-        message=c(
-          "Warning: `neg_intensity_threshold` must be a numeric if supplied",
-          "i"="Default value `neg_intensity_threshold = NULL` will be used (no filtering)."
-        )
-      )
-    }
-
+  if (!is.null(pos_peak_threshold)) {
     if (!(is.numeric(pos_peak_threshold))) {
-      # If not a single numeric, then check if its a df of correct format, otherwise warn
+      # If not a single numeric, then check if its a df of correct format,
+      # otherwise warn
       if (!(is.data.frame(pos_peak_threshold))) {
         rlang::warn(
           message=c(
@@ -75,7 +84,8 @@ check_inputs <- function(fun_name,
         # Also check if all the names in marker column match those in the `marker` arg
         chk2 <- all(marker %in% pos_peak_threshold$MARKER)
 
-        # If the col names of pos_peak_threshold are correct but not all markers have a corresponding threshold
+        # If the col names of pos_peak_threshold are correct but
+        # not all markers have a corresponding threshold
         if (!chk2 & chk1) {
           rlang::warn(
             message=c(
@@ -83,14 +93,6 @@ check_inputs <- function(fun_name,
               "i"="Default value of `pos_peak_threshold=1800` will be used for the markers without a value supplied."
             )
           )
-
-          # # which names are not in the `marker` arg?
-          # nms_to_fill <- marker[!(marker %in% pos_peak_threshold$MARKER)]
-          #
-          # # dplyr::add_row should add a row per string in the nms_to_fill vector with pos_peak_threshold fixed
-          # pos_peak_threshold <-
-          #   pos_peak_threshold |>
-          #   dplyr::add_row(MARKER=nms_to_fill, POS_PEAK_THRESHOLD=1800)
         } else if (!(chk1 & chk2)) {
           rlang::abort(
             message=c(
@@ -108,10 +110,106 @@ check_inputs <- function(fun_name,
           )
         }
       }
-    }# else {
-    #   pos_peak_threshold <-
-    #     tibble::tibble(MARKER=marker, POS_PEAK_THRESHOLD=pos_peak_threshold)
-    # }
+    }
+  }
+
+  if (!is.null(neg_intensity_threshold)) {
+    if (!(is.numeric(neg_intensity_threshold))) {
+      rlang::warn(
+        message=c(
+          "Warning: `neg_intensity_threshold` must be a numeric if supplied",
+          "i"="Default value `neg_intensity_threshold = NULL` will be used (no filtering)."
+        )
+      )
+    }
+  }
+
+  if (!is.null(cutoffs)) {
+    if (!is.data.frame(cutoffs)) {
+      rlang::abort(message="Error: `cutoffs` must be of data.frame class")
+    }
+
+    # Check the colnames match intens dat
+    c_nms <- colnames(cutoffs)
+    mrks <- c_nms[!(c_nms %in% c(subset_col, "subpop"))]
+
+    if (!all((mrks %in% colnames(intens_dat)))) {
+      rlang::abort(message="Error: `cutoffs` must have marker names matching names in `intens_dat`")
+    }
+  }
+
+  if (!is.null(num_marker) & !is.null(denom_marker)) {
+    col_nms_subset <-
+      paste(toupper(c(num_marker, denom_marker)), "POS", sep="_")
+
+    col_nms <-
+      toupper(colnames(intens_dat))[grepl("_POS$", (toupper(colnames(intens_dat))))]
+
+    if (!is.character(num_marker) & !is.character(denom_marker)) {
+      rlang::abort(
+        c(message="Error: `num_marker` and/or `denom_marker` must be of character class.",
+          "i"="`num_marker` and `denom_marker` must be strings containing the names of the marker(s) of interest for calculating the subpopulations.")
+      )
+    }
+
+    if (!all((col_nms_subset %in% col_nms))) {
+      rlang::abort(
+        message=c(
+          "Error: `num_marker` and `denom_marker` must have indicator columns in `intens_dat`",
+          "i"="`intens_dat` should contain 0/1 columns to indicate negative/positive with column name <marker>_pos for each marker specified in `num_marker` and `denom_marker`"
+        )
+      )
+    }
+
+    # check the cols corresponding to the num and denom markers only contain 0 and 1
+    if (!all(unique(unlist(intens_dat[, col_nms_subset])) %in% c(0, 1))) {
+      rlang::abort(
+        message=c(
+          "Error: Unique values in indicator columns corresponding to `num_marker` and `denom_marker` should only contain 0 and 1.",
+          "i"=glue::glue(
+            "Currently detected unique values: {paste(unique(unlist(intens_dat[, col_nms_subset])), collapse=', ')}"
+          )
+        )
+      )
+    }
+
+    # Also check if the 0/1 cols are numeric
+    # For now, make it an error but can consider for the future to convert it with readr::parse_number and print a warning
+    # But not sure how badly that could break down if the parsing did not show the expected values?
+    if (!all(apply(intens_dat[, col_nms_subset], 2, class, simplify=TRUE) == "numeric")) {
+      rlang::abort(message="Error: Not all indicator columns corresponding to `num_marker` and `denom_marker` are numeric")
+    }
+  }
+
+  if (!is.null(expand_num) & !is.null(expand_denom)) {
+    if (!is.logical(expand_num)) {
+      rlang::warn(
+        message=c(
+          "Warning: `expand_num` not of class logical (either `TRUE` or `FALSE`)",
+          "i"="Default value of `FALSE` will be used"
+        )
+      )
+    }
+
+    if (!is.logical(expand_denom)) {
+      rlang::warn(
+        message=c(
+          "Warning: `expand_denom` not of class logical (either `TRUE` or `FALSE`)",
+          "i"="Default value of `FALSE` will be used"
+        )
+      )
+    }
+  }
+
+  if (!is.null(keep_indicators)) {
+    if (!is.logical(keep_indicators)) {
+      rlang::warn(
+        message=c(
+          "Warning: `keep_indicators` not of class logical (either `TRUE` or `FALSE`)",
+          "i"="Default value of `TRUE` will be used"
+        )
+      )
+    }
   }
 }
 

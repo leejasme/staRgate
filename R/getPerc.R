@@ -91,7 +91,6 @@ getPerc <- function(intens_dat,
                     expand_denom=FALSE,
                     keep_indicators=TRUE) {
 
-  ## Check inputs ---
   # Check names in num_marker and denom_marker are in the data
   # more specifically, it's the <marker>_pos column that matters
   col_nms <-
@@ -102,70 +101,29 @@ getPerc <- function(intens_dat,
     intens_dat |>
     janitor::clean_names(case="all_caps")
 
+  ## Check inputs ---
+  checkInputs(intens_dat=intens_dat,
+              num_marker=num_marker,
+              denom_marker=denom_marker,
+              expand_num=expand_num,
+              expand_denom=expand_denom,
+              keep_indicators=keep_indicators)
+
   # Create the colnames that we expect for num_marker and denom_marker with _POS tagged on
   col_nms_subset <-
     paste(toupper(c(num_marker, denom_marker)), "POS", sep="_")
 
-  if (!(inherits(intens_dat, "data.frame"))) {
-    rlang::abort(message="Error: `intens_dat` must be of data.frame class")
-  }
-
-  if (!(inherits(col_nms_subset, "character"))) {
-    rlang::abort(
-      c(message="Error: `num_marker` and/or `denom_marker` must be of character class.", "i"="`num_marker` and `denom_marker` must be strings containing the names of the marker(s) of interest for calculating the subpopulations.")
-    )
-  }
-
-  if (!all((col_nms_subset %in% col_nms))) {
-    rlang::abort(
-      message=c(
-        "Error: `num_marker` and `denom_marker` must have indicator columns in `intens_dat`",
-        "i"="`intens_dat` should contain 0/1 columns to indicate negative/positive with column name <marker>_pos for each marker specified in `num_marker` and `denom_marker`"
-      )
-    )
-  }
-
-  # check the cols corresponding to the num and denom markers only contain 0 and 1
-  # what to do about NAs?
-  if (!all(unique(unlist(intens_dat[, col_nms_subset])) %in% c(0, 1))) {
-    rlang::abort(
-      message=c(
-        "Error: Unique values in indicator columns corresponding to `num_marker` and `denom_marker` should only contain 0 and 1.",
-        "i"=glue::glue(
-          "Currently detected unique values: {paste(unique(unlist(intens_dat[, col_nms_subset])), collapse=', ')}"
-        )
-      )
-    )
-  }
-
-  # Perhaps also need to check if the 0/1 cols are numeric?
-  # For now, make it an error but can consider for the future to convert it with readr::parse_number and print a warning
-  # But not sure how badly that could break down if the parsing did not show the expected values?
-  if (!all(apply(intens_dat[, col_nms_subset], 2, class, simplify=TRUE) == "numeric")) {
-    rlang::abort(message="Error: Not all indicator columns corresponding to `num_marker` and `denom_marker` are numeric")
-  }
-
-  # check expand_num and expand_denom as well
-  if (!inherits(expand_num, "logical")) {
-    rlang::warn(
-      message=c(
-        "Warning: `expand_num` not of class logical (either `TRUE` or `FALSE`)",
-        "i"="Default value of `FALSE` will be used"
-      )
-    )
-
+  # use default values if incorrect
+  if (!is.logical(expand_num)) {
     expand_num <- FALSE
   }
 
-  if (!inherits(expand_denom, "logical")) {
-    rlang::warn(
-      message=c(
-        "Warning: `expand_denom` not of class logical (either `TRUE` or `FALSE`)",
-        "i"="Default value of `FALSE` will be used"
-      )
-    )
-
+  if (!is.logical(expand_denom)) {
     expand_denom <- FALSE
+  }
+
+  if (!is.logical(keep_indicators)) {
+    keepindicators <- TRUE
   }
 
   # Can only expand numerator if the supplied num_marker has 2 or more markers
@@ -187,7 +145,6 @@ getPerc <- function(intens_dat,
     expand_num <- FALSE
     expand_denom <- FALSE
   }
-
 
   if (expand_num == TRUE & length(num_marker) < 2) {
     rlang::warn(

@@ -90,15 +90,14 @@ getDensityGates <- function(intens_dat,
   #     (4) getDensityPeakCutoff() (internal)
 
   ## Check inputs ---
-  check_inputs("getDensityGates",
-               arg_list =
-                 list("intens_dat"=intens_dat,
-                      "marker"=marker,
-                      "subset_col"=subset_col,
-                      "bin_n"=bin_n,
-                      "peak_detect_ratio"=peak_detect_ratio,
-                      "pos_peak_threshold"=pos_peak_threshold,
-                      "neg_intensity_threshold"=neg_intensity_threshold))
+  checkInputs(intens_dat=intens_dat,
+              marker=marker,
+              subset_col=subset_col,
+              bin_n=bin_n,
+              peak_detect_ratio=peak_detect_ratio,
+              pos_peak_threshold=pos_peak_threshold,
+              neg_intensity_threshold=neg_intensity_threshold)
+
 
   # Apply the filtering if any
   if (!is.null(neg_intensity_threshold)) {

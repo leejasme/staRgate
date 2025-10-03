@@ -4,7 +4,7 @@
 \alias{getGatedDat}
 \title{Attach indicator columns to \code{intens_dat} based on gates provided in \code{cutoffs}}
 \usage{
-getGatedDat(intens_dat = intensity_dat, cutoffs, subset_col)
+getGatedDat(intens_dat, cutoffs, subset_col)
 }
 \arguments{
 \item{intens_dat}{dataframe of pre-gated (compensated, biexp. transf,

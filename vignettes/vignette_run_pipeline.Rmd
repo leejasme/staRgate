@@ -47,7 +47,6 @@ Before installing {staRgate}, first setup Bioconductor and install all dependenc
 if (!require("BiocManager", quietly = TRUE)) {
   install.packages("BiocManager")
 }
-
 ```
 
 
