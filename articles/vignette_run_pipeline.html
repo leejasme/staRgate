@@ -8,8 +8,8 @@
 <title>Tutorial: Running the pipeline • staRgate</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Tutorial: Running the pipeline">
 </head>
 <body>
@@ -77,8 +77,8 @@ population to include cells with varying intensities of marker
 expression. This is achieved via estimating the kernel density of the
 intensity distribution and corresponding derivatives. This pipeline
 integrates the density gating method in conjuction with some
-pre-processing steps achieved via the R package <em><a href="https://bioconductor.org/packages/3.20/openCyto" class="external-link">openCyto</a></em>
-and an optional step with <em><a href="https://bioconductor.org/packages/3.20/flowAI" class="external-link">flowAI</a></em>.
+pre-processing steps achieved via the R package <em><a href="https://bioconductor.org/packages/3.21/openCyto" class="external-link">openCyto</a></em>
+and an optional step with <em><a href="https://bioconductor.org/packages/3.21/flowAI" class="external-link">flowAI</a></em>.
 The flow data is stored within R as a <code>GatingSet</code> object,
 which makes it easily transferable to other flow cytometry workflows
 available on BioConductor.</p>
@@ -119,14 +119,14 @@ are instructions for installing Bioconductor</a></p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>The essential dependencies for running the {staRgate} package
-include: <em><a href="https://bioconductor.org/packages/3.20/flowCore" class="external-link">flowCore</a></em>,
-and <em><a href="https://bioconductor.org/packages/3.20/flowWorkspace" class="external-link">flowWorkspace</a></em>.</p>
+include: <em><a href="https://bioconductor.org/packages/3.21/flowCore" class="external-link">flowCore</a></em>,
+and <em><a href="https://bioconductor.org/packages/3.21/flowWorkspace" class="external-link">flowWorkspace</a></em>.</p>
 <p>The following packages are needed to fully run the pipeline as shown
 in this Tutorial, but not required for the {staRgate} code chunks to
-run: <em><a href="https://bioconductor.org/packages/3.20/openCyto" class="external-link">openCyto</a></em>,
-<em><a href="https://bioconductor.org/packages/3.20/flowAI" class="external-link">flowAI</a></em>,
+run: <em><a href="https://bioconductor.org/packages/3.21/openCyto" class="external-link">openCyto</a></em>,
+<em><a href="https://bioconductor.org/packages/3.21/flowAI" class="external-link">flowAI</a></em>,
 <em><a href="https://CRAN.R-project.org/package=ggplot2" class="external-link">ggplot2</a></em>,
-<em><a href="https://bioconductor.org/packages/3.20/ggcyto" class="external-link">ggcyto</a></em>,
+<em><a href="https://bioconductor.org/packages/3.21/ggcyto" class="external-link">ggcyto</a></em>,
 <em><a href="https://CRAN.R-project.org/package=gt" class="external-link">gt</a></em></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load libraries</span></span>
@@ -157,7 +157,7 @@ run: <em><a href="https://bioconductor.org/packages/3.20/openCyto" class="extern
 <span><span class="va">path_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># Print the path_out for user to see</span></span>
 <span><span class="va">path_out</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpR7t2EM"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpI9pg0W"</span></span>
 <span></span>
 <span><span class="co">## File path Gating template</span></span>
 <span><span class="va">gtFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"gating_template_x50_tcell.csv"</span>, package <span class="op">=</span> <span class="st">"staRgate"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -196,7 +196,7 @@ basis and positive decades) to be applied to the listed channels</li>
 </li>
 <li>Gating template
 <ul>
-<li>A gating template is required to run the pre-gating via <em><a href="https://bioconductor.org/packages/3.20/openCyto" class="external-link">openCyto</a></em>
+<li>A gating template is required to run the pre-gating via <em><a href="https://bioconductor.org/packages/3.21/openCyto" class="external-link">openCyto</a></em>
 </li>
 <li>The package includes a gating template tailored for gating this
 panel of T-cell markers.</li>
@@ -218,7 +218,7 @@ gating:</p>
 <li>If saving at the same path with same name (i.e., rerunning the same
 code), the GatingSet folder from the
 <code><a href="https://rdrr.io/pkg/flowWorkspace/man/save_gs.html" class="external-link">flowWorkspace::save_gs()</a></code> command needs to be deleted for
-<em><a href="https://bioconductor.org/packages/3.20/openCyto" class="external-link">openCyto</a></em>
+<em><a href="https://bioconductor.org/packages/3.21/openCyto" class="external-link">openCyto</a></em>
 to save again, otherwise, will encounter an error related to an invalid
 path from the <code><a href="https://rdrr.io/pkg/flowWorkspace/man/save_gs.html" class="external-link">flowWorkspace::save_gs()</a></code> function</li>
 </ul>
@@ -238,7 +238,7 @@ compensation matrix, the number of cells in the root population)</p>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Read in gating template</span></span>
-<span><span class="va">dtTemplate</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">gtFile</span><span class="op">)</span></span>
+<span><span class="va">dtTemplate</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">gtFile</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Load the FCS</span></span>
 <span><span class="va">gt_tcell</span> <span class="op">&lt;-</span> <span class="fu">openCyto</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/openCyto/man/gatingTemplate-class.html" class="external-link">gatingTemplate</a></span><span class="op">(</span><span class="va">gtFile</span><span class="op">)</span></span>
@@ -1001,7 +1001,7 @@ followed by the parameters.</p>
 all channels with the <code><a href="../reference/getBiexpTransformGS.html">getBiexpTransformGS()</a></code> function.
 However, the user may choose to create a transformation list explicitly
 if other transformations (e.g., archsin) are desired.</p>
-<p>Note that the <em><a href="https://bioconductor.org/packages/3.20/flowWorkspace" class="external-link">flowWorkspace</a></em>
+<p>Note that the <em><a href="https://bioconductor.org/packages/3.21/flowWorkspace" class="external-link">flowWorkspace</a></em>
 package also allows for an automated transformation calculation
 “guessing” appropriate parameters. We chose to explicitly specify the
 biexponential transformation with fixed parameters for all channels to
@@ -1047,8 +1047,8 @@ comparison of {staRgate} to the manual gating results.</p>
 <span><span class="co">#&gt;         res[ind] &lt;- ifelse(deriv == 1, z$y[1L], 0)</span></span>
 <span><span class="co">#&gt;     res</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x55e1ade4bf90&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55e1ad014b08&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x56333bf22ed8&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x5633366e90a0&gt;</span></span>
 <span><span class="co">#&gt; attr(,"type")</span></span>
 <span><span class="co">#&gt; [1] "biexp"</span></span>
 <span><span class="co">#&gt; attr(,"parameters")</span></span>
@@ -1080,45 +1080,45 @@ comparison of {staRgate} to the manual gating results.</p>
 <span><span class="co">#&gt;  Mean   : 95408   Mean   : 62836   Mean   :152152   Mean   : 31716  </span></span>
 <span><span class="co">#&gt;  3rd Qu.:137767   3rd Qu.: 90685   3rd Qu.:186615   3rd Qu.: 40599  </span></span>
 <span><span class="co">#&gt;  Max.   :262144   Max.   :262144   Max.   :262144   Max.   :262144  </span></span>
-<span><span class="co">#&gt;      SSC-H            SSC-W           AF700-A              APC-A          </span></span>
-<span><span class="co">#&gt;  Min.   :  1231   Min.   : 21321   Min.   :-40597.32   Min.   :-83668.63  </span></span>
-<span><span class="co">#&gt;  1st Qu.: 11045   1st Qu.: 70248   1st Qu.:   -89.72   1st Qu.:   -27.74  </span></span>
-<span><span class="co">#&gt;  Median : 24490   Median : 86074   Median :   -50.31   Median :    80.28  </span></span>
-<span><span class="co">#&gt;  Mean   : 26669   Mean   : 91965   Mean   :    51.63   Mean   :   893.85  </span></span>
-<span><span class="co">#&gt;  3rd Qu.: 35312   3rd Qu.:100669   3rd Qu.:    -2.40   3rd Qu.:   442.46  </span></span>
-<span><span class="co">#&gt;  Max.   :262144   Max.   :262144   Max.   :117999.96   Max.   :258429.72  </span></span>
-<span><span class="co">#&gt;    APC-f750-A            BB515-A             BB660-A         </span></span>
-<span><span class="co">#&gt;  Min.   :-15427.155   Min.   : -8649.57   Min.   :-81303.97  </span></span>
-<span><span class="co">#&gt;  1st Qu.:   -51.782   1st Qu.:   -11.09   1st Qu.:     8.37  </span></span>
-<span><span class="co">#&gt;  Median :    -0.517   Median :   105.76   Median :   100.04  </span></span>
-<span><span class="co">#&gt;  Mean   :    86.131   Mean   :   234.41   Mean   :   154.55  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:    89.942   3rd Qu.:   244.52   3rd Qu.:   235.17  </span></span>
-<span><span class="co">#&gt;  Max.   : 10246.643   Max.   :133731.45   Max.   :123396.73  </span></span>
+<span><span class="co">#&gt;      SSC-H            SSC-W           AF700-A               APC-A          </span></span>
+<span><span class="co">#&gt;  Min.   :  1231   Min.   : 21321   Min.   :-40597.324   Min.   :-83668.63  </span></span>
+<span><span class="co">#&gt;  1st Qu.: 11045   1st Qu.: 70248   1st Qu.:   -89.721   1st Qu.:   -27.75  </span></span>
+<span><span class="co">#&gt;  Median : 24490   Median : 86074   Median :   -50.314   Median :    80.28  </span></span>
+<span><span class="co">#&gt;  Mean   : 26669   Mean   : 91965   Mean   :    51.627   Mean   :   893.85  </span></span>
+<span><span class="co">#&gt;  3rd Qu.: 35312   3rd Qu.:100669   3rd Qu.:    -2.396   3rd Qu.:   442.46  </span></span>
+<span><span class="co">#&gt;  Max.   :262144   Max.   :262144   Max.   :117999.961   Max.   :258429.72  </span></span>
+<span><span class="co">#&gt;    APC-f750-A            BB515-A             BB660-A          </span></span>
+<span><span class="co">#&gt;  Min.   :-1.543e+04   Min.   : -8649.57   Min.   :-81303.969  </span></span>
+<span><span class="co">#&gt;  1st Qu.:-5.178e+01   1st Qu.:   -11.09   1st Qu.:     8.373  </span></span>
+<span><span class="co">#&gt;  Median :-5.174e-01   Median :   105.76   Median :   100.042  </span></span>
+<span><span class="co">#&gt;  Mean   : 8.613e+01   Mean   :   234.41   Mean   :   154.546  </span></span>
+<span><span class="co">#&gt;  3rd Qu.: 8.994e+01   3rd Qu.:   244.52   3rd Qu.:   235.173  </span></span>
+<span><span class="co">#&gt;  Max.   : 1.025e+04   Max.   :133731.45   Max.   :123396.734  </span></span>
 <span><span class="co">#&gt;     BB700-A             BB790-A              BUV395-A        </span></span>
 <span><span class="co">#&gt;  Min.   :-77947.38   Min.   :-171716.41   Min.   :-34770.30  </span></span>
 <span><span class="co">#&gt;  1st Qu.:   -52.99   1st Qu.:    -18.98   1st Qu.:   -32.52  </span></span>
 <span><span class="co">#&gt;  Median :    49.92   Median :    138.56   Median :   960.00  </span></span>
 <span><span class="co">#&gt;  Mean   :   209.92   Mean   :    901.38   Mean   :  6796.03  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:   373.89   3rd Qu.:   1124.65   3rd Qu.: 11336.71  </span></span>
+<span><span class="co">#&gt;  3rd Qu.:   373.88   3rd Qu.:   1124.65   3rd Qu.: 11336.71  </span></span>
 <span><span class="co">#&gt;  Max.   : 38183.27   Max.   : 196894.52   Max.   :101130.94  </span></span>
 <span><span class="co">#&gt;     BUV496-A            BUV563-A            BUV615-A        </span></span>
 <span><span class="co">#&gt;  Min.   :-21624.89   Min.   : -4940.99   Min.   :  -819.99  </span></span>
-<span><span class="co">#&gt;  1st Qu.:   -59.50   1st Qu.:   -58.47   1st Qu.:   -25.87  </span></span>
+<span><span class="co">#&gt;  1st Qu.:   -59.50   1st Qu.:   -58.47   1st Qu.:   -25.86  </span></span>
 <span><span class="co">#&gt;  Median :    72.92   Median :    29.19   Median :    94.06  </span></span>
 <span><span class="co">#&gt;  Mean   :   508.88   Mean   :   131.69   Mean   :   305.05  </span></span>
 <span><span class="co">#&gt;  3rd Qu.:  1018.48   3rd Qu.:   163.32   3rd Qu.:   299.30  </span></span>
 <span><span class="co">#&gt;  Max.   : 12533.95   Max.   :193698.25   Max.   :163601.52  </span></span>
-<span><span class="co">#&gt;     BUV661-A            BUV737-A            BUV805-A        </span></span>
-<span><span class="co">#&gt;  Min.   :-19976.12   Min.   :-34474.75   Min.   : -2277.25  </span></span>
-<span><span class="co">#&gt;  1st Qu.:  -117.70   1st Qu.:   -20.66   1st Qu.:   -67.60  </span></span>
-<span><span class="co">#&gt;  Median :   -41.57   Median :    81.00   Median :    -7.75  </span></span>
-<span><span class="co">#&gt;  Mean   :    98.23   Mean   :   860.45   Mean   :   615.80  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:    61.91   3rd Qu.:  1764.78   3rd Qu.:   136.72  </span></span>
-<span><span class="co">#&gt;  Max.   :142146.95   Max.   : 98435.47   Max.   :111528.16  </span></span>
+<span><span class="co">#&gt;     BUV661-A            BUV737-A            BUV805-A         </span></span>
+<span><span class="co">#&gt;  Min.   :-19976.12   Min.   :-34474.75   Min.   : -2277.252  </span></span>
+<span><span class="co">#&gt;  1st Qu.:  -117.70   1st Qu.:   -20.66   1st Qu.:   -67.600  </span></span>
+<span><span class="co">#&gt;  Median :   -41.57   Median :    81.00   Median :    -7.753  </span></span>
+<span><span class="co">#&gt;  Mean   :    98.23   Mean   :   860.45   Mean   :   615.803  </span></span>
+<span><span class="co">#&gt;  3rd Qu.:    61.91   3rd Qu.:  1764.78   3rd Qu.:   136.722  </span></span>
+<span><span class="co">#&gt;  Max.   :142146.95   Max.   : 98435.47   Max.   :111528.164  </span></span>
 <span><span class="co">#&gt;     BV421-A             BV480-A             BV510-A         </span></span>
 <span><span class="co">#&gt;  Min.   :-34983.16   Min.   : -1604.91   Min.   :-62086.07  </span></span>
 <span><span class="co">#&gt;  1st Qu.:   -10.76   1st Qu.:   -49.19   1st Qu.:   -10.44  </span></span>
-<span><span class="co">#&gt;  Median :   113.66   Median :    67.76   Median :    83.43  </span></span>
+<span><span class="co">#&gt;  Median :   113.66   Median :    67.76   Median :    83.44  </span></span>
 <span><span class="co">#&gt;  Mean   :  1321.77   Mean   :   664.87   Mean   :   193.69  </span></span>
 <span><span class="co">#&gt;  3rd Qu.:   461.01   3rd Qu.:   227.83   3rd Qu.:   197.83  </span></span>
 <span><span class="co">#&gt;  Max.   :233484.27   Max.   :228909.97   Max.   :205399.70  </span></span>
@@ -1126,7 +1126,7 @@ comparison of {staRgate} to the manual gating results.</p>
 <span><span class="co">#&gt;  Min.   : -2557.12   Min.   :-15426.25   Min.   : -3029.89  </span></span>
 <span><span class="co">#&gt;  1st Qu.:   -37.91   1st Qu.:   -21.88   1st Qu.:   -13.74  </span></span>
 <span><span class="co">#&gt;  Median :    81.17   Median :   172.21   Median :   161.84  </span></span>
-<span><span class="co">#&gt;  Mean   :   656.24   Mean   :   485.53   Mean   :  1616.83  </span></span>
+<span><span class="co">#&gt;  Mean   :   656.25   Mean   :   485.53   Mean   :  1616.83  </span></span>
 <span><span class="co">#&gt;  3rd Qu.:   250.13   3rd Qu.:   424.23   3rd Qu.:  2921.42  </span></span>
 <span><span class="co">#&gt;  Max.   :280203.25   Max.   :221790.52   Max.   :196991.55  </span></span>
 <span><span class="co">#&gt;     BV711-A             BV750-A             BV786-A         </span></span>
@@ -1139,17 +1139,17 @@ comparison of {staRgate} to the manual gating results.</p>
 <span><span class="co">#&gt;       PE-A              PE-CF594-A            PE-Cy5-A        </span></span>
 <span><span class="co">#&gt;  Min.   :-158344.33   Min.   :-156548.30   Min.   :-14296.08  </span></span>
 <span><span class="co">#&gt;  1st Qu.:    -74.52   1st Qu.:    -62.45   1st Qu.:   -55.40  </span></span>
-<span><span class="co">#&gt;  Median :     82.19   Median :     67.09   Median :    14.74  </span></span>
+<span><span class="co">#&gt;  Median :     82.19   Median :     67.09   Median :    14.73  </span></span>
 <span><span class="co">#&gt;  Mean   :    367.16   Mean   :    679.63   Mean   :    97.37  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:    302.49   3rd Qu.:    342.16   3rd Qu.:   100.11  </span></span>
+<span><span class="co">#&gt;  3rd Qu.:    302.49   3rd Qu.:    342.15   3rd Qu.:   100.11  </span></span>
 <span><span class="co">#&gt;  Max.   :  25212.26   Max.   :  95713.01   Max.   :207472.58  </span></span>
-<span><span class="co">#&gt;    PE-Cy5.5-A           PE-Cy7-A              Time   </span></span>
-<span><span class="co">#&gt;  Min.   :-24382.69   Min.   :  -489.16   Min.   :48  </span></span>
-<span><span class="co">#&gt;  1st Qu.:     6.11   1st Qu.:   -37.00   1st Qu.:48  </span></span>
-<span><span class="co">#&gt;  Median :   120.63   Median :    -2.74   Median :48  </span></span>
-<span><span class="co">#&gt;  Mean   :   229.33   Mean   :   100.07   Mean   :48  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:   287.22   3rd Qu.:    34.86   3rd Qu.:48  </span></span>
-<span><span class="co">#&gt;  Max.   :170867.83   Max.   :196990.38   Max.   :48</span></span>
+<span><span class="co">#&gt;    PE-Cy5.5-A            PE-Cy7-A               Time   </span></span>
+<span><span class="co">#&gt;  Min.   :-24382.693   Min.   :  -489.157   Min.   :48  </span></span>
+<span><span class="co">#&gt;  1st Qu.:     6.107   1st Qu.:   -36.998   1st Qu.:48  </span></span>
+<span><span class="co">#&gt;  Median :   120.626   Median :    -2.737   Median :48  </span></span>
+<span><span class="co">#&gt;  Mean   :   229.334   Mean   :   100.071   Mean   :48  </span></span>
+<span><span class="co">#&gt;  3rd Qu.:   287.223   3rd Qu.:    34.860   3rd Qu.:48  </span></span>
+<span><span class="co">#&gt;  Max.   :170867.828   Max.   :196990.375   Max.   :48</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">dat_post_transform</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      FSC-A            FSC-H            FSC-W            SSC-A       </span></span>
 <span><span class="co">#&gt;  Min.   :  1492   Min.   :  9988   Min.   : 54676   Min.   :  1033  </span></span>
@@ -1224,13 +1224,13 @@ comparison of {staRgate} to the manual gating results.</p>
 <p>In this context, pre-gating is defined as gating from the root
 population up to CD3+, or CD4+/CD8+ subsets</p>
 <p>Then we will pass the data to the density gating step.</p>
-<p>The <em><a href="https://bioconductor.org/packages/3.20/flowAI" class="external-link">flowAI</a></em>
+<p>The <em><a href="https://bioconductor.org/packages/3.21/flowAI" class="external-link">flowAI</a></em>
 step serves as a quality control (QC) to match the first Time gate step
 that is typically done in manual gating. It is possible, however, that
-the user may choose to skip this step if <em><a href="https://bioconductor.org/packages/3.20/flowAI" class="external-link">flowAI</a></em>
+the user may choose to skip this step if <em><a href="https://bioconductor.org/packages/3.21/flowAI" class="external-link">flowAI</a></em>
 excludes too many cells.</p>
 <p>The first step of the gating template is a QC step that is especially
-important to include if the user chooses to exclude the <em><a href="https://bioconductor.org/packages/3.20/flowAI" class="external-link">flowAI</a></em>
+important to include if the user chooses to exclude the <em><a href="https://bioconductor.org/packages/3.21/flowAI" class="external-link">flowAI</a></em>
 step.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Optional - flowAI step </span></span>
@@ -1246,7 +1246,7 @@ step.</p>
 <span></span>
 <span>  <span class="co"># For sample</span></span>
 <span>  <span class="va">qc_flowai</span> <span class="op">&lt;-</span> <span class="fu">flowAI</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowAI/man/flow_auto_qc.html" class="external-link">flow_auto_qc</a></span><span class="op">(</span><span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_data.html" class="external-link">gh_pop_get_data</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span>,</span>
-<span>    folder_results <span class="op">=</span> <span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"{path_out}/flowAI_results"</span><span class="op">)</span><span class="op">)</span></span>
+<span>    folder_results <span class="op">=</span> <span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="st">"{path_out}/flowAI_results"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Convert to a flowSet in order to convert to GatingSet</span></span>
@@ -1637,23 +1637,23 @@ numerator marker and parent populations specified in the
 denominator?</li>
 </ul>
 <p>Currently, we support the four scenarios listed below:</p>
-<div id="cadytuuvcg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#cadytuuvcg table {
+<div id="kpammzliid" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#kpammzliid table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#cadytuuvcg thead, #cadytuuvcg tbody, #cadytuuvcg tfoot, #cadytuuvcg tr, #cadytuuvcg td, #cadytuuvcg th {
+#kpammzliid thead, #kpammzliid tbody, #kpammzliid tfoot, #kpammzliid tr, #kpammzliid td, #kpammzliid th {
   border-style: none;
 }
 
-#cadytuuvcg p {
+#kpammzliid p {
   margin: 0;
   padding: 0;
 }
 
-#cadytuuvcg .gt_table {
+#kpammzliid .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1679,12 +1679,12 @@ denominator?</li>
   border-left-color: #D3D3D3;
 }
 
-#cadytuuvcg .gt_caption {
+#kpammzliid .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#cadytuuvcg .gt_title {
+#kpammzliid .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1696,7 +1696,7 @@ denominator?</li>
   border-bottom-width: 0;
 }
 
-#cadytuuvcg .gt_subtitle {
+#kpammzliid .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1708,7 +1708,7 @@ denominator?</li>
   border-top-width: 0;
 }
 
-#cadytuuvcg .gt_heading {
+#kpammzliid .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1720,13 +1720,13 @@ denominator?</li>
   border-right-color: #D3D3D3;
 }
 
-#cadytuuvcg .gt_bottom_border {
+#kpammzliid .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#cadytuuvcg .gt_col_headings {
+#kpammzliid .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1741,7 +1741,7 @@ denominator?</li>
   border-right-color: #D3D3D3;
 }
 
-#cadytuuvcg .gt_col_heading {
+#kpammzliid .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1761,7 +1761,7 @@ denominator?</li>
   overflow-x: hidden;
 }
 
-#cadytuuvcg .gt_column_spanner_outer {
+#kpammzliid .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1773,15 +1773,15 @@ denominator?</li>
   padding-right: 4px;
 }
 
-#cadytuuvcg .gt_column_spanner_outer:first-child {
+#kpammzliid .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#cadytuuvcg .gt_column_spanner_outer:last-child {
+#kpammzliid .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#cadytuuvcg .gt_column_spanner {
+#kpammzliid .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1793,11 +1793,11 @@ denominator?</li>
   width: 100%;
 }
 
-#cadytuuvcg .gt_spanner_row {
+#kpammzliid .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#cadytuuvcg .gt_group_heading {
+#kpammzliid .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1823,7 +1823,7 @@ denominator?</li>
   text-align: left;
 }
 
-#cadytuuvcg .gt_empty_group_heading {
+#kpammzliid .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1838,15 +1838,15 @@ denominator?</li>
   vertical-align: middle;
 }
 
-#cadytuuvcg .gt_from_md > :first-child {
+#kpammzliid .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#cadytuuvcg .gt_from_md > :last-child {
+#kpammzliid .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#cadytuuvcg .gt_row {
+#kpammzliid .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1865,7 +1865,7 @@ denominator?</li>
   overflow-x: hidden;
 }
 
-#cadytuuvcg .gt_stub {
+#kpammzliid .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1878,7 +1878,7 @@ denominator?</li>
   padding-right: 5px;
 }
 
-#cadytuuvcg .gt_stub_row_group {
+#kpammzliid .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1892,15 +1892,15 @@ denominator?</li>
   vertical-align: top;
 }
 
-#cadytuuvcg .gt_row_group_first td {
+#kpammzliid .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#cadytuuvcg .gt_row_group_first th {
+#kpammzliid .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#cadytuuvcg .gt_summary_row {
+#kpammzliid .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1910,16 +1910,16 @@ denominator?</li>
   padding-right: 5px;
 }
 
-#cadytuuvcg .gt_first_summary_row {
+#kpammzliid .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#cadytuuvcg .gt_first_summary_row.thick {
+#kpammzliid .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#cadytuuvcg .gt_last_summary_row {
+#kpammzliid .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1929,7 +1929,7 @@ denominator?</li>
   border-bottom-color: #D3D3D3;
 }
 
-#cadytuuvcg .gt_grand_summary_row {
+#kpammzliid .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1939,7 +1939,7 @@ denominator?</li>
   padding-right: 5px;
 }
 
-#cadytuuvcg .gt_first_grand_summary_row {
+#kpammzliid .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1949,7 +1949,7 @@ denominator?</li>
   border-top-color: #D3D3D3;
 }
 
-#cadytuuvcg .gt_last_grand_summary_row_top {
+#kpammzliid .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1959,11 +1959,11 @@ denominator?</li>
   border-bottom-color: #D3D3D3;
 }
 
-#cadytuuvcg .gt_striped {
+#kpammzliid .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#cadytuuvcg .gt_table_body {
+#kpammzliid .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1972,7 +1972,7 @@ denominator?</li>
   border-bottom-color: #D3D3D3;
 }
 
-#cadytuuvcg .gt_footnotes {
+#kpammzliid .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1986,7 +1986,7 @@ denominator?</li>
   border-right-color: #D3D3D3;
 }
 
-#cadytuuvcg .gt_footnote {
+#kpammzliid .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1995,7 +1995,7 @@ denominator?</li>
   padding-right: 5px;
 }
 
-#cadytuuvcg .gt_sourcenotes {
+#kpammzliid .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2009,7 +2009,7 @@ denominator?</li>
   border-right-color: #D3D3D3;
 }
 
-#cadytuuvcg .gt_sourcenote {
+#kpammzliid .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2017,72 +2017,72 @@ denominator?</li>
   padding-right: 5px;
 }
 
-#cadytuuvcg .gt_left {
+#kpammzliid .gt_left {
   text-align: left;
 }
 
-#cadytuuvcg .gt_center {
+#kpammzliid .gt_center {
   text-align: center;
 }
 
-#cadytuuvcg .gt_right {
+#kpammzliid .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#cadytuuvcg .gt_font_normal {
+#kpammzliid .gt_font_normal {
   font-weight: normal;
 }
 
-#cadytuuvcg .gt_font_bold {
+#kpammzliid .gt_font_bold {
   font-weight: bold;
 }
 
-#cadytuuvcg .gt_font_italic {
+#kpammzliid .gt_font_italic {
   font-style: italic;
 }
 
-#cadytuuvcg .gt_super {
+#kpammzliid .gt_super {
   font-size: 65%;
 }
 
-#cadytuuvcg .gt_footnote_marks {
+#kpammzliid .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#cadytuuvcg .gt_asterisk {
+#kpammzliid .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#cadytuuvcg .gt_indent_1 {
+#kpammzliid .gt_indent_1 {
   text-indent: 5px;
 }
 
-#cadytuuvcg .gt_indent_2 {
+#kpammzliid .gt_indent_2 {
   text-indent: 10px;
 }
 
-#cadytuuvcg .gt_indent_3 {
+#kpammzliid .gt_indent_3 {
   text-indent: 15px;
 }
 
-#cadytuuvcg .gt_indent_4 {
+#kpammzliid .gt_indent_4 {
   text-indent: 20px;
 }
 
-#cadytuuvcg .gt_indent_5 {
+#kpammzliid .gt_indent_5 {
   text-indent: 25px;
 }
 
-#cadytuuvcg .katex-display {
+#kpammzliid .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#cadytuuvcg div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#kpammzliid div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2202,7 +2202,7 @@ denominator?</li>
 <td headers="combos" class="gt_row gt_center"><span class="gt_from_md">182344</span></td>
 </tr>
 </tbody>
-<tfoot class="gt_footnotes"><tr>
+<tfoot><tr class="gt_footnotes">
 <td class="gt_footnote" colspan="6">
 <span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> <span class="gt_from_md">n, number of markers specified in the numerator; n<sub>d</sub>,  number of markers specified in the denominator</span>
 </td>
@@ -2255,23 +2255,23 @@ Expand example for <code>expand_num = FALSE</code> and
 <span>    columns <span class="op">=</span> <span class="st">"perc"</span>,</span>
 <span>    decimals <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div id="bmxfingqsn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#bmxfingqsn table {
+<div id="zrdvefqmak" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#zrdvefqmak table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#bmxfingqsn thead, #bmxfingqsn tbody, #bmxfingqsn tfoot, #bmxfingqsn tr, #bmxfingqsn td, #bmxfingqsn th {
+#zrdvefqmak thead, #zrdvefqmak tbody, #zrdvefqmak tfoot, #zrdvefqmak tr, #zrdvefqmak td, #zrdvefqmak th {
   border-style: none;
 }
 
-#bmxfingqsn p {
+#zrdvefqmak p {
   margin: 0;
   padding: 0;
 }
 
-#bmxfingqsn .gt_table {
+#zrdvefqmak .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2297,12 +2297,12 @@ Expand example for <code>expand_num = FALSE</code> and
   border-left-color: #D3D3D3;
 }
 
-#bmxfingqsn .gt_caption {
+#zrdvefqmak .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#bmxfingqsn .gt_title {
+#zrdvefqmak .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2314,7 +2314,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-width: 0;
 }
 
-#bmxfingqsn .gt_subtitle {
+#zrdvefqmak .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2326,7 +2326,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-top-width: 0;
 }
 
-#bmxfingqsn .gt_heading {
+#zrdvefqmak .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2338,13 +2338,13 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#bmxfingqsn .gt_bottom_border {
+#zrdvefqmak .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#bmxfingqsn .gt_col_headings {
+#zrdvefqmak .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2359,7 +2359,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#bmxfingqsn .gt_col_heading {
+#zrdvefqmak .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2379,7 +2379,7 @@ Expand example for <code>expand_num = FALSE</code> and
   overflow-x: hidden;
 }
 
-#bmxfingqsn .gt_column_spanner_outer {
+#zrdvefqmak .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2391,15 +2391,15 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 4px;
 }
 
-#bmxfingqsn .gt_column_spanner_outer:first-child {
+#zrdvefqmak .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#bmxfingqsn .gt_column_spanner_outer:last-child {
+#zrdvefqmak .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#bmxfingqsn .gt_column_spanner {
+#zrdvefqmak .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2411,11 +2411,11 @@ Expand example for <code>expand_num = FALSE</code> and
   width: 100%;
 }
 
-#bmxfingqsn .gt_spanner_row {
+#zrdvefqmak .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#bmxfingqsn .gt_group_heading {
+#zrdvefqmak .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2441,7 +2441,7 @@ Expand example for <code>expand_num = FALSE</code> and
   text-align: left;
 }
 
-#bmxfingqsn .gt_empty_group_heading {
+#zrdvefqmak .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2456,15 +2456,15 @@ Expand example for <code>expand_num = FALSE</code> and
   vertical-align: middle;
 }
 
-#bmxfingqsn .gt_from_md > :first-child {
+#zrdvefqmak .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#bmxfingqsn .gt_from_md > :last-child {
+#zrdvefqmak .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#bmxfingqsn .gt_row {
+#zrdvefqmak .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2483,7 +2483,7 @@ Expand example for <code>expand_num = FALSE</code> and
   overflow-x: hidden;
 }
 
-#bmxfingqsn .gt_stub {
+#zrdvefqmak .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2496,7 +2496,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#bmxfingqsn .gt_stub_row_group {
+#zrdvefqmak .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2510,15 +2510,15 @@ Expand example for <code>expand_num = FALSE</code> and
   vertical-align: top;
 }
 
-#bmxfingqsn .gt_row_group_first td {
+#zrdvefqmak .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#bmxfingqsn .gt_row_group_first th {
+#zrdvefqmak .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#bmxfingqsn .gt_summary_row {
+#zrdvefqmak .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2528,16 +2528,16 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#bmxfingqsn .gt_first_summary_row {
+#zrdvefqmak .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#bmxfingqsn .gt_first_summary_row.thick {
+#zrdvefqmak .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#bmxfingqsn .gt_last_summary_row {
+#zrdvefqmak .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2547,7 +2547,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#bmxfingqsn .gt_grand_summary_row {
+#zrdvefqmak .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2557,7 +2557,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#bmxfingqsn .gt_first_grand_summary_row {
+#zrdvefqmak .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2567,7 +2567,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-top-color: #D3D3D3;
 }
 
-#bmxfingqsn .gt_last_grand_summary_row_top {
+#zrdvefqmak .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2577,11 +2577,11 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#bmxfingqsn .gt_striped {
+#zrdvefqmak .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#bmxfingqsn .gt_table_body {
+#zrdvefqmak .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2590,7 +2590,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#bmxfingqsn .gt_footnotes {
+#zrdvefqmak .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2604,7 +2604,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#bmxfingqsn .gt_footnote {
+#zrdvefqmak .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2613,7 +2613,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#bmxfingqsn .gt_sourcenotes {
+#zrdvefqmak .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2627,7 +2627,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#bmxfingqsn .gt_sourcenote {
+#zrdvefqmak .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2635,72 +2635,72 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#bmxfingqsn .gt_left {
+#zrdvefqmak .gt_left {
   text-align: left;
 }
 
-#bmxfingqsn .gt_center {
+#zrdvefqmak .gt_center {
   text-align: center;
 }
 
-#bmxfingqsn .gt_right {
+#zrdvefqmak .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#bmxfingqsn .gt_font_normal {
+#zrdvefqmak .gt_font_normal {
   font-weight: normal;
 }
 
-#bmxfingqsn .gt_font_bold {
+#zrdvefqmak .gt_font_bold {
   font-weight: bold;
 }
 
-#bmxfingqsn .gt_font_italic {
+#zrdvefqmak .gt_font_italic {
   font-style: italic;
 }
 
-#bmxfingqsn .gt_super {
+#zrdvefqmak .gt_super {
   font-size: 65%;
 }
 
-#bmxfingqsn .gt_footnote_marks {
+#zrdvefqmak .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#bmxfingqsn .gt_asterisk {
+#zrdvefqmak .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#bmxfingqsn .gt_indent_1 {
+#zrdvefqmak .gt_indent_1 {
   text-indent: 5px;
 }
 
-#bmxfingqsn .gt_indent_2 {
+#zrdvefqmak .gt_indent_2 {
   text-indent: 10px;
 }
 
-#bmxfingqsn .gt_indent_3 {
+#zrdvefqmak .gt_indent_3 {
   text-indent: 15px;
 }
 
-#bmxfingqsn .gt_indent_4 {
+#zrdvefqmak .gt_indent_4 {
   text-indent: 20px;
 }
 
-#bmxfingqsn .gt_indent_5 {
+#zrdvefqmak .gt_indent_5 {
   text-indent: 25px;
 }
 
-#bmxfingqsn .katex-display {
+#zrdvefqmak .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#bmxfingqsn div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#zrdvefqmak div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -3150,23 +3150,23 @@ Expand example for <code>expand_num = TRUE</code> and
 <span>    columns <span class="op">=</span> <span class="st">"perc"</span>,</span>
 <span>    decimals <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div id="ffoyidydzo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ffoyidydzo table {
+<div id="idmsaiftvo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#idmsaiftvo table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ffoyidydzo thead, #ffoyidydzo tbody, #ffoyidydzo tfoot, #ffoyidydzo tr, #ffoyidydzo td, #ffoyidydzo th {
+#idmsaiftvo thead, #idmsaiftvo tbody, #idmsaiftvo tfoot, #idmsaiftvo tr, #idmsaiftvo td, #idmsaiftvo th {
   border-style: none;
 }
 
-#ffoyidydzo p {
+#idmsaiftvo p {
   margin: 0;
   padding: 0;
 }
 
-#ffoyidydzo .gt_table {
+#idmsaiftvo .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3192,12 +3192,12 @@ Expand example for <code>expand_num = TRUE</code> and
   border-left-color: #D3D3D3;
 }
 
-#ffoyidydzo .gt_caption {
+#idmsaiftvo .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ffoyidydzo .gt_title {
+#idmsaiftvo .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3209,7 +3209,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-width: 0;
 }
 
-#ffoyidydzo .gt_subtitle {
+#idmsaiftvo .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3221,7 +3221,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-top-width: 0;
 }
 
-#ffoyidydzo .gt_heading {
+#idmsaiftvo .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3233,13 +3233,13 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#ffoyidydzo .gt_bottom_border {
+#idmsaiftvo .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ffoyidydzo .gt_col_headings {
+#idmsaiftvo .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3254,7 +3254,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#ffoyidydzo .gt_col_heading {
+#idmsaiftvo .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3274,7 +3274,7 @@ Expand example for <code>expand_num = TRUE</code> and
   overflow-x: hidden;
 }
 
-#ffoyidydzo .gt_column_spanner_outer {
+#idmsaiftvo .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3286,15 +3286,15 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 4px;
 }
 
-#ffoyidydzo .gt_column_spanner_outer:first-child {
+#idmsaiftvo .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ffoyidydzo .gt_column_spanner_outer:last-child {
+#idmsaiftvo .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ffoyidydzo .gt_column_spanner {
+#idmsaiftvo .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3306,11 +3306,11 @@ Expand example for <code>expand_num = TRUE</code> and
   width: 100%;
 }
 
-#ffoyidydzo .gt_spanner_row {
+#idmsaiftvo .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ffoyidydzo .gt_group_heading {
+#idmsaiftvo .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3336,7 +3336,7 @@ Expand example for <code>expand_num = TRUE</code> and
   text-align: left;
 }
 
-#ffoyidydzo .gt_empty_group_heading {
+#idmsaiftvo .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3351,15 +3351,15 @@ Expand example for <code>expand_num = TRUE</code> and
   vertical-align: middle;
 }
 
-#ffoyidydzo .gt_from_md > :first-child {
+#idmsaiftvo .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ffoyidydzo .gt_from_md > :last-child {
+#idmsaiftvo .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ffoyidydzo .gt_row {
+#idmsaiftvo .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3378,7 +3378,7 @@ Expand example for <code>expand_num = TRUE</code> and
   overflow-x: hidden;
 }
 
-#ffoyidydzo .gt_stub {
+#idmsaiftvo .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3391,7 +3391,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#ffoyidydzo .gt_stub_row_group {
+#idmsaiftvo .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3405,15 +3405,15 @@ Expand example for <code>expand_num = TRUE</code> and
   vertical-align: top;
 }
 
-#ffoyidydzo .gt_row_group_first td {
+#idmsaiftvo .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ffoyidydzo .gt_row_group_first th {
+#idmsaiftvo .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ffoyidydzo .gt_summary_row {
+#idmsaiftvo .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3423,16 +3423,16 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#ffoyidydzo .gt_first_summary_row {
+#idmsaiftvo .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ffoyidydzo .gt_first_summary_row.thick {
+#idmsaiftvo .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ffoyidydzo .gt_last_summary_row {
+#idmsaiftvo .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3442,7 +3442,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#ffoyidydzo .gt_grand_summary_row {
+#idmsaiftvo .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3452,7 +3452,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#ffoyidydzo .gt_first_grand_summary_row {
+#idmsaiftvo .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3462,7 +3462,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-top-color: #D3D3D3;
 }
 
-#ffoyidydzo .gt_last_grand_summary_row_top {
+#idmsaiftvo .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3472,11 +3472,11 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#ffoyidydzo .gt_striped {
+#idmsaiftvo .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ffoyidydzo .gt_table_body {
+#idmsaiftvo .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3485,7 +3485,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#ffoyidydzo .gt_footnotes {
+#idmsaiftvo .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3499,7 +3499,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#ffoyidydzo .gt_footnote {
+#idmsaiftvo .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3508,7 +3508,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#ffoyidydzo .gt_sourcenotes {
+#idmsaiftvo .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3522,7 +3522,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#ffoyidydzo .gt_sourcenote {
+#idmsaiftvo .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3530,72 +3530,72 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#ffoyidydzo .gt_left {
+#idmsaiftvo .gt_left {
   text-align: left;
 }
 
-#ffoyidydzo .gt_center {
+#idmsaiftvo .gt_center {
   text-align: center;
 }
 
-#ffoyidydzo .gt_right {
+#idmsaiftvo .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ffoyidydzo .gt_font_normal {
+#idmsaiftvo .gt_font_normal {
   font-weight: normal;
 }
 
-#ffoyidydzo .gt_font_bold {
+#idmsaiftvo .gt_font_bold {
   font-weight: bold;
 }
 
-#ffoyidydzo .gt_font_italic {
+#idmsaiftvo .gt_font_italic {
   font-style: italic;
 }
 
-#ffoyidydzo .gt_super {
+#idmsaiftvo .gt_super {
   font-size: 65%;
 }
 
-#ffoyidydzo .gt_footnote_marks {
+#idmsaiftvo .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ffoyidydzo .gt_asterisk {
+#idmsaiftvo .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ffoyidydzo .gt_indent_1 {
+#idmsaiftvo .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ffoyidydzo .gt_indent_2 {
+#idmsaiftvo .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ffoyidydzo .gt_indent_3 {
+#idmsaiftvo .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ffoyidydzo .gt_indent_4 {
+#idmsaiftvo .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ffoyidydzo .gt_indent_5 {
+#idmsaiftvo .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ffoyidydzo .katex-display {
+#idmsaiftvo .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ffoyidydzo div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#idmsaiftvo div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -4423,23 +4423,23 @@ Expand example for <code>expand_num = FALSE</code> and
 <span>    columns <span class="op">=</span> <span class="st">"perc"</span>,</span>
 <span>    decimals <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div id="tikibghmpk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#tikibghmpk table {
+<div id="umrszfnfya" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#umrszfnfya table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#tikibghmpk thead, #tikibghmpk tbody, #tikibghmpk tfoot, #tikibghmpk tr, #tikibghmpk td, #tikibghmpk th {
+#umrszfnfya thead, #umrszfnfya tbody, #umrszfnfya tfoot, #umrszfnfya tr, #umrszfnfya td, #umrszfnfya th {
   border-style: none;
 }
 
-#tikibghmpk p {
+#umrszfnfya p {
   margin: 0;
   padding: 0;
 }
 
-#tikibghmpk .gt_table {
+#umrszfnfya .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -4465,12 +4465,12 @@ Expand example for <code>expand_num = FALSE</code> and
   border-left-color: #D3D3D3;
 }
 
-#tikibghmpk .gt_caption {
+#umrszfnfya .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#tikibghmpk .gt_title {
+#umrszfnfya .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -4482,7 +4482,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-width: 0;
 }
 
-#tikibghmpk .gt_subtitle {
+#umrszfnfya .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -4494,7 +4494,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-top-width: 0;
 }
 
-#tikibghmpk .gt_heading {
+#umrszfnfya .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -4506,13 +4506,13 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#tikibghmpk .gt_bottom_border {
+#umrszfnfya .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#tikibghmpk .gt_col_headings {
+#umrszfnfya .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4527,7 +4527,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#tikibghmpk .gt_col_heading {
+#umrszfnfya .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4547,7 +4547,7 @@ Expand example for <code>expand_num = FALSE</code> and
   overflow-x: hidden;
 }
 
-#tikibghmpk .gt_column_spanner_outer {
+#umrszfnfya .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4559,15 +4559,15 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 4px;
 }
 
-#tikibghmpk .gt_column_spanner_outer:first-child {
+#umrszfnfya .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#tikibghmpk .gt_column_spanner_outer:last-child {
+#umrszfnfya .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#tikibghmpk .gt_column_spanner {
+#umrszfnfya .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -4579,11 +4579,11 @@ Expand example for <code>expand_num = FALSE</code> and
   width: 100%;
 }
 
-#tikibghmpk .gt_spanner_row {
+#umrszfnfya .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#tikibghmpk .gt_group_heading {
+#umrszfnfya .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4609,7 +4609,7 @@ Expand example for <code>expand_num = FALSE</code> and
   text-align: left;
 }
 
-#tikibghmpk .gt_empty_group_heading {
+#umrszfnfya .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -4624,15 +4624,15 @@ Expand example for <code>expand_num = FALSE</code> and
   vertical-align: middle;
 }
 
-#tikibghmpk .gt_from_md > :first-child {
+#umrszfnfya .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#tikibghmpk .gt_from_md > :last-child {
+#umrszfnfya .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#tikibghmpk .gt_row {
+#umrszfnfya .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4651,7 +4651,7 @@ Expand example for <code>expand_num = FALSE</code> and
   overflow-x: hidden;
 }
 
-#tikibghmpk .gt_stub {
+#umrszfnfya .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4664,7 +4664,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#tikibghmpk .gt_stub_row_group {
+#umrszfnfya .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4678,15 +4678,15 @@ Expand example for <code>expand_num = FALSE</code> and
   vertical-align: top;
 }
 
-#tikibghmpk .gt_row_group_first td {
+#umrszfnfya .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#tikibghmpk .gt_row_group_first th {
+#umrszfnfya .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#tikibghmpk .gt_summary_row {
+#umrszfnfya .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4696,16 +4696,16 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#tikibghmpk .gt_first_summary_row {
+#umrszfnfya .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#tikibghmpk .gt_first_summary_row.thick {
+#umrszfnfya .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#tikibghmpk .gt_last_summary_row {
+#umrszfnfya .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4715,7 +4715,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#tikibghmpk .gt_grand_summary_row {
+#umrszfnfya .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4725,7 +4725,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#tikibghmpk .gt_first_grand_summary_row {
+#umrszfnfya .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4735,7 +4735,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-top-color: #D3D3D3;
 }
 
-#tikibghmpk .gt_last_grand_summary_row_top {
+#umrszfnfya .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4745,11 +4745,11 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#tikibghmpk .gt_striped {
+#umrszfnfya .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#tikibghmpk .gt_table_body {
+#umrszfnfya .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4758,7 +4758,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#tikibghmpk .gt_footnotes {
+#umrszfnfya .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4772,7 +4772,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#tikibghmpk .gt_footnote {
+#umrszfnfya .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -4781,7 +4781,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#tikibghmpk .gt_sourcenotes {
+#umrszfnfya .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4795,7 +4795,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#tikibghmpk .gt_sourcenote {
+#umrszfnfya .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -4803,72 +4803,72 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#tikibghmpk .gt_left {
+#umrszfnfya .gt_left {
   text-align: left;
 }
 
-#tikibghmpk .gt_center {
+#umrszfnfya .gt_center {
   text-align: center;
 }
 
-#tikibghmpk .gt_right {
+#umrszfnfya .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#tikibghmpk .gt_font_normal {
+#umrszfnfya .gt_font_normal {
   font-weight: normal;
 }
 
-#tikibghmpk .gt_font_bold {
+#umrszfnfya .gt_font_bold {
   font-weight: bold;
 }
 
-#tikibghmpk .gt_font_italic {
+#umrszfnfya .gt_font_italic {
   font-style: italic;
 }
 
-#tikibghmpk .gt_super {
+#umrszfnfya .gt_super {
   font-size: 65%;
 }
 
-#tikibghmpk .gt_footnote_marks {
+#umrszfnfya .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#tikibghmpk .gt_asterisk {
+#umrszfnfya .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#tikibghmpk .gt_indent_1 {
+#umrszfnfya .gt_indent_1 {
   text-indent: 5px;
 }
 
-#tikibghmpk .gt_indent_2 {
+#umrszfnfya .gt_indent_2 {
   text-indent: 10px;
 }
 
-#tikibghmpk .gt_indent_3 {
+#umrszfnfya .gt_indent_3 {
   text-indent: 15px;
 }
 
-#tikibghmpk .gt_indent_4 {
+#umrszfnfya .gt_indent_4 {
   text-indent: 20px;
 }
 
-#tikibghmpk .gt_indent_5 {
+#umrszfnfya .gt_indent_5 {
   text-indent: 25px;
 }
 
-#tikibghmpk .katex-display {
+#umrszfnfya .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#tikibghmpk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#umrszfnfya div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -6368,23 +6368,23 @@ Expand example for <code>expand_num = TRUE</code> and
 <span>    columns <span class="op">=</span> <span class="st">"perc"</span>,</span>
 <span>    decimals <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div id="jgjlcfwcoj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#jgjlcfwcoj table {
+<div id="xrwhpxgblf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#xrwhpxgblf table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#jgjlcfwcoj thead, #jgjlcfwcoj tbody, #jgjlcfwcoj tfoot, #jgjlcfwcoj tr, #jgjlcfwcoj td, #jgjlcfwcoj th {
+#xrwhpxgblf thead, #xrwhpxgblf tbody, #xrwhpxgblf tfoot, #xrwhpxgblf tr, #xrwhpxgblf td, #xrwhpxgblf th {
   border-style: none;
 }
 
-#jgjlcfwcoj p {
+#xrwhpxgblf p {
   margin: 0;
   padding: 0;
 }
 
-#jgjlcfwcoj .gt_table {
+#xrwhpxgblf .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -6410,12 +6410,12 @@ Expand example for <code>expand_num = TRUE</code> and
   border-left-color: #D3D3D3;
 }
 
-#jgjlcfwcoj .gt_caption {
+#xrwhpxgblf .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#jgjlcfwcoj .gt_title {
+#xrwhpxgblf .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -6427,7 +6427,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-width: 0;
 }
 
-#jgjlcfwcoj .gt_subtitle {
+#xrwhpxgblf .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -6439,7 +6439,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-top-width: 0;
 }
 
-#jgjlcfwcoj .gt_heading {
+#xrwhpxgblf .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -6451,13 +6451,13 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#jgjlcfwcoj .gt_bottom_border {
+#xrwhpxgblf .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#jgjlcfwcoj .gt_col_headings {
+#xrwhpxgblf .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -6472,7 +6472,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#jgjlcfwcoj .gt_col_heading {
+#xrwhpxgblf .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6492,7 +6492,7 @@ Expand example for <code>expand_num = TRUE</code> and
   overflow-x: hidden;
 }
 
-#jgjlcfwcoj .gt_column_spanner_outer {
+#xrwhpxgblf .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6504,15 +6504,15 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 4px;
 }
 
-#jgjlcfwcoj .gt_column_spanner_outer:first-child {
+#xrwhpxgblf .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#jgjlcfwcoj .gt_column_spanner_outer:last-child {
+#xrwhpxgblf .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#jgjlcfwcoj .gt_column_spanner {
+#xrwhpxgblf .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -6524,11 +6524,11 @@ Expand example for <code>expand_num = TRUE</code> and
   width: 100%;
 }
 
-#jgjlcfwcoj .gt_spanner_row {
+#xrwhpxgblf .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#jgjlcfwcoj .gt_group_heading {
+#xrwhpxgblf .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6554,7 +6554,7 @@ Expand example for <code>expand_num = TRUE</code> and
   text-align: left;
 }
 
-#jgjlcfwcoj .gt_empty_group_heading {
+#xrwhpxgblf .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -6569,15 +6569,15 @@ Expand example for <code>expand_num = TRUE</code> and
   vertical-align: middle;
 }
 
-#jgjlcfwcoj .gt_from_md > :first-child {
+#xrwhpxgblf .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#jgjlcfwcoj .gt_from_md > :last-child {
+#xrwhpxgblf .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#jgjlcfwcoj .gt_row {
+#xrwhpxgblf .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6596,7 +6596,7 @@ Expand example for <code>expand_num = TRUE</code> and
   overflow-x: hidden;
 }
 
-#jgjlcfwcoj .gt_stub {
+#xrwhpxgblf .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6609,7 +6609,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#jgjlcfwcoj .gt_stub_row_group {
+#xrwhpxgblf .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6623,15 +6623,15 @@ Expand example for <code>expand_num = TRUE</code> and
   vertical-align: top;
 }
 
-#jgjlcfwcoj .gt_row_group_first td {
+#xrwhpxgblf .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#jgjlcfwcoj .gt_row_group_first th {
+#xrwhpxgblf .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#jgjlcfwcoj .gt_summary_row {
+#xrwhpxgblf .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -6641,16 +6641,16 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#jgjlcfwcoj .gt_first_summary_row {
+#xrwhpxgblf .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#jgjlcfwcoj .gt_first_summary_row.thick {
+#xrwhpxgblf .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#jgjlcfwcoj .gt_last_summary_row {
+#xrwhpxgblf .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6660,7 +6660,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#jgjlcfwcoj .gt_grand_summary_row {
+#xrwhpxgblf .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -6670,7 +6670,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#jgjlcfwcoj .gt_first_grand_summary_row {
+#xrwhpxgblf .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6680,7 +6680,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-top-color: #D3D3D3;
 }
 
-#jgjlcfwcoj .gt_last_grand_summary_row_top {
+#xrwhpxgblf .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6690,11 +6690,11 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#jgjlcfwcoj .gt_striped {
+#xrwhpxgblf .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#jgjlcfwcoj .gt_table_body {
+#xrwhpxgblf .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -6703,7 +6703,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#jgjlcfwcoj .gt_footnotes {
+#xrwhpxgblf .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -6717,7 +6717,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#jgjlcfwcoj .gt_footnote {
+#xrwhpxgblf .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -6726,7 +6726,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#jgjlcfwcoj .gt_sourcenotes {
+#xrwhpxgblf .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -6740,7 +6740,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#jgjlcfwcoj .gt_sourcenote {
+#xrwhpxgblf .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -6748,72 +6748,72 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#jgjlcfwcoj .gt_left {
+#xrwhpxgblf .gt_left {
   text-align: left;
 }
 
-#jgjlcfwcoj .gt_center {
+#xrwhpxgblf .gt_center {
   text-align: center;
 }
 
-#jgjlcfwcoj .gt_right {
+#xrwhpxgblf .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#jgjlcfwcoj .gt_font_normal {
+#xrwhpxgblf .gt_font_normal {
   font-weight: normal;
 }
 
-#jgjlcfwcoj .gt_font_bold {
+#xrwhpxgblf .gt_font_bold {
   font-weight: bold;
 }
 
-#jgjlcfwcoj .gt_font_italic {
+#xrwhpxgblf .gt_font_italic {
   font-style: italic;
 }
 
-#jgjlcfwcoj .gt_super {
+#xrwhpxgblf .gt_super {
   font-size: 65%;
 }
 
-#jgjlcfwcoj .gt_footnote_marks {
+#xrwhpxgblf .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#jgjlcfwcoj .gt_asterisk {
+#xrwhpxgblf .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#jgjlcfwcoj .gt_indent_1 {
+#xrwhpxgblf .gt_indent_1 {
   text-indent: 5px;
 }
 
-#jgjlcfwcoj .gt_indent_2 {
+#xrwhpxgblf .gt_indent_2 {
   text-indent: 10px;
 }
 
-#jgjlcfwcoj .gt_indent_3 {
+#xrwhpxgblf .gt_indent_3 {
   text-indent: 15px;
 }
 
-#jgjlcfwcoj .gt_indent_4 {
+#xrwhpxgblf .gt_indent_4 {
   text-indent: 20px;
 }
 
-#jgjlcfwcoj .gt_indent_5 {
+#xrwhpxgblf .gt_indent_5 {
   text-indent: 25px;
 }
 
-#jgjlcfwcoj .katex-display {
+#xrwhpxgblf .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#jgjlcfwcoj div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#xrwhpxgblf div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -11225,13 +11225,13 @@ additional QC steps as well, stay tuned!</p>
 </h2>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; R version 4.4.2 (2024-10-31)</span></span>
+<span><span class="co">#&gt; R version 4.5.1 (2025-06-13)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">#&gt; Running under: Ubuntu 22.04.5 LTS</span></span>
+<span><span class="co">#&gt; Running under: Ubuntu 24.04.3 LTS</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Matrix products: default</span></span>
 <span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
-<span><span class="co">#&gt; LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so;  LAPACK version 3.10.0</span></span>
+<span><span class="co">#&gt; LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; locale:</span></span>
 <span><span class="co">#&gt;  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       </span></span>
@@ -11246,38 +11246,37 @@ additional QC steps as well, stay tuned!</p>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] ggplot2_3.5.1        flowCore_2.18.0      flowWorkspace_4.18.0</span></span>
-<span><span class="co">#&gt; [4] openCyto_2.18.0      staRgate_0.99.3      BiocStyle_2.34.0    </span></span>
+<span><span class="co">#&gt; [1] ggplot2_4.0.0        flowCore_2.20.0      flowWorkspace_4.20.0</span></span>
+<span><span class="co">#&gt; [4] openCyto_2.20.1      staRgate_0.99.3      BiocStyle_2.36.0    </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] gtable_0.3.6        xfun_0.49           bslib_0.8.0        </span></span>
-<span><span class="co">#&gt;  [4] htmlwidgets_1.6.4   lattice_0.22-6      Biobase_2.66.0     </span></span>
-<span><span class="co">#&gt;  [7] vctrs_0.6.5         tools_4.4.2         generics_0.1.3     </span></span>
-<span><span class="co">#&gt; [10] stats4_4.4.2        parallel_4.4.2      tibble_3.2.1       </span></span>
-<span><span class="co">#&gt; [13] fansi_1.0.6         pkgconfig_2.0.3     data.table_1.16.2  </span></span>
-<span><span class="co">#&gt; [16] RColorBrewer_1.1-3  desc_1.4.3          S4Vectors_0.44.0   </span></span>
-<span><span class="co">#&gt; [19] gt_0.11.1           graph_1.84.0        lifecycle_1.0.4    </span></span>
-<span><span class="co">#&gt; [22] farver_2.1.2        compiler_4.4.2      stringr_1.5.1      </span></span>
-<span><span class="co">#&gt; [25] textshaping_0.4.0   munsell_0.5.1       janitor_2.2.0      </span></span>
-<span><span class="co">#&gt; [28] snakecase_0.11.1    htmltools_0.5.8.1   sass_0.4.9         </span></span>
-<span><span class="co">#&gt; [31] yaml_2.3.10         hexbin_1.28.5       pillar_1.9.0       </span></span>
-<span><span class="co">#&gt; [34] pkgdown_2.1.1       jquerylib_0.1.4     tidyr_1.3.1        </span></span>
-<span><span class="co">#&gt; [37] cachem_1.1.0        RProtoBufLib_2.18.0 commonmark_1.9.2   </span></span>
-<span><span class="co">#&gt; [40] tidyselect_1.2.1    digest_0.6.37       stringi_1.8.4      </span></span>
-<span><span class="co">#&gt; [43] dplyr_1.1.4         purrr_1.0.2         bookdown_0.41      </span></span>
-<span><span class="co">#&gt; [46] labeling_0.4.3      flowClust_3.44.0    fastmap_1.2.0      </span></span>
-<span><span class="co">#&gt; [49] grid_4.4.2          colorspace_2.1-1    cli_3.6.3          </span></span>
-<span><span class="co">#&gt; [52] magrittr_2.0.3      ncdfFlow_2.52.0     RBGL_1.82.0        </span></span>
-<span><span class="co">#&gt; [55] XML_3.99-0.17       utf8_1.2.4          withr_3.0.2        </span></span>
-<span><span class="co">#&gt; [58] scales_1.3.0        lubridate_1.9.3     timechange_0.3.0   </span></span>
-<span><span class="co">#&gt; [61] rmarkdown_2.29      matrixStats_1.4.1   gridExtra_2.3      </span></span>
-<span><span class="co">#&gt; [64] cytolib_2.18.0      ragg_1.3.3          evaluate_1.0.1     </span></span>
-<span><span class="co">#&gt; [67] knitr_1.49          markdown_1.13       rlang_1.1.4        </span></span>
-<span><span class="co">#&gt; [70] Rcpp_1.0.13-1       glue_1.8.0          xml2_1.3.6         </span></span>
-<span><span class="co">#&gt; [73] Rgraphviz_2.50.0    BiocManager_1.30.25 BiocGenerics_0.52.0</span></span>
-<span><span class="co">#&gt; [76] jsonlite_1.8.9      plyr_1.8.9          R6_2.5.1           </span></span>
-<span><span class="co">#&gt; [79] ggcyto_1.34.0       systemfonts_1.1.0   fs_1.6.5           </span></span>
-<span><span class="co">#&gt; [82] zlibbioc_1.52.0</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] gtable_0.3.6        xfun_0.53           bslib_0.9.0        </span></span>
+<span><span class="co">#&gt;  [4] htmlwidgets_1.6.4   lattice_0.22-7      Biobase_2.68.0     </span></span>
+<span><span class="co">#&gt;  [7] vctrs_0.6.5         tools_4.5.1         generics_0.1.4     </span></span>
+<span><span class="co">#&gt; [10] stats4_4.5.1        parallel_4.5.1      tibble_3.3.0       </span></span>
+<span><span class="co">#&gt; [13] pkgconfig_2.0.3     data.table_1.17.8   RColorBrewer_1.1-3 </span></span>
+<span><span class="co">#&gt; [16] S7_0.2.0            desc_1.4.3          S4Vectors_0.46.0   </span></span>
+<span><span class="co">#&gt; [19] graph_1.86.0        gt_1.1.0            lifecycle_1.0.4    </span></span>
+<span><span class="co">#&gt; [22] compiler_4.5.1      farver_2.1.2        stringr_1.5.2      </span></span>
+<span><span class="co">#&gt; [25] textshaping_1.0.3   janitor_2.2.1       snakecase_0.11.1   </span></span>
+<span><span class="co">#&gt; [28] litedown_0.7        htmltools_0.5.8.1   sass_0.4.10        </span></span>
+<span><span class="co">#&gt; [31] yaml_2.3.10         hexbin_1.28.5       pillar_1.11.1      </span></span>
+<span><span class="co">#&gt; [34] pkgdown_2.1.3       jquerylib_0.1.4     tidyr_1.3.1        </span></span>
+<span><span class="co">#&gt; [37] cachem_1.1.0        RProtoBufLib_2.20.0 commonmark_2.0.0   </span></span>
+<span><span class="co">#&gt; [40] tidyselect_1.2.1    digest_0.6.37       stringi_1.8.7      </span></span>
+<span><span class="co">#&gt; [43] dplyr_1.1.4         purrr_1.1.0         bookdown_0.44      </span></span>
+<span><span class="co">#&gt; [46] labeling_0.4.3      flowClust_3.46.0    fastmap_1.2.0      </span></span>
+<span><span class="co">#&gt; [49] grid_4.5.1          cli_3.6.5           magrittr_2.0.4     </span></span>
+<span><span class="co">#&gt; [52] ncdfFlow_2.54.0     utf8_1.2.6          RBGL_1.84.0        </span></span>
+<span><span class="co">#&gt; [55] XML_3.99-0.19       withr_3.0.2         scales_1.4.0       </span></span>
+<span><span class="co">#&gt; [58] lubridate_1.9.4     timechange_0.3.0    rmarkdown_2.30     </span></span>
+<span><span class="co">#&gt; [61] matrixStats_1.5.0   gridExtra_2.3       cytolib_2.20.0     </span></span>
+<span><span class="co">#&gt; [64] ragg_1.5.0          evaluate_1.0.5      knitr_1.50         </span></span>
+<span><span class="co">#&gt; [67] markdown_2.0        rlang_1.1.6         Rcpp_1.1.0         </span></span>
+<span><span class="co">#&gt; [70] glue_1.8.0          Rgraphviz_2.52.0    BiocManager_1.30.26</span></span>
+<span><span class="co">#&gt; [73] xml2_1.4.0          BiocGenerics_0.54.0 jsonlite_2.0.0     </span></span>
+<span><span class="co">#&gt; [76] plyr_1.8.9          R6_2.6.1            systemfonts_1.3.1  </span></span>
+<span><span class="co">#&gt; [79] fs_1.6.6            ggcyto_1.36.1</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -11310,7 +11309,7 @@ open-source visualization software for cytometry,” Bioinformatics,
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
