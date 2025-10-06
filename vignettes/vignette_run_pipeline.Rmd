@@ -1,6 +1,5 @@
 ---
 title: "Tutorial: Running the pipeline"
-author: Jasme Lee
 output: 
   BiocStyle::html_document
 vignette: >
@@ -133,14 +132,6 @@ A few things to keep in mind when debugging/iterating through gating:
 
 Below is an example of gating 1 FCS sample.
 
-Optional: include a `samp_metadata` for saving out some properties of the FCS file and from the processing steps (e.g., the compensation matrix, the number of cells in the root population)
-
-```{r}
-# Optional to save the samp_metadata
-samp_metadata <- list()
-```
-
-
 ## Import FCS
 
 ```{r}
@@ -152,38 +143,19 @@ gt_tcell <- openCyto::gatingTemplate(gtFile)
 
 cs <- flowWorkspace::load_cytoset_from_fcs(path_fcs)
 
-# **Optional** -
-# For consistency among different naming conventions for the live/dead
-# change "Viability" or "L/D" "LD" or "live" to = "L_D" for consistency on gtemplates etc
-{
-  if (any(c("Viability", "L/D", "L_D", "live", "Live") %in% flowWorkspace::markernames(cs))) {
-    aux_log <- flowWorkspace::markernames(cs) == "Viability" | flowWorkspace::markernames(cs) == "L/D" | flowWorkspace::markernames(cs) == "L_D"
-
-    flowWorkspace::markernames(cs) <- replace(markernames(cs), aux_log, "LD")
-  }
-}
-
 # Create a GatingSet of 1 sample
 gs <- flowWorkspace::GatingSet(cs)
 
 # Check- how many cells is in the FCS file?
 n_root <- flowWorkspace::gh_pop_get_count(gs, "root")
 
+# The example FCS has 30000 cells
 n_root
-
-# Add n_root to samp_metadata
-samp_metadata$n_root <- n_root
 ```
 
 ## Compensation
 
-
 ```{r}
-# Check no comp applied
-chk_cm <- flowWorkspace::gh_get_compensations(gs)
-
-chk_cm
-
 # Apply comp
 gs <- getCompGS(gs, path_comp_mat = path_comp_mat)
 
@@ -191,12 +163,7 @@ gs <- getCompGS(gs, path_comp_mat = path_comp_mat)
 chk_cm <- flowWorkspace::gh_get_compensations(gs)
 
 # Not aware of an accessor that we can use for this
-head(methods::slot(chk_cm, "spillover"))
-
-# **Optional**- save the comp mat matrix
-# Can grab with the @spillover from the compensation object
-samp_metadata$comp_mat <-
-  methods::slot(chk_cm, "spillover")
+head(methods::slot(chk_cm, "spillover"), 2)
 ```
 
 ## Transformation
@@ -210,13 +177,7 @@ tbl_biexp_params <-
   utils::read.csv(path_biexp_params) |>
   janitor::clean_names(case = "all_caps")
 
-# **Optional**-- saving out the table of parameters as format that's easier to read
-# Below there is an option to save it out as the transformerList which is what
-# getBiexpTransformGS() relies on to supply to flowWorkspace::transform
-samp_metadata$biexp_params <- tbl_biexp_params
-
-# The biexp table
-gt::gt(tbl_biexp_params)
+head(tbl_biexp_params, 2)
 ```
 
 Currently, the package only supports biexponetial transformation for all channels with the `getBiexpTransformGS()` function. However, the user may choose to create a transformation list explicitly if other transformations (e.g., archsin) are desired.
@@ -224,38 +185,25 @@ Currently, the package only supports biexponetial transformation for all channel
 Note that the `r BiocStyle::Biocpkg("flowWorkspace")` package also allows for an automated transformation calculation "guessing" appropriate parameters. We chose to explicitly specify the biexponential transformation with fixed parameters for all channels to match the manual gating strategy used in flowJo for a more direct comparison of {staRgate} to the manual gating results.
 
 ```{r}
-## **Optional**-- to check what pre-transformed data against post
-# Check no transformation before
-chk_tf <- flowWorkspace::gh_get_transformations(gs)
-
-chk_tf
-
+# Save the pre-transformed data to compare ranges 
+# And check that transformation was applied
 dat_pre_transform <-
   flowWorkspace::gh_pop_get_data(gs) |>
   flowCore::exprs()
 
-
 # Apply biexp trans
 gs <- getBiexpTransformGS(gs, path_biexp_params = path_biexp_params)
 
-
 ## **Optional**-- to check what pre-transformed data against post
-# Check no transformation before
-chk_tf <- flowWorkspace::gh_get_transformations(gs)
-
-# This is how 1 transformation specification looks like
-chk_tf[[1]]
-
+# save the post-transformed data
 dat_post_transform <-
   flowWorkspace::gh_pop_get_data(gs) |>
   flowCore::exprs()
 
 ## **Optional**-- to check that the transformation worked on all provided channels!
-summary(dat_pre_transform)
-summary(dat_post_transform)
-
-## **Optional**-- save out the transformerList
-samp_metadata$transformerList <- chk_tf
+## Commented out for ease of length 
+# summary(dat_pre_transform)
+# summary(dat_post_transform)
 ```
 
 ## Pre-gating
@@ -268,45 +216,7 @@ The `r BiocStyle::Biocpkg("flowAI")` step serves as a quality control (QC) to ma
 
 The first step of the gating template is a QC step that is especially important to include if the user chooses to exclude the `r BiocStyle::Biocpkg("flowAI")` step.
 
-```{r}
-## Optional - flowAI step 
-# set to TRUE if want to include
-flowAI_yn <- FALSE
-
-# Run flowAI if TRUE, run it
-if (flowAI_yn) {
-  # Check if the dir exists
-  if (!dir.exists(glue::glue("{path_out}/flowAI_results"))) {
-    dir.create(glue::glue("{path_out}/flowAI_results"))
-  }
-
-  # For sample
-  qc_flowai <- flowAI::flow_auto_qc(flowWorkspace::gh_pop_get_data(gs),
-    folder_results = here::here(glue::glue("{path_out}/flowAI_results"))
-  )
-
-  # Convert to a flowSet in order to convert to GatingSet
-  qc_flowai <- flowCore::flowSet(qc_flowai)
-
-  # Rnemae the sample
-  sampleNames(qc_flowai) <- pt_samp_nm
-
-  # convert the flowFrame obj returned in test_qc to a GatingSet to pass to openCyto
-  gs_qc <- flowWorkspace::GatingSet(qc_flowai)
-
-  # Remove to save memory
-  rm(qc_flowai)
-
-  # Save data
-  save_gs(gs_qc,
-    path = paste0(glue::glue("{path_out}/data/GatingSet/{pt_samp_nm}_flowAI_qc_{Sys.Date()}"))
-  )
-} else {
-  # if no need to run flowAI, just set gs_qc as gs from previous transformation step
-  gs_qc <- gs
-  rm(gs)
-}
-```
+In this tutorial, we will skip the `r BiocStyle::Biocpkg("flowAI")` step.
 
 ```{r}
 # Pre-gating up to CD4/8+ with `r BiocStyle::Biocpkg("openCyto")`
@@ -315,27 +225,30 @@ set.seed(glue::glue({
   format(Sys.Date(), format = "%Y%m%d")
 }))
 
-openCyto::gt_gating(gt_tcell, gs_qc)
+openCyto::gt_gating(gt_tcell, gs)
 ```
 
 
 ```{r fig.height = 10, fig.width = 8, warning = FALSE, message = FALSE}
 ## Check autoplot
-ggcyto::autoplot(gs_qc[[1]])
+ggcyto::autoplot(gs[[1]])
 ```
 
 
 ## Extract intensity matrix
 
+Grab the channel and marker names in the `gs` object
+
++ When extracting `intensity_matrix`, it is labeled with channel names as the marker names
++ The `marker_chnl_names` mapping created below will be used to rename the column names to the marker names, which will make calling the appropriate columns easier when analyzing the data
 
 ```{r}
-# Extract intensity matrix from GatingSet object
 ## Grab marker names from GatingSet for labeling col names in intensity matrix
 ## Can skip this step if you know the exact namings of the marker names in your FCS files
 # In that case, supply a string is fine:
 # marker_chnl_names = c("CD45RA", "CCR7", "LAG3", ...)
 marker_chnl_names <-
-  flowWorkspace::gh_pop_get_data(gs_qc) |>
+  flowWorkspace::gh_pop_get_data(gs) |>
   flowWorkspace::markernames() |>
   data.frame("marker_full" = _) |>
   tibble::rownames_to_column(var = "chnl") |>
@@ -351,54 +264,47 @@ marker_chnl_names <-
                                    .default = marker_full))
 
 # For our Tcell panel, we only want to apply the density gating on
-# the `markers_to_gate` markers
-# Again, this can be made specified explicitly as string
-markers_to_gate <-
-  marker_chnl_names$marker_full |> (\(x){
-    x[!(x %in% c("CD3", "CD4", "CD8", "LD", "CD1419"))]  
-  })()
+# these 23 markers
+markers_to_gate = c("CD45RA", "ICOS", "CD25", "TIM3", 
+                    "CD27", "CD57", "CXCR5", "CCR4", 
+                    "CCR7", "HLADR", "CD28", "PD1", 
+                    "LAG3", "CD127", "CD38", "TIGIT", 
+                    "EOMES", "CTLA4", "FOXP3", "GITR",
+                    "TBET", "KI67", "GZM_B")
 
+```
+
+Next we grab the intensity values and indicators for the pre-gating steps. 
+
+```{r}
+# Extract intensity matrix from GatingSet object
 ## Grab the intensity matrix from GatingSet
 ## the gh_pop_get_indices grabs the 0/1 for whether gated as CD3
 intensity_dat <-
-  # grab all indices from opencyto gating to be complete
-  flowWorkspace::gh_pop_get_indices(gs_qc, y = "fsc_ssc_qc") |>
   cbind(
-    flowWorkspace::gh_pop_get_data(gs_qc) |>
+    # This grabs the intensity matrix with intensity values
+    flowWorkspace::gh_pop_get_data(gs) |>
       flowCore::exprs(),
-    "fsc_ssc_qc" = _
+    # Each of these grabs the 0/1 for gated as positive or negative for
+    # each step
+    "fsc_ssc_qc" = flowWorkspace::gh_pop_get_indices(gs, y = "fsc_ssc_qc"),
+    "nonDebris" = flowWorkspace::gh_pop_get_indices(gs, y = "nonDebris"),
+    "singlets" = flowWorkspace::gh_pop_get_indices(gs, y = "singlets"),
+    "cd14_neg_19_neg" = flowWorkspace::gh_pop_get_indices(gs, y = "cd14-cd19-"),
+    "live" = flowWorkspace::gh_pop_get_indices(gs, y = "live"),
+    "cd3_pos" = flowWorkspace::gh_pop_get_indices(gs, y = "cd3"),
+    "cd4_pos" = flowWorkspace::gh_pop_get_indices(gs, y = "cd4+"),
+    "cd8_pos" = flowWorkspace::gh_pop_get_indices(gs, y = "cd8+")
   ) |>
-  # Add nondebris
-  cbind(
-    "nonDebris" = flowWorkspace::gh_pop_get_indices(gs_qc, y = "nonDebris")
-  ) |>
-  # singlets
-  cbind(
-    "singlets" = flowWorkspace::gh_pop_get_indices(gs_qc, y = "singlets")
-  ) |>
-  # cd14-19-
-  cbind(
-    "cd14_neg_19_neg" = flowWorkspace::gh_pop_get_indices(gs_qc, y = "cd14-cd19-")
-  ) |>
-  # add live
-  cbind(
-    "live" = flowWorkspace::gh_pop_get_indices(gs_qc, y = "live")
-  ) |>
-  # Add cd3+
-  cbind(
-    "cd3_pos" = flowWorkspace::gh_pop_get_indices(gs_qc, y = "cd3")
-  ) |>
-  # add on the cd4 and cd8 0/1s
-  cbind(
-    "cd4_pos" = flowWorkspace::gh_pop_get_indices(gs_qc, y = "cd4+")
-  ) |>
-  cbind(
-    "cd8_pos" = flowWorkspace::gh_pop_get_indices(gs_qc, y = "cd8+")
-  ) |>
+  # The intensity matrix is a matrix object. Convert to tibble.
   tibble::as_tibble() |>
-  # Rename with marker names
-  dplyr::rename(stats::setNames(marker_chnl_names$chnl, as.character(marker_chnl_names$marker_full))) |>
+  # Rename with marker names with a named vector
+  # Where the names = value to rename to (marker names) 
+  # The values of the vector = current names (Channel names)
+  dplyr::rename(stats::setNames(marker_chnl_names$chnl, 
+                                as.character(marker_chnl_names$marker_full))) |>
   dplyr::mutate(
+    # Create a 4-level category for cd4, cd8 neg/pos
     cd4_pos_cd8_pos = dplyr::case_when(
       cd3_pos == 1 & cd4_pos == 1 & cd8_pos == 1 ~ "cd4_pos_cd8_pos",
       cd3_pos == 1 & cd4_pos == 1 & cd8_pos == 0 ~ "cd4_pos_cd8_neg",
@@ -408,11 +314,13 @@ intensity_dat <-
   )
 
 ## Preview of intensity matrix
-head(intensity_dat)
+head(intensity_dat, 2)
 ```
 
 
-## Apply density gating
+## Consensus gating on T-cell subsets
+
+A consensus gating strategy is applied 
 
 The suggested strategy is based on all CD3+, but this can be customized based on the string corresponding to the column name supplied to `subset_col` in the `get_density_gates` function
 
@@ -882,7 +790,7 @@ current_gate <-
 # Apply using gs_add_gating-method and
 # We want a boundary gate
 openCyto::gs_add_gating_method(
-  gs_qc,
+  gs,
   alias = "lag3_cd8",
   pop = "+",
   parent = "cd4-cd8+",
@@ -897,7 +805,7 @@ current_gate <-
   dplyr::pull(LAG3)
 
 openCyto::gs_add_gating_method(
-  gs_qc,
+  gs,
   alias = "lag3_cd4",
   pop = "+",
   parent = "cd4+cd8-",
@@ -906,7 +814,7 @@ openCyto::gs_add_gating_method(
   gating_args = list(min = current_gate, max = Inf)
 )
 
-ggcyto::autoplot(gs_qc[[1]])
+ggcyto::autoplot(gs[[1]])
 ```
 
 After running {staRgate} to gate flow cytometry data, it is recommended to perform some quality checks (QC) on the gate placements to ensure they are reasonable. We suggest to use ridgeplots in addition to the `ggcyto::autoplot` function to visualize the density distributions per marker across samples. When examining a large batch of samples, downsampling, such as to a random sample of 10k CD3+ cells, will make the QC process more manageable. In addition, random spot checks of a few samples would also be helpful QC to detect any edge cases.
