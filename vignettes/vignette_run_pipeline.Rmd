@@ -12,8 +12,8 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.height = 8,
-  fig.width = 6,
+  fig.height = 6,
+  fig.width = 8,
   fig.align = "center"
 )
 ```
@@ -29,9 +29,7 @@ This vignette will walk through how to run the {staRgate} pipeline starting from
 
 For illustration purposes, the example FCS file used in this vignette and stored in the package data is a concatenated file limited to the first 30k events/cells acquired to reduce the run time and file size. 
 
-
 After running {staRgate} to gate flow cytometry data, it is recommended to perform some quality checks (QC) on the gate placements to ensure they are reasonable. We suggest to use ridgeplots in addition to the `ggcyto::autoplot` to visualize the density distributions per marker across samples. When examining a large batch of samples, downsampling, such as to a random sample of 10k CD3+ cells, will make the QC process more manageable. In addition, random spot checks of a few samples would also be helpful QC to detect any edge cases.
-
 
 Currently in this tutorial, we do not extend to the QC steps and suggest to lean on other examples for how to put together a ridgeplot for example. In the near future, we hope to incorporate some examples for the additional QC steps as well, stay tuned!
 
@@ -51,7 +49,7 @@ if (!require("BiocManager", quietly = TRUE)) {
 
 The essential dependencies for running the {staRgate} package include: `r BiocStyle::Biocpkg("flowCore")`, and `r BiocStyle::Biocpkg("flowWorkspace")`.
 
-The following packages are needed to fully run the pipeline as shown in this Tutorial, but not required for the {staRgate} code chunks to run: `r BiocStyle::Biocpkg("openCyto")`, `r BiocStyle::Biocpkg("flowAI")`, `r BiocStyle::CRANpkg("ggplot2")`, `r BiocStyle::Biocpkg("ggcyto")`, `r BiocStyle::CRANpkg("gt")`
+The following packages are needed to fully run the pipeline as shown in this Tutorial, but not required for the {staRgate} code chunks to run: `r BiocStyle::Biocpkg("openCyto")`, `r BiocStyle::CRANpkg("ggplot2")`, `r BiocStyle::Biocpkg("ggcyto")`, `r BiocStyle::CRANpkg("gt")`
 
 
 ```{r setup}
@@ -62,6 +60,7 @@ library(flowWorkspace)
 library(flowCore)
 # Just for plotting in the vignette
 library(ggplot2)
+library(ggcyto)
 
 # Set up dynamic variables
 pt_samp_nm <- "flow_sample_1"
@@ -404,7 +403,7 @@ example_intensity_gated <-
 
 ### LAG3 for all CD3+ {.unlisted .unnumbered}
 
-```{r fig.width=8, fig.height=6}
+```{r}
 # Plot the gate for visual
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -425,7 +424,7 @@ intensity_dat |>
 ### LAG3 by CD4 and CD8 subsets {.unlisted .unnumbered}
 
 
-```{r fig.width=8, fig.height=6}
+```{r}
 # If by CD4/CD8,
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -447,7 +446,7 @@ intensity_dat |>
 
 ### CCR7 for all CD3+  {.unlisted .unnumbered}
 
-```{r fig.width=8, fig.height=6}
+```{r}
 # For CCR7
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -467,7 +466,7 @@ intensity_dat |>
 
 ### CCR7 by CD4 and CD8 subsets {.unlisted .unnumbered}
 
-```{r fig.width=8, fig.height=6}
+```{r}
 # If by CD4/CD8,
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -489,7 +488,7 @@ intensity_dat |>
 
 ### CD45RA for all CD3+  {.unlisted .unnumbered}
 
-```{r fig.width=8, fig.height=6}
+```{r}
 # For CD45RA
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -509,7 +508,7 @@ intensity_dat |>
 
 ### CD45RA by CD4 and CD8 subsets {.unlisted .unnumbered}
 
-```{r fig.width=8, fig.height=6}
+```{r}
 # If by CD4/CD8,
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -531,7 +530,7 @@ intensity_dat |>
 
 ### CD127 for all CD3+  {.unlisted .unnumbered}
 
-```{r fig.width=8, fig.height=6}
+```{r}
 # For CD127
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -551,7 +550,7 @@ intensity_dat |>
 
 ### CD127 by CD4 and CD8 subsets {.unlisted .unnumbered}
 
-```{r fig.width=8, fig.height=6}
+```{r}
 # If by CD4/CD8,
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -572,7 +571,7 @@ intensity_dat |>
 
 ### CD28 for all CD3+  {.unlisted .unnumbered}
 
-```{r fig.width=8, fig.height=6}
+```{r}
 # For CD28
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -592,7 +591,7 @@ intensity_dat |>
 
 ### CD28 by CD4 and CD8 subsets {.unlisted .unnumbered}
 
-```{r fig.width=8, fig.height=6}
+```{r}
 # If by CD4/CD8,
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
