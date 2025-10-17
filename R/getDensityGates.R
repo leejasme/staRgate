@@ -98,7 +98,6 @@ getDensityGates <- function(intens_dat,
               pos_peak_threshold=pos_peak_threshold,
               neg_intensity_threshold=neg_intensity_threshold)
 
-
   # Apply the filtering if any
   if (!is.null(neg_intensity_threshold)) {
     i_dat <-

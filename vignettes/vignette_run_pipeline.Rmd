@@ -175,7 +175,7 @@ The structure of the table of parameters (as .csv format) should be first column
 ```{r}
 tbl_biexp_params <-
   utils::read.csv(path_biexp_params) |>
-  janitor::clean_names(case = "all_caps")
+  janitor::clean_names(case="all_caps")
 
 head(tbl_biexp_params, 2)
 ```
@@ -318,13 +318,33 @@ head(intensity_dat, 2)
 ```
 
 
-## Consensus gating on T-cell subsets
+## Gating on T-cell subsets
 
-A consensus gating strategy is applied 
 
-The suggested strategy is based on all CD3+, but this can be customized based on the string corresponding to the column name supplied to `subset_col` in the `get_density_gates` function
+### Pseudo-negative control 
 
-The suggested number of bins for density estimation is `40`.
+For this T-cell panel, we recommend using the CD3- cells as a pseudo-negative control when gating CD127 and CD28 as these two markers are expected to be predominantly negatively-expressing on CD3- cells. This mimics the isotype-based gating approach. Here we recommend using the 95th percentile of the CD3- distributions.
+
+To ensure we only capture the CD3- cells, we first filter to the live cells then to `cd3_pos == 0`
+
+```{r}
+gates_pseudo_neg = 
+  dplyr::filter(intensity_dat, live == 1, cd3_pos == 0) |>
+  dplyr::select(CD127, CD28) |>
+  dplyr::summarise(
+    dplyr::across(c(CD127, CD28),
+                  ~ quantile(.x, 0.95))
+  ) 
+```
+
+### Empirical gating
+
+For the other functional and differentiation markers where we cannot borrow CD3- as the pseudo-negative control, we gate empirically based on the CD3+ density distribution per marker. 
+
++ The suggested strategy is based on all CD3+, but this can be customized based on the string corresponding to the column name supplied to `subset_col` in the `get_density_gates` function
++ The suggested number of bins for density estimation is `40` as some level of smoothing is required to reduce the noise and picking up false peaks.
++ When multiple samples from the same batch or experiment run (samples are processed together), we recommend to borrow information from other samples by pooling all CD3+ across the same batch before applying the density gating.
++ If interested in pooling across experiment runs, consider visualizing for any batch-level intensity shifts and variations before pooling samples together.
 
 For illustration purposes, we will only apply density gating on a few markers.
 
@@ -336,16 +356,17 @@ bin_i <- 40
 neg_intensity_thres <- -1000
 
 # select a few markers to gate
-example_markers <- c("LAG3", "CCR7", "CD45RA", "EOMES")
+example_markers <- c("LAG3", "CCR7", "CD45RA")
 
 # Read in positive peak thresholds
-pos_thres <- utils::read.csv(path_pos_peak_thresholds)
+pos_thres <- utils::read.csv(path_pos_peak_thresholds) |>
+  janitor::clean_names(case = "all_caps")
 ```
 
-```{r, fig.width=8}
+```{r, fig.width=8, fig.height=6}
 # Show the exact output from the get_density_gates() function
 dens_gates_pre <-
-  dplyr::filter(intensity_dat, cd3_pos %in% c(0, 1)) |>
+  dplyr::filter(intensity_dat, cd3_pos == 1) |>
   getDensityGates(
     intens_dat = _,
     marker = example_markers,
@@ -356,31 +377,34 @@ dens_gates_pre <-
     neg_intensity_threshold = neg_intensity_thres
   )
 
-dens_gates_pre
-
 # Since we apply density gating on CD3+ cells but
 # Would like to calculate subpopulations with CD4+ and CD8+ as
 # the starting parent population, we need to add corresponding rows
 dens_gates <-
-  dplyr::filter(dens_gates_pre, cd3_pos == 1) |>
+  # Stack the pseudo-neg gated markers and empirically gated markers
+  dplyr::bind_cols(dens_gates_pre, gates_pseudo_neg) |>
   tibble::add_row() |>
   tibble::add_row() |>
   tibble::add_row() |>
   dplyr::mutate(cd4_pos_cd8_pos = c("cd4_neg_cd8_neg", "cd4_pos_cd8_neg", "cd4_neg_cd8_pos", "cd4_pos_cd8_pos")) |>
-  tidyr::fill(cd3_pos, dplyr::all_of(example_markers), .direction = "down")
-
+  tidyr::fill(-cd4_pos_cd8_pos, .direction = "down")
 
 # View updated gates with the col for CD4/CD8
 dens_gates
 
-# try get indicator col
+# get indicator col
 example_intensity_gated <-
   getGatedDat(intensity_dat,
     subset_col = "cd4_pos_cd8_pos",
     cutoffs = dens_gates
   )
+```
 
+## Visualizing the gates {.tabset .tabset-fade .unlisted .unnumbered}
 
+### LAG3 for all CD3+ {.unlisted .unnumbered}
+
+```{r fig.width=8, fig.height=6}
 # Plot the gate for visual
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -396,7 +420,12 @@ intensity_dat |>
     linetype = "dashed"
   ) +
   labs(subtitle = "Distribution of LAG3 intensity on all CD3+. Gate identifed by {staRgate} in blue.")
+```
 
+### LAG3 by CD4 and CD8 subsets {.unlisted .unnumbered}
+
+
+```{r fig.width=8, fig.height=6}
 # If by CD4/CD8,
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -414,7 +443,11 @@ intensity_dat |>
   labs(subtitle = "Distribution of LAG3 intensity on all CD3+. Gate identifed by {staRgate} in blue.") +
   facet_wrap(~cd4_pos_cd8_pos)
 
+```
 
+### CCR7 for all CD3+  {.unlisted .unnumbered}
+
+```{r fig.width=8, fig.height=6}
 # For CCR7
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -430,7 +463,11 @@ intensity_dat |>
     linetype = "dashed"
   ) +
   labs(subtitle = "Distribution of CCR7 intensity on all CD3+. Gate identifed by {staRgate} in blue.")
+```
 
+### CCR7 by CD4 and CD8 subsets {.unlisted .unnumbered}
+
+```{r fig.width=8, fig.height=6}
 # If by CD4/CD8,
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -447,7 +484,12 @@ intensity_dat |>
   ) +
   labs(subtitle = "Distribution of CCR7 intensity on all CD3+. Gate identifed by {staRgate} in blue.") +
   facet_wrap(~cd4_pos_cd8_pos)
+```
 
+
+### CD45RA for all CD3+  {.unlisted .unnumbered}
+
+```{r fig.width=8, fig.height=6}
 # For CD45RA
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -463,7 +505,11 @@ intensity_dat |>
     linetype = "dashed"
   ) +
   labs(subtitle = "Distribution of CD45RA intensity on all CD3+. Gate identifed by {staRgate} in blue.")
+```
 
+### CD45RA by CD4 and CD8 subsets {.unlisted .unnumbered}
+
+```{r fig.width=8, fig.height=6}
 # If by CD4/CD8,
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -483,13 +529,96 @@ intensity_dat |>
 ```
 
 
+### CD127 for all CD3+  {.unlisted .unnumbered}
+
+```{r fig.width=8, fig.height=6}
+# For CD127
+intensity_dat |>
+  dplyr::filter(cd3_pos == 1) |>
+  # additional step to remove large intensity values only when density gating.
+  # Still kept in the data
+  dplyr::filter(!(dplyr::if_any(dplyr::all_of(markers_to_gate), ~ .x < neg_intensity_thres))) |>
+  ggplot() +
+  geom_density(aes(CD127)) +
+  geom_vline(
+    data = dens_gates,
+    aes(xintercept = CD127),
+    color = "blue",
+    linetype = "dashed"
+  ) +
+  labs(subtitle = "Distribution of CD127 intensity on all CD3+. Gate identifed by {staRgate} in blue.")
+```
+
+### CD127 by CD4 and CD8 subsets {.unlisted .unnumbered}
+
+```{r fig.width=8, fig.height=6}
+# If by CD4/CD8,
+intensity_dat |>
+  dplyr::filter(cd3_pos == 1) |>
+  # additional step to remove large intensity values only when density gating.
+  # Still kept in the data
+  dplyr::filter(!(dplyr::if_any(dplyr::all_of(markers_to_gate), ~ .x < neg_intensity_thres))) |>
+  ggplot() +
+  geom_density(aes(CD127)) +
+  geom_vline(
+    data = dens_gates,
+    aes(xintercept = CD127),
+    color = "blue",
+    linetype = "dashed"
+  ) +
+  labs(subtitle = "Distribution of CD127 intensity on all CD3+. Gate identifed by {staRgate} in blue.") +
+  facet_wrap(~cd4_pos_cd8_pos)
+```
+
+### CD28 for all CD3+  {.unlisted .unnumbered}
+
+```{r fig.width=8, fig.height=6}
+# For CD28
+intensity_dat |>
+  dplyr::filter(cd3_pos == 1) |>
+  # additional step to remove large intensity values only when density gating.
+  # Still kept in the data
+  dplyr::filter(!(dplyr::if_any(dplyr::all_of(markers_to_gate), ~ .x < neg_intensity_thres))) |>
+  ggplot() +
+  geom_density(aes(CD28)) +
+  geom_vline(
+    data = dens_gates,
+    aes(xintercept = CD28),
+    color = "blue",
+    linetype = "dashed"
+  ) +
+  labs(subtitle = "Distribution of CD28 intensity on all CD3+. Gate identifed by {staRgate} in blue.")
+```
+
+### CD28 by CD4 and CD8 subsets {.unlisted .unnumbered}
+
+```{r fig.width=8, fig.height=6}
+# If by CD4/CD8,
+intensity_dat |>
+  dplyr::filter(cd3_pos == 1) |>
+  # additional step to remove large intensity values only when density gating.
+  # Still kept in the data
+  dplyr::filter(!(dplyr::if_any(dplyr::all_of(markers_to_gate), ~ .x < neg_intensity_thres))) |>
+  ggplot() +
+  geom_density(aes(CD28)) +
+  geom_vline(
+    data = dens_gates,
+    aes(xintercept = CD28),
+    color = "blue",
+    linetype = "dashed"
+  ) +
+  labs(subtitle = "Distribution of CD28 intensity on all CD3+. Gate identifed by {staRgate} in blue.") +
+  facet_wrap(~cd4_pos_cd8_pos)
+```
+
+## {.unlisted .unnumbered}
+
 ## Getting percentage data
 
 ```{r, echo = FALSE}
 panel_n <- 23
 panel_n_d <- 2
 ```
-
 
 We can then summarize the single-cell level data to counts and percentages of cells for all combinations of markers. 
 
@@ -510,9 +639,9 @@ subpopulations to calculate counts/percentages for:
 + expand_num: should calculations consider up to pairs of numerator markers included?,
 + expand_denom: should the calculations consider combinations of each numerator marker and parent populations specified in the denominator?
 
-Currently, we support the four scenarios listed below: 
+<details><summary>Currently, we support the four scenarios listed:</summary>
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, warning = FALSE}
 # Follows supp table 1 in the paper
 tibble::tibble(
   expand_num = c("FALSE", "TRUE", "FALSE", "TRUE"),
@@ -622,6 +751,7 @@ tibble::tibble(
   )
 ```
 
+</details>
 
 The `keep_indicators` argument provides the 0/1 for which marker is considered in the numerator and denominator
 for each subpopulation. This is especially useful when merging onto other data that does not have the same format.
