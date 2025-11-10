@@ -76,8 +76,8 @@ population to include cells with varying intensities of marker
 expression. This is achieved via estimating the kernel density of the
 intensity distribution and corresponding derivatives. This pipeline
 integrates the density gating method in conjuction with some
-pre-processing steps achieved via the R package <em><a href="https://bioconductor.org/packages/3.21/openCyto" class="external-link">openCyto</a></em>
-and an optional step with <em><a href="https://bioconductor.org/packages/3.21/flowAI" class="external-link">flowAI</a></em>.
+pre-processing steps achieved via the R package <em><a href="https://bioconductor.org/packages/3.22/openCyto" class="external-link">openCyto</a></em>
+and an optional step with <em><a href="https://bioconductor.org/packages/3.22/flowAI" class="external-link">flowAI</a></em>.
 The flow data is stored within R as a <code>GatingSet</code> object,
 which makes it easily transferable to other flow cytometry workflows
 available on BioConductor.</p>
@@ -111,22 +111,18 @@ for the additional QC steps as well, stay tuned!</p>
 <p>The {staRgate} package relies on a few Biocondcutor R packages.
 Before installing {staRgate}, first setup Bioconductor and install all
 dependencies.</p>
-<p><a href="https://www.bioconductor.org/install/" class="external-link">Below instructions
-are instructions for installing Bioconductor</a></p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://bioconductor.github.io/BiocManager/" class="external-link">"BiocManager"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
+<p><a href="https://www.bioconductor.org/install/" class="external-link">Follow instructions
+here for installing Bioconductor</a></p>
 <p>The essential dependencies for running the {staRgate} package
-include: <em><a href="https://bioconductor.org/packages/3.21/flowCore" class="external-link">flowCore</a></em>,
-and <em><a href="https://bioconductor.org/packages/3.21/flowWorkspace" class="external-link">flowWorkspace</a></em>.</p>
+include: <em><a href="https://bioconductor.org/packages/3.22/flowCore" class="external-link">flowCore</a></em>,
+and <em><a href="https://bioconductor.org/packages/3.22/flowWorkspace" class="external-link">flowWorkspace</a></em>.</p>
 <p>The following packages are needed to fully run the pipeline as shown
 in this Tutorial, but not required for the {staRgate} code chunks to
-run: <em><a href="https://bioconductor.org/packages/3.21/openCyto" class="external-link">openCyto</a></em>,
+run: <em><a href="https://bioconductor.org/packages/3.22/openCyto" class="external-link">openCyto</a></em>,
 <em><a href="https://CRAN.R-project.org/package=ggplot2" class="external-link">ggplot2</a></em>,
-<em><a href="https://bioconductor.org/packages/3.21/ggcyto" class="external-link">ggcyto</a></em>,
+<em><a href="https://bioconductor.org/packages/3.22/ggcyto" class="external-link">ggcyto</a></em>,
 <em><a href="https://CRAN.R-project.org/package=gt" class="external-link">gt</a></em></p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load libraries</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://leejasme.github.io/staRgate/">staRgate</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">openCyto</span><span class="op">)</span></span>
@@ -158,7 +154,7 @@ run: <em><a href="https://bioconductor.org/packages/3.21/openCyto" class="extern
 <span><span class="va">path_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># Print the path_out for user to see</span></span>
 <span><span class="va">path_out</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmphFEcj5"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmpQ34mpI"</span></span>
 <span></span>
 <span><span class="co">## File path Gating template</span></span>
 <span><span class="va">gtFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"gating_template_x50_tcell.csv"</span>, package <span class="op">=</span> <span class="st">"staRgate"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -197,7 +193,7 @@ basis and positive decades) to be applied to the listed channels</li>
 </li>
 <li>Gating template
 <ul>
-<li>A gating template is required to run the pre-gating via <em><a href="https://bioconductor.org/packages/3.21/openCyto" class="external-link">openCyto</a></em>
+<li>A gating template is required to run the pre-gating via <em><a href="https://bioconductor.org/packages/3.22/openCyto" class="external-link">openCyto</a></em>
 </li>
 <li>The package includes a gating template tailored for gating this
 panel of T-cell markers.</li>
@@ -219,7 +215,7 @@ gating:</p>
 <li>If saving at the same path with same name (i.e., rerunning the same
 code), the GatingSet folder from the
 <code><a href="https://rdrr.io/pkg/flowWorkspace/man/save_gs.html" class="external-link">flowWorkspace::save_gs()</a></code> command needs to be deleted for
-<em><a href="https://bioconductor.org/packages/3.21/openCyto" class="external-link">openCyto</a></em>
+<em><a href="https://bioconductor.org/packages/3.22/openCyto" class="external-link">openCyto</a></em>
 to save again, otherwise, will encounter an error related to an invalid
 path from the <code><a href="https://rdrr.io/pkg/flowWorkspace/man/save_gs.html" class="external-link">flowWorkspace::save_gs()</a></code> function</li>
 </ul>
@@ -231,7 +227,7 @@ path from the <code><a href="https://rdrr.io/pkg/flowWorkspace/man/save_gs.html"
 <div class="section level3">
 <h3 id="import-fcs">Import FCS<a class="anchor" aria-label="anchor" href="#import-fcs"></a>
 </h3>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Read in gating template</span></span>
 <span><span class="va">dtTemplate</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="va">gtFile</span><span class="op">)</span></span>
 <span></span>
@@ -266,7 +262,7 @@ path from the <code><a href="https://rdrr.io/pkg/flowWorkspace/man/save_gs.html"
 <div class="section level3">
 <h3 id="compensation">Compensation<a class="anchor" aria-label="anchor" href="#compensation"></a>
 </h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Apply comp</span></span>
 <span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getCompGS.html">getCompGS</a></span><span class="op">(</span><span class="va">gs</span>, path_comp_mat <span class="op">=</span> <span class="va">path_comp_mat</span><span class="op">)</span></span>
 <span></span>
@@ -301,7 +297,7 @@ with <code>extra negative decades = 0.5</code>,
 <p>The structure of the table of parameters (as .csv format) should be
 first column for the flurochrome names corresponding to the panel,
 followed by the parameters.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tbl_biexp_params</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">path_biexp_params</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/clean_names.html" class="external-link">clean_names</a></span><span class="op">(</span>case<span class="op">=</span><span class="st">"all_caps"</span><span class="op">)</span></span>
@@ -314,13 +310,13 @@ followed by the parameters.</p>
 all channels with the <code><a href="../reference/getBiexpTransformGS.html">getBiexpTransformGS()</a></code> function.
 However, the user may choose to create a transformation list explicitly
 if other transformations (e.g., archsin) are desired.</p>
-<p>Note that the <em><a href="https://bioconductor.org/packages/3.21/flowWorkspace" class="external-link">flowWorkspace</a></em>
+<p>Note that the <em><a href="https://bioconductor.org/packages/3.22/flowWorkspace" class="external-link">flowWorkspace</a></em>
 package also allows for an automated transformation calculation
 “guessing” appropriate parameters. We chose to explicitly specify the
 biexponential transformation with fixed parameters for all channels to
 match the manual gating strategy used in flowJo for a more direct
 comparison of {staRgate} to the manual gating results.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Save the pre-transformed data to compare ranges </span></span>
 <span><span class="co"># And check that transformation was applied</span></span>
 <span><span class="va">dat_pre_transform</span> <span class="op">&lt;-</span></span>
@@ -347,17 +343,17 @@ comparison of {staRgate} to the manual gating results.</p>
 <p>In this context, pre-gating is defined as gating from the root
 population up to CD3+, or CD4+/CD8+ subsets</p>
 <p>Then we will pass the data to the density gating step.</p>
-<p>The <em><a href="https://bioconductor.org/packages/3.21/flowAI" class="external-link">flowAI</a></em>
+<p>The <em><a href="https://bioconductor.org/packages/3.22/flowAI" class="external-link">flowAI</a></em>
 step serves as a quality control (QC) to match the first Time gate step
 that is typically done in manual gating. It is possible, however, that
-the user may choose to skip this step if <em><a href="https://bioconductor.org/packages/3.21/flowAI" class="external-link">flowAI</a></em>
+the user may choose to skip this step if <em><a href="https://bioconductor.org/packages/3.22/flowAI" class="external-link">flowAI</a></em>
 excludes too many cells.</p>
 <p>The first step of the gating template is a QC step that is especially
-important to include if the user chooses to exclude the <em><a href="https://bioconductor.org/packages/3.21/flowAI" class="external-link">flowAI</a></em>
+important to include if the user chooses to exclude the <em><a href="https://bioconductor.org/packages/3.22/flowAI" class="external-link">flowAI</a></em>
 step.</p>
-<p>In this tutorial, we will skip the <em><a href="https://bioconductor.org/packages/3.21/flowAI" class="external-link">flowAI</a></em>
+<p>In this tutorial, we will skip the <em><a href="https://bioconductor.org/packages/3.22/flowAI" class="external-link">flowAI</a></em>
 step.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Pre-gating up to CD4/8+ with `r BiocStyle::Biocpkg("openCyto")`</span></span>
 <span><span class="co">## Set seed using today's date</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -398,10 +394,10 @@ step.</p>
 <span><span class="co">#&gt; Population 'cd4+cd8+'</span></span>
 <span><span class="co">#&gt; done.</span></span>
 <span><span class="co">#&gt; finished.</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Check autoplot</span></span>
 <span><span class="fu">ggcyto</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">gs</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-9-1.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" width="768" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="extract-intensity-matrix">Extract intensity matrix<a class="anchor" aria-label="anchor" href="#extract-intensity-matrix"></a>
@@ -414,7 +410,7 @@ channel names as the marker names</li>
 used to rename the column names to the marker names, which will make
 calling the appropriate columns easier when analyzing the data</li>
 </ul>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Grab marker names from GatingSet for labeling col names in intensity matrix</span></span>
 <span><span class="co">## Can skip this step if you know the exact namings of the marker names in your FCS files</span></span>
 <span><span class="co"># In that case, supply a string is fine:</span></span>
@@ -445,7 +441,7 @@ calling the appropriate columns easier when analyzing the data</li>
 <span>                    <span class="st">"TBET"</span>, <span class="st">"KI67"</span>, <span class="st">"GZM_B"</span><span class="op">)</span></span></code></pre></div>
 <p>Next we grab the intensity values and indicators for the pre-gating
 steps.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract intensity matrix from GatingSet object</span></span>
 <span><span class="co">## Grab the intensity matrix from GatingSet</span></span>
 <span><span class="co">## the gh_pop_get_indices grabs the 0/1 for whether gated as CD3</span></span>
@@ -510,7 +506,7 @@ This mimics the isotype-based gating approach. Here we recommend using
 the 95th percentile of the CD3- distributions.</p>
 <p>To ensure we only capture the CD3- cells, we first filter to the live
 cells then to <code>cd3_pos == 0</code></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gates_pseudo_neg</span> <span class="op">=</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">intensity_dat</span>, <span class="va">live</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">CD127</span>, <span class="va">CD28</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -543,7 +539,7 @@ pooling samples together.</li>
 </ul>
 <p>For illustration purposes, we will only apply density gating on a few
 markers.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Density gating parameters</span></span>
 <span><span class="va">peak_r</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
 <span><span class="va">bin_i</span> <span class="op">&lt;-</span> <span class="fl">40</span></span>
@@ -556,7 +552,7 @@ markers.</p>
 <span><span class="co"># Read in positive peak thresholds</span></span>
 <span><span class="va">pos_thres</span> <span class="op">&lt;-</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">path_pos_peak_thresholds</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/clean_names.html" class="external-link">clean_names</a></span><span class="op">(</span>case <span class="op">=</span> <span class="st">"all_caps"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Show the exact output from the get_density_gates() function</span></span>
 <span><span class="va">dens_gates_pre</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">intensity_dat</span>, <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -594,7 +590,9 @@ markers.</p>
 <span></span>
 <span><span class="co"># get indicator col</span></span>
 <span><span class="va">example_intensity_gated</span> <span class="op">&lt;-</span></span>
-<span>  <span class="fu"><a href="../reference/getGatedDat.html">getGatedDat</a></span><span class="op">(</span><span class="va">intensity_dat</span>,</span>
+<span>  <span class="fu"><a href="../reference/getGatedDat.html">getGatedDat</a></span><span class="op">(</span></span>
+<span>    <span class="co"># Only gate T-cells, which are CD3+ </span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">intensity_dat</span>, <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>    subset_col <span class="op">=</span> <span class="st">"cd4_pos_cd8_pos"</span>,</span>
 <span>    cutoffs <span class="op">=</span> <span class="va">dens_gates</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
@@ -607,7 +605,7 @@ gates<a class="anchor" aria-label="anchor" href="#visualizing-the-gates"></a>
 <div class="section level4">
 <h4 class="unlisted unnumbered" id="lag3-for-all-cd3">LAG3 for all CD3+<a class="anchor" aria-label="anchor" href="#lag3-for-all-cd3"></a>
 </h4>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot the gate for visual</span></span>
 <span><span class="va">intensity_dat</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -623,12 +621,12 @@ gates<a class="anchor" aria-label="anchor" href="#visualizing-the-gates"></a>
 <span>    linetype <span class="op">=</span> <span class="st">"dashed"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of LAG3 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-15-1.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" width="768" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 class="unlisted unnumbered" id="lag3-by-cd4-and-cd8-subsets">LAG3 by CD4 and CD8 subsets<a class="anchor" aria-label="anchor" href="#lag3-by-cd4-and-cd8-subsets"></a>
 </h4>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># If by CD4/CD8,</span></span>
 <span><span class="va">intensity_dat</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -645,12 +643,12 @@ gates<a class="anchor" aria-label="anchor" href="#visualizing-the-gates"></a>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of LAG3 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">cd4_pos_cd8_pos</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-16-1.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" width="768" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 class="unlisted unnumbered" id="ccr7-for-all-cd3">CCR7 for all CD3+<a class="anchor" aria-label="anchor" href="#ccr7-for-all-cd3"></a>
 </h4>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># For CCR7</span></span>
 <span><span class="va">intensity_dat</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -666,12 +664,12 @@ gates<a class="anchor" aria-label="anchor" href="#visualizing-the-gates"></a>
 <span>    linetype <span class="op">=</span> <span class="st">"dashed"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CCR7 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-17-1.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" width="768" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 class="unlisted unnumbered" id="ccr7-by-cd4-and-cd8-subsets">CCR7 by CD4 and CD8 subsets<a class="anchor" aria-label="anchor" href="#ccr7-by-cd4-and-cd8-subsets"></a>
 </h4>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># If by CD4/CD8,</span></span>
 <span><span class="va">intensity_dat</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -688,12 +686,12 @@ gates<a class="anchor" aria-label="anchor" href="#visualizing-the-gates"></a>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CCR7 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">cd4_pos_cd8_pos</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-18-1.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-17-1.png" class="r-plt" width="768" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 class="unlisted unnumbered" id="cd45ra-for-all-cd3">CD45RA for all CD3+<a class="anchor" aria-label="anchor" href="#cd45ra-for-all-cd3"></a>
 </h4>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># For CD45RA</span></span>
 <span><span class="va">intensity_dat</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -709,12 +707,12 @@ gates<a class="anchor" aria-label="anchor" href="#visualizing-the-gates"></a>
 <span>    linetype <span class="op">=</span> <span class="st">"dashed"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CD45RA intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-19-1.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-18-1.png" class="r-plt" width="768" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 class="unlisted unnumbered" id="cd45ra-by-cd4-and-cd8-subsets">CD45RA by CD4 and CD8 subsets<a class="anchor" aria-label="anchor" href="#cd45ra-by-cd4-and-cd8-subsets"></a>
 </h4>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># If by CD4/CD8,</span></span>
 <span><span class="va">intensity_dat</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -731,12 +729,12 @@ gates<a class="anchor" aria-label="anchor" href="#visualizing-the-gates"></a>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CD45RA intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">cd4_pos_cd8_pos</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-20-1.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-19-1.png" class="r-plt" width="768" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 class="unlisted unnumbered" id="cd127-for-all-cd3">CD127 for all CD3+<a class="anchor" aria-label="anchor" href="#cd127-for-all-cd3"></a>
 </h4>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># For CD127</span></span>
 <span><span class="va">intensity_dat</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -752,12 +750,12 @@ gates<a class="anchor" aria-label="anchor" href="#visualizing-the-gates"></a>
 <span>    linetype <span class="op">=</span> <span class="st">"dashed"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CD127 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-21-1.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-20-1.png" class="r-plt" width="768" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 class="unlisted unnumbered" id="cd127-by-cd4-and-cd8-subsets">CD127 by CD4 and CD8 subsets<a class="anchor" aria-label="anchor" href="#cd127-by-cd4-and-cd8-subsets"></a>
 </h4>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># If by CD4/CD8,</span></span>
 <span><span class="va">intensity_dat</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -774,12 +772,12 @@ gates<a class="anchor" aria-label="anchor" href="#visualizing-the-gates"></a>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CD127 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">cd4_pos_cd8_pos</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-22-1.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-21-1.png" class="r-plt" width="768" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 class="unlisted unnumbered" id="cd28-for-all-cd3">CD28 for all CD3+<a class="anchor" aria-label="anchor" href="#cd28-for-all-cd3"></a>
 </h4>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># For CD28</span></span>
 <span><span class="va">intensity_dat</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -795,12 +793,12 @@ gates<a class="anchor" aria-label="anchor" href="#visualizing-the-gates"></a>
 <span>    linetype <span class="op">=</span> <span class="st">"dashed"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CD28 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-23-1.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-22-1.png" class="r-plt" width="768" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 class="unlisted unnumbered" id="cd28-by-cd4-and-cd8-subsets">CD28 by CD4 and CD8 subsets<a class="anchor" aria-label="anchor" href="#cd28-by-cd4-and-cd8-subsets"></a>
 </h4>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># If by CD4/CD8,</span></span>
 <span><span class="va">intensity_dat</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -817,7 +815,7 @@ gates<a class="anchor" aria-label="anchor" href="#visualizing-the-gates"></a>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CD28 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">cd4_pos_cd8_pos</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-24-1.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-23-1.png" class="r-plt" width="768" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level3">
@@ -859,23 +857,23 @@ denominator?</li>
 </ul>
 <details><summary>
 Currently, we support the four scenarios listed:
-</summary><div id="ydugwqpatx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ydugwqpatx table {
+</summary><div id="wtmtheesmh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#wtmtheesmh table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ydugwqpatx thead, #ydugwqpatx tbody, #ydugwqpatx tfoot, #ydugwqpatx tr, #ydugwqpatx td, #ydugwqpatx th {
+#wtmtheesmh thead, #wtmtheesmh tbody, #wtmtheesmh tfoot, #wtmtheesmh tr, #wtmtheesmh td, #wtmtheesmh th {
   border-style: none;
 }
 
-#ydugwqpatx p {
+#wtmtheesmh p {
   margin: 0;
   padding: 0;
 }
 
-#ydugwqpatx .gt_table {
+#wtmtheesmh .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -901,12 +899,12 @@ Currently, we support the four scenarios listed:
   border-left-color: #D3D3D3;
 }
 
-#ydugwqpatx .gt_caption {
+#wtmtheesmh .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ydugwqpatx .gt_title {
+#wtmtheesmh .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -918,7 +916,7 @@ Currently, we support the four scenarios listed:
   border-bottom-width: 0;
 }
 
-#ydugwqpatx .gt_subtitle {
+#wtmtheesmh .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -930,7 +928,7 @@ Currently, we support the four scenarios listed:
   border-top-width: 0;
 }
 
-#ydugwqpatx .gt_heading {
+#wtmtheesmh .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -942,13 +940,13 @@ Currently, we support the four scenarios listed:
   border-right-color: #D3D3D3;
 }
 
-#ydugwqpatx .gt_bottom_border {
+#wtmtheesmh .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ydugwqpatx .gt_col_headings {
+#wtmtheesmh .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -963,7 +961,7 @@ Currently, we support the four scenarios listed:
   border-right-color: #D3D3D3;
 }
 
-#ydugwqpatx .gt_col_heading {
+#wtmtheesmh .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -983,7 +981,7 @@ Currently, we support the four scenarios listed:
   overflow-x: hidden;
 }
 
-#ydugwqpatx .gt_column_spanner_outer {
+#wtmtheesmh .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -995,15 +993,15 @@ Currently, we support the four scenarios listed:
   padding-right: 4px;
 }
 
-#ydugwqpatx .gt_column_spanner_outer:first-child {
+#wtmtheesmh .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ydugwqpatx .gt_column_spanner_outer:last-child {
+#wtmtheesmh .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ydugwqpatx .gt_column_spanner {
+#wtmtheesmh .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1015,11 +1013,11 @@ Currently, we support the four scenarios listed:
   width: 100%;
 }
 
-#ydugwqpatx .gt_spanner_row {
+#wtmtheesmh .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ydugwqpatx .gt_group_heading {
+#wtmtheesmh .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1045,7 +1043,7 @@ Currently, we support the four scenarios listed:
   text-align: left;
 }
 
-#ydugwqpatx .gt_empty_group_heading {
+#wtmtheesmh .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1060,15 +1058,15 @@ Currently, we support the four scenarios listed:
   vertical-align: middle;
 }
 
-#ydugwqpatx .gt_from_md > :first-child {
+#wtmtheesmh .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ydugwqpatx .gt_from_md > :last-child {
+#wtmtheesmh .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ydugwqpatx .gt_row {
+#wtmtheesmh .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1087,7 +1085,7 @@ Currently, we support the four scenarios listed:
   overflow-x: hidden;
 }
 
-#ydugwqpatx .gt_stub {
+#wtmtheesmh .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1100,7 +1098,7 @@ Currently, we support the four scenarios listed:
   padding-right: 5px;
 }
 
-#ydugwqpatx .gt_stub_row_group {
+#wtmtheesmh .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1114,15 +1112,15 @@ Currently, we support the four scenarios listed:
   vertical-align: top;
 }
 
-#ydugwqpatx .gt_row_group_first td {
+#wtmtheesmh .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ydugwqpatx .gt_row_group_first th {
+#wtmtheesmh .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ydugwqpatx .gt_summary_row {
+#wtmtheesmh .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1132,16 +1130,16 @@ Currently, we support the four scenarios listed:
   padding-right: 5px;
 }
 
-#ydugwqpatx .gt_first_summary_row {
+#wtmtheesmh .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ydugwqpatx .gt_first_summary_row.thick {
+#wtmtheesmh .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ydugwqpatx .gt_last_summary_row {
+#wtmtheesmh .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1151,7 +1149,7 @@ Currently, we support the four scenarios listed:
   border-bottom-color: #D3D3D3;
 }
 
-#ydugwqpatx .gt_grand_summary_row {
+#wtmtheesmh .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1161,7 +1159,7 @@ Currently, we support the four scenarios listed:
   padding-right: 5px;
 }
 
-#ydugwqpatx .gt_first_grand_summary_row {
+#wtmtheesmh .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1171,7 +1169,7 @@ Currently, we support the four scenarios listed:
   border-top-color: #D3D3D3;
 }
 
-#ydugwqpatx .gt_last_grand_summary_row_top {
+#wtmtheesmh .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1181,11 +1179,11 @@ Currently, we support the four scenarios listed:
   border-bottom-color: #D3D3D3;
 }
 
-#ydugwqpatx .gt_striped {
+#wtmtheesmh .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ydugwqpatx .gt_table_body {
+#wtmtheesmh .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1194,7 +1192,7 @@ Currently, we support the four scenarios listed:
   border-bottom-color: #D3D3D3;
 }
 
-#ydugwqpatx .gt_footnotes {
+#wtmtheesmh .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1208,7 +1206,7 @@ Currently, we support the four scenarios listed:
   border-right-color: #D3D3D3;
 }
 
-#ydugwqpatx .gt_footnote {
+#wtmtheesmh .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1217,7 +1215,7 @@ Currently, we support the four scenarios listed:
   padding-right: 5px;
 }
 
-#ydugwqpatx .gt_sourcenotes {
+#wtmtheesmh .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1231,7 +1229,7 @@ Currently, we support the four scenarios listed:
   border-right-color: #D3D3D3;
 }
 
-#ydugwqpatx .gt_sourcenote {
+#wtmtheesmh .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1239,72 +1237,72 @@ Currently, we support the four scenarios listed:
   padding-right: 5px;
 }
 
-#ydugwqpatx .gt_left {
+#wtmtheesmh .gt_left {
   text-align: left;
 }
 
-#ydugwqpatx .gt_center {
+#wtmtheesmh .gt_center {
   text-align: center;
 }
 
-#ydugwqpatx .gt_right {
+#wtmtheesmh .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ydugwqpatx .gt_font_normal {
+#wtmtheesmh .gt_font_normal {
   font-weight: normal;
 }
 
-#ydugwqpatx .gt_font_bold {
+#wtmtheesmh .gt_font_bold {
   font-weight: bold;
 }
 
-#ydugwqpatx .gt_font_italic {
+#wtmtheesmh .gt_font_italic {
   font-style: italic;
 }
 
-#ydugwqpatx .gt_super {
+#wtmtheesmh .gt_super {
   font-size: 65%;
 }
 
-#ydugwqpatx .gt_footnote_marks {
+#wtmtheesmh .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ydugwqpatx .gt_asterisk {
+#wtmtheesmh .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ydugwqpatx .gt_indent_1 {
+#wtmtheesmh .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ydugwqpatx .gt_indent_2 {
+#wtmtheesmh .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ydugwqpatx .gt_indent_3 {
+#wtmtheesmh .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ydugwqpatx .gt_indent_4 {
+#wtmtheesmh .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ydugwqpatx .gt_indent_5 {
+#wtmtheesmh .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ydugwqpatx .katex-display {
+#wtmtheesmh .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ydugwqpatx div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#wtmtheesmh div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1448,7 +1446,7 @@ to illustrate the columns we get for the <code>_POS</code> and
 Expand example for <code>expand_num = FALSE</code> and
 <code>expand_denom = FALSE</code>, and
 <code>keep_indicators = TRUE</code>
-</summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+</summary><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc1</span> <span class="op">&lt;-</span></span>
 <span>  <span class="co"># Should only count the CD3+ cells</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">example_intensity_gated</span>, <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -1477,23 +1475,23 @@ Expand example for <code>expand_num = FALSE</code> and
 <span>    columns <span class="op">=</span> <span class="st">"perc"</span>,</span>
 <span>    decimals <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div id="cnbxsgbgdk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#cnbxsgbgdk table {
+<div id="xyyujpfqot" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#xyyujpfqot table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#cnbxsgbgdk thead, #cnbxsgbgdk tbody, #cnbxsgbgdk tfoot, #cnbxsgbgdk tr, #cnbxsgbgdk td, #cnbxsgbgdk th {
+#xyyujpfqot thead, #xyyujpfqot tbody, #xyyujpfqot tfoot, #xyyujpfqot tr, #xyyujpfqot td, #xyyujpfqot th {
   border-style: none;
 }
 
-#cnbxsgbgdk p {
+#xyyujpfqot p {
   margin: 0;
   padding: 0;
 }
 
-#cnbxsgbgdk .gt_table {
+#xyyujpfqot .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1519,12 +1517,12 @@ Expand example for <code>expand_num = FALSE</code> and
   border-left-color: #D3D3D3;
 }
 
-#cnbxsgbgdk .gt_caption {
+#xyyujpfqot .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#cnbxsgbgdk .gt_title {
+#xyyujpfqot .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1536,7 +1534,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-width: 0;
 }
 
-#cnbxsgbgdk .gt_subtitle {
+#xyyujpfqot .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1548,7 +1546,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-top-width: 0;
 }
 
-#cnbxsgbgdk .gt_heading {
+#xyyujpfqot .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1560,13 +1558,13 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#cnbxsgbgdk .gt_bottom_border {
+#xyyujpfqot .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#cnbxsgbgdk .gt_col_headings {
+#xyyujpfqot .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1581,7 +1579,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#cnbxsgbgdk .gt_col_heading {
+#xyyujpfqot .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1601,7 +1599,7 @@ Expand example for <code>expand_num = FALSE</code> and
   overflow-x: hidden;
 }
 
-#cnbxsgbgdk .gt_column_spanner_outer {
+#xyyujpfqot .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1613,15 +1611,15 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 4px;
 }
 
-#cnbxsgbgdk .gt_column_spanner_outer:first-child {
+#xyyujpfqot .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#cnbxsgbgdk .gt_column_spanner_outer:last-child {
+#xyyujpfqot .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#cnbxsgbgdk .gt_column_spanner {
+#xyyujpfqot .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1633,11 +1631,11 @@ Expand example for <code>expand_num = FALSE</code> and
   width: 100%;
 }
 
-#cnbxsgbgdk .gt_spanner_row {
+#xyyujpfqot .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#cnbxsgbgdk .gt_group_heading {
+#xyyujpfqot .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1663,7 +1661,7 @@ Expand example for <code>expand_num = FALSE</code> and
   text-align: left;
 }
 
-#cnbxsgbgdk .gt_empty_group_heading {
+#xyyujpfqot .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1678,15 +1676,15 @@ Expand example for <code>expand_num = FALSE</code> and
   vertical-align: middle;
 }
 
-#cnbxsgbgdk .gt_from_md > :first-child {
+#xyyujpfqot .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#cnbxsgbgdk .gt_from_md > :last-child {
+#xyyujpfqot .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#cnbxsgbgdk .gt_row {
+#xyyujpfqot .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1705,7 +1703,7 @@ Expand example for <code>expand_num = FALSE</code> and
   overflow-x: hidden;
 }
 
-#cnbxsgbgdk .gt_stub {
+#xyyujpfqot .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1718,7 +1716,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#cnbxsgbgdk .gt_stub_row_group {
+#xyyujpfqot .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1732,15 +1730,15 @@ Expand example for <code>expand_num = FALSE</code> and
   vertical-align: top;
 }
 
-#cnbxsgbgdk .gt_row_group_first td {
+#xyyujpfqot .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#cnbxsgbgdk .gt_row_group_first th {
+#xyyujpfqot .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#cnbxsgbgdk .gt_summary_row {
+#xyyujpfqot .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1750,16 +1748,16 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#cnbxsgbgdk .gt_first_summary_row {
+#xyyujpfqot .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#cnbxsgbgdk .gt_first_summary_row.thick {
+#xyyujpfqot .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#cnbxsgbgdk .gt_last_summary_row {
+#xyyujpfqot .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1769,7 +1767,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#cnbxsgbgdk .gt_grand_summary_row {
+#xyyujpfqot .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1779,7 +1777,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#cnbxsgbgdk .gt_first_grand_summary_row {
+#xyyujpfqot .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1789,7 +1787,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-top-color: #D3D3D3;
 }
 
-#cnbxsgbgdk .gt_last_grand_summary_row_top {
+#xyyujpfqot .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1799,11 +1797,11 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#cnbxsgbgdk .gt_striped {
+#xyyujpfqot .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#cnbxsgbgdk .gt_table_body {
+#xyyujpfqot .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1812,7 +1810,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#cnbxsgbgdk .gt_footnotes {
+#xyyujpfqot .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1826,7 +1824,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#cnbxsgbgdk .gt_footnote {
+#xyyujpfqot .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1835,7 +1833,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#cnbxsgbgdk .gt_sourcenotes {
+#xyyujpfqot .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1849,7 +1847,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#cnbxsgbgdk .gt_sourcenote {
+#xyyujpfqot .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1857,72 +1855,72 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#cnbxsgbgdk .gt_left {
+#xyyujpfqot .gt_left {
   text-align: left;
 }
 
-#cnbxsgbgdk .gt_center {
+#xyyujpfqot .gt_center {
   text-align: center;
 }
 
-#cnbxsgbgdk .gt_right {
+#xyyujpfqot .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#cnbxsgbgdk .gt_font_normal {
+#xyyujpfqot .gt_font_normal {
   font-weight: normal;
 }
 
-#cnbxsgbgdk .gt_font_bold {
+#xyyujpfqot .gt_font_bold {
   font-weight: bold;
 }
 
-#cnbxsgbgdk .gt_font_italic {
+#xyyujpfqot .gt_font_italic {
   font-style: italic;
 }
 
-#cnbxsgbgdk .gt_super {
+#xyyujpfqot .gt_super {
   font-size: 65%;
 }
 
-#cnbxsgbgdk .gt_footnote_marks {
+#xyyujpfqot .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#cnbxsgbgdk .gt_asterisk {
+#xyyujpfqot .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#cnbxsgbgdk .gt_indent_1 {
+#xyyujpfqot .gt_indent_1 {
   text-indent: 5px;
 }
 
-#cnbxsgbgdk .gt_indent_2 {
+#xyyujpfqot .gt_indent_2 {
   text-indent: 10px;
 }
 
-#cnbxsgbgdk .gt_indent_3 {
+#xyyujpfqot .gt_indent_3 {
   text-indent: 15px;
 }
 
-#cnbxsgbgdk .gt_indent_4 {
+#xyyujpfqot .gt_indent_4 {
   text-indent: 20px;
 }
 
-#cnbxsgbgdk .gt_indent_5 {
+#xyyujpfqot .gt_indent_5 {
   text-indent: 25px;
 }
 
-#cnbxsgbgdk .katex-display {
+#xyyujpfqot .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#cnbxsgbgdk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#xyyujpfqot div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2222,7 +2220,7 @@ Expand example for <code>expand_num = FALSE</code> and
 Expand example for <code>expand_num = TRUE</code> and
 <code>expand_denom = FALSE</code>, and
 <code>keep_indicators = FALSE</code>
-</summary><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+</summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc2</span> <span class="op">&lt;-</span></span>
 <span>  <span class="co"># Should only count the CD3+ cells</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">example_intensity_gated</span>, <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -2251,23 +2249,23 @@ Expand example for <code>expand_num = TRUE</code> and
 <span>    columns <span class="op">=</span> <span class="st">"perc"</span>,</span>
 <span>    decimals <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div id="ydbvegvbpf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ydbvegvbpf table {
+<div id="jzbznohspy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#jzbznohspy table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ydbvegvbpf thead, #ydbvegvbpf tbody, #ydbvegvbpf tfoot, #ydbvegvbpf tr, #ydbvegvbpf td, #ydbvegvbpf th {
+#jzbznohspy thead, #jzbznohspy tbody, #jzbznohspy tfoot, #jzbznohspy tr, #jzbznohspy td, #jzbznohspy th {
   border-style: none;
 }
 
-#ydbvegvbpf p {
+#jzbznohspy p {
   margin: 0;
   padding: 0;
 }
 
-#ydbvegvbpf .gt_table {
+#jzbznohspy .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2293,12 +2291,12 @@ Expand example for <code>expand_num = TRUE</code> and
   border-left-color: #D3D3D3;
 }
 
-#ydbvegvbpf .gt_caption {
+#jzbznohspy .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ydbvegvbpf .gt_title {
+#jzbznohspy .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2310,7 +2308,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-width: 0;
 }
 
-#ydbvegvbpf .gt_subtitle {
+#jzbznohspy .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2322,7 +2320,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-top-width: 0;
 }
 
-#ydbvegvbpf .gt_heading {
+#jzbznohspy .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2334,13 +2332,13 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#ydbvegvbpf .gt_bottom_border {
+#jzbznohspy .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ydbvegvbpf .gt_col_headings {
+#jzbznohspy .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2355,7 +2353,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#ydbvegvbpf .gt_col_heading {
+#jzbznohspy .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2375,7 +2373,7 @@ Expand example for <code>expand_num = TRUE</code> and
   overflow-x: hidden;
 }
 
-#ydbvegvbpf .gt_column_spanner_outer {
+#jzbznohspy .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2387,15 +2385,15 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 4px;
 }
 
-#ydbvegvbpf .gt_column_spanner_outer:first-child {
+#jzbznohspy .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ydbvegvbpf .gt_column_spanner_outer:last-child {
+#jzbznohspy .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ydbvegvbpf .gt_column_spanner {
+#jzbznohspy .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2407,11 +2405,11 @@ Expand example for <code>expand_num = TRUE</code> and
   width: 100%;
 }
 
-#ydbvegvbpf .gt_spanner_row {
+#jzbznohspy .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ydbvegvbpf .gt_group_heading {
+#jzbznohspy .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2437,7 +2435,7 @@ Expand example for <code>expand_num = TRUE</code> and
   text-align: left;
 }
 
-#ydbvegvbpf .gt_empty_group_heading {
+#jzbznohspy .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2452,15 +2450,15 @@ Expand example for <code>expand_num = TRUE</code> and
   vertical-align: middle;
 }
 
-#ydbvegvbpf .gt_from_md > :first-child {
+#jzbznohspy .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ydbvegvbpf .gt_from_md > :last-child {
+#jzbznohspy .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ydbvegvbpf .gt_row {
+#jzbznohspy .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2479,7 +2477,7 @@ Expand example for <code>expand_num = TRUE</code> and
   overflow-x: hidden;
 }
 
-#ydbvegvbpf .gt_stub {
+#jzbznohspy .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2492,7 +2490,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#ydbvegvbpf .gt_stub_row_group {
+#jzbznohspy .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2506,15 +2504,15 @@ Expand example for <code>expand_num = TRUE</code> and
   vertical-align: top;
 }
 
-#ydbvegvbpf .gt_row_group_first td {
+#jzbznohspy .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ydbvegvbpf .gt_row_group_first th {
+#jzbznohspy .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ydbvegvbpf .gt_summary_row {
+#jzbznohspy .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2524,16 +2522,16 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#ydbvegvbpf .gt_first_summary_row {
+#jzbznohspy .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ydbvegvbpf .gt_first_summary_row.thick {
+#jzbznohspy .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ydbvegvbpf .gt_last_summary_row {
+#jzbznohspy .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2543,7 +2541,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#ydbvegvbpf .gt_grand_summary_row {
+#jzbznohspy .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2553,7 +2551,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#ydbvegvbpf .gt_first_grand_summary_row {
+#jzbznohspy .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2563,7 +2561,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-top-color: #D3D3D3;
 }
 
-#ydbvegvbpf .gt_last_grand_summary_row_top {
+#jzbznohspy .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2573,11 +2571,11 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#ydbvegvbpf .gt_striped {
+#jzbznohspy .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ydbvegvbpf .gt_table_body {
+#jzbznohspy .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2586,7 +2584,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#ydbvegvbpf .gt_footnotes {
+#jzbznohspy .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2600,7 +2598,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#ydbvegvbpf .gt_footnote {
+#jzbznohspy .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2609,7 +2607,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#ydbvegvbpf .gt_sourcenotes {
+#jzbznohspy .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2623,7 +2621,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#ydbvegvbpf .gt_sourcenote {
+#jzbznohspy .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2631,72 +2629,72 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#ydbvegvbpf .gt_left {
+#jzbznohspy .gt_left {
   text-align: left;
 }
 
-#ydbvegvbpf .gt_center {
+#jzbznohspy .gt_center {
   text-align: center;
 }
 
-#ydbvegvbpf .gt_right {
+#jzbznohspy .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ydbvegvbpf .gt_font_normal {
+#jzbznohspy .gt_font_normal {
   font-weight: normal;
 }
 
-#ydbvegvbpf .gt_font_bold {
+#jzbznohspy .gt_font_bold {
   font-weight: bold;
 }
 
-#ydbvegvbpf .gt_font_italic {
+#jzbznohspy .gt_font_italic {
   font-style: italic;
 }
 
-#ydbvegvbpf .gt_super {
+#jzbznohspy .gt_super {
   font-size: 65%;
 }
 
-#ydbvegvbpf .gt_footnote_marks {
+#jzbznohspy .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ydbvegvbpf .gt_asterisk {
+#jzbznohspy .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ydbvegvbpf .gt_indent_1 {
+#jzbznohspy .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ydbvegvbpf .gt_indent_2 {
+#jzbznohspy .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ydbvegvbpf .gt_indent_3 {
+#jzbznohspy .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ydbvegvbpf .gt_indent_4 {
+#jzbznohspy .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ydbvegvbpf .gt_indent_5 {
+#jzbznohspy .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ydbvegvbpf .katex-display {
+#jzbznohspy .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ydbvegvbpf div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#jzbznohspy div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -3159,7 +3157,7 @@ Expand example for <code>expand_num = TRUE</code> and
 Expand example for <code>expand_num = FALSE</code> and
 <code>expand_denom = TRUE</code>, and
 <code>keep_indicators = FALSE</code>
-</summary><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+</summary><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc3</span> <span class="op">&lt;-</span></span>
 <span>  <span class="co"># Should only count the CD3+ cells</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">example_intensity_gated</span>, <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3188,23 +3186,23 @@ Expand example for <code>expand_num = FALSE</code> and
 <span>    columns <span class="op">=</span> <span class="st">"perc"</span>,</span>
 <span>    decimals <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div id="wfglzheeax" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#wfglzheeax table {
+<div id="wssrgulpie" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#wssrgulpie table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#wfglzheeax thead, #wfglzheeax tbody, #wfglzheeax tfoot, #wfglzheeax tr, #wfglzheeax td, #wfglzheeax th {
+#wssrgulpie thead, #wssrgulpie tbody, #wssrgulpie tfoot, #wssrgulpie tr, #wssrgulpie td, #wssrgulpie th {
   border-style: none;
 }
 
-#wfglzheeax p {
+#wssrgulpie p {
   margin: 0;
   padding: 0;
 }
 
-#wfglzheeax .gt_table {
+#wssrgulpie .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3230,12 +3228,12 @@ Expand example for <code>expand_num = FALSE</code> and
   border-left-color: #D3D3D3;
 }
 
-#wfglzheeax .gt_caption {
+#wssrgulpie .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#wfglzheeax .gt_title {
+#wssrgulpie .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3247,7 +3245,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-width: 0;
 }
 
-#wfglzheeax .gt_subtitle {
+#wssrgulpie .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3259,7 +3257,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-top-width: 0;
 }
 
-#wfglzheeax .gt_heading {
+#wssrgulpie .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3271,13 +3269,13 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#wfglzheeax .gt_bottom_border {
+#wssrgulpie .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#wfglzheeax .gt_col_headings {
+#wssrgulpie .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3292,7 +3290,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#wfglzheeax .gt_col_heading {
+#wssrgulpie .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3312,7 +3310,7 @@ Expand example for <code>expand_num = FALSE</code> and
   overflow-x: hidden;
 }
 
-#wfglzheeax .gt_column_spanner_outer {
+#wssrgulpie .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3324,15 +3322,15 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 4px;
 }
 
-#wfglzheeax .gt_column_spanner_outer:first-child {
+#wssrgulpie .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#wfglzheeax .gt_column_spanner_outer:last-child {
+#wssrgulpie .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#wfglzheeax .gt_column_spanner {
+#wssrgulpie .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3344,11 +3342,11 @@ Expand example for <code>expand_num = FALSE</code> and
   width: 100%;
 }
 
-#wfglzheeax .gt_spanner_row {
+#wssrgulpie .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#wfglzheeax .gt_group_heading {
+#wssrgulpie .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3374,7 +3372,7 @@ Expand example for <code>expand_num = FALSE</code> and
   text-align: left;
 }
 
-#wfglzheeax .gt_empty_group_heading {
+#wssrgulpie .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3389,15 +3387,15 @@ Expand example for <code>expand_num = FALSE</code> and
   vertical-align: middle;
 }
 
-#wfglzheeax .gt_from_md > :first-child {
+#wssrgulpie .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#wfglzheeax .gt_from_md > :last-child {
+#wssrgulpie .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#wfglzheeax .gt_row {
+#wssrgulpie .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3416,7 +3414,7 @@ Expand example for <code>expand_num = FALSE</code> and
   overflow-x: hidden;
 }
 
-#wfglzheeax .gt_stub {
+#wssrgulpie .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3429,7 +3427,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#wfglzheeax .gt_stub_row_group {
+#wssrgulpie .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3443,15 +3441,15 @@ Expand example for <code>expand_num = FALSE</code> and
   vertical-align: top;
 }
 
-#wfglzheeax .gt_row_group_first td {
+#wssrgulpie .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#wfglzheeax .gt_row_group_first th {
+#wssrgulpie .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#wfglzheeax .gt_summary_row {
+#wssrgulpie .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3461,16 +3459,16 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#wfglzheeax .gt_first_summary_row {
+#wssrgulpie .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#wfglzheeax .gt_first_summary_row.thick {
+#wssrgulpie .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#wfglzheeax .gt_last_summary_row {
+#wssrgulpie .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3480,7 +3478,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#wfglzheeax .gt_grand_summary_row {
+#wssrgulpie .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3490,7 +3488,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#wfglzheeax .gt_first_grand_summary_row {
+#wssrgulpie .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3500,7 +3498,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-top-color: #D3D3D3;
 }
 
-#wfglzheeax .gt_last_grand_summary_row_top {
+#wssrgulpie .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3510,11 +3508,11 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#wfglzheeax .gt_striped {
+#wssrgulpie .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#wfglzheeax .gt_table_body {
+#wssrgulpie .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3523,7 +3521,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#wfglzheeax .gt_footnotes {
+#wssrgulpie .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3537,7 +3535,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#wfglzheeax .gt_footnote {
+#wssrgulpie .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3546,7 +3544,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#wfglzheeax .gt_sourcenotes {
+#wssrgulpie .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3560,7 +3558,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#wfglzheeax .gt_sourcenote {
+#wssrgulpie .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3568,72 +3566,72 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#wfglzheeax .gt_left {
+#wssrgulpie .gt_left {
   text-align: left;
 }
 
-#wfglzheeax .gt_center {
+#wssrgulpie .gt_center {
   text-align: center;
 }
 
-#wfglzheeax .gt_right {
+#wssrgulpie .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#wfglzheeax .gt_font_normal {
+#wssrgulpie .gt_font_normal {
   font-weight: normal;
 }
 
-#wfglzheeax .gt_font_bold {
+#wssrgulpie .gt_font_bold {
   font-weight: bold;
 }
 
-#wfglzheeax .gt_font_italic {
+#wssrgulpie .gt_font_italic {
   font-style: italic;
 }
 
-#wfglzheeax .gt_super {
+#wssrgulpie .gt_super {
   font-size: 65%;
 }
 
-#wfglzheeax .gt_footnote_marks {
+#wssrgulpie .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#wfglzheeax .gt_asterisk {
+#wssrgulpie .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#wfglzheeax .gt_indent_1 {
+#wssrgulpie .gt_indent_1 {
   text-indent: 5px;
 }
 
-#wfglzheeax .gt_indent_2 {
+#wssrgulpie .gt_indent_2 {
   text-indent: 10px;
 }
 
-#wfglzheeax .gt_indent_3 {
+#wssrgulpie .gt_indent_3 {
   text-indent: 15px;
 }
 
-#wfglzheeax .gt_indent_4 {
+#wssrgulpie .gt_indent_4 {
   text-indent: 20px;
 }
 
-#wfglzheeax .gt_indent_5 {
+#wssrgulpie .gt_indent_5 {
   text-indent: 25px;
 }
 
-#wfglzheeax .katex-display {
+#wssrgulpie .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#wfglzheeax div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#wssrgulpie div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -4456,7 +4454,7 @@ Expand example for <code>expand_num = FALSE</code> and
 Expand example for <code>expand_num = TRUE</code> and
 <code>expand_denom = TRUE</code> , and
 <code>keep_indicators = FALSE</code>
-</summary><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+</summary><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_perc4</span> <span class="op">&lt;-</span></span>
 <span>  <span class="co"># Should only count the CD3+ cells</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">example_intensity_gated</span>, <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -4485,23 +4483,23 @@ Expand example for <code>expand_num = TRUE</code> and
 <span>    columns <span class="op">=</span> <span class="st">"perc"</span>,</span>
 <span>    decimals <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div id="nzqhwzqmsr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#nzqhwzqmsr table {
+<div id="cmxpyjutft" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#cmxpyjutft table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#nzqhwzqmsr thead, #nzqhwzqmsr tbody, #nzqhwzqmsr tfoot, #nzqhwzqmsr tr, #nzqhwzqmsr td, #nzqhwzqmsr th {
+#cmxpyjutft thead, #cmxpyjutft tbody, #cmxpyjutft tfoot, #cmxpyjutft tr, #cmxpyjutft td, #cmxpyjutft th {
   border-style: none;
 }
 
-#nzqhwzqmsr p {
+#cmxpyjutft p {
   margin: 0;
   padding: 0;
 }
 
-#nzqhwzqmsr .gt_table {
+#cmxpyjutft .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -4527,12 +4525,12 @@ Expand example for <code>expand_num = TRUE</code> and
   border-left-color: #D3D3D3;
 }
 
-#nzqhwzqmsr .gt_caption {
+#cmxpyjutft .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#nzqhwzqmsr .gt_title {
+#cmxpyjutft .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -4544,7 +4542,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-width: 0;
 }
 
-#nzqhwzqmsr .gt_subtitle {
+#cmxpyjutft .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -4556,7 +4554,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-top-width: 0;
 }
 
-#nzqhwzqmsr .gt_heading {
+#cmxpyjutft .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -4568,13 +4566,13 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#nzqhwzqmsr .gt_bottom_border {
+#cmxpyjutft .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#nzqhwzqmsr .gt_col_headings {
+#cmxpyjutft .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4589,7 +4587,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#nzqhwzqmsr .gt_col_heading {
+#cmxpyjutft .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4609,7 +4607,7 @@ Expand example for <code>expand_num = TRUE</code> and
   overflow-x: hidden;
 }
 
-#nzqhwzqmsr .gt_column_spanner_outer {
+#cmxpyjutft .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4621,15 +4619,15 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 4px;
 }
 
-#nzqhwzqmsr .gt_column_spanner_outer:first-child {
+#cmxpyjutft .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#nzqhwzqmsr .gt_column_spanner_outer:last-child {
+#cmxpyjutft .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#nzqhwzqmsr .gt_column_spanner {
+#cmxpyjutft .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -4641,11 +4639,11 @@ Expand example for <code>expand_num = TRUE</code> and
   width: 100%;
 }
 
-#nzqhwzqmsr .gt_spanner_row {
+#cmxpyjutft .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#nzqhwzqmsr .gt_group_heading {
+#cmxpyjutft .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4671,7 +4669,7 @@ Expand example for <code>expand_num = TRUE</code> and
   text-align: left;
 }
 
-#nzqhwzqmsr .gt_empty_group_heading {
+#cmxpyjutft .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -4686,15 +4684,15 @@ Expand example for <code>expand_num = TRUE</code> and
   vertical-align: middle;
 }
 
-#nzqhwzqmsr .gt_from_md > :first-child {
+#cmxpyjutft .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#nzqhwzqmsr .gt_from_md > :last-child {
+#cmxpyjutft .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#nzqhwzqmsr .gt_row {
+#cmxpyjutft .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4713,7 +4711,7 @@ Expand example for <code>expand_num = TRUE</code> and
   overflow-x: hidden;
 }
 
-#nzqhwzqmsr .gt_stub {
+#cmxpyjutft .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4726,7 +4724,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#nzqhwzqmsr .gt_stub_row_group {
+#cmxpyjutft .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4740,15 +4738,15 @@ Expand example for <code>expand_num = TRUE</code> and
   vertical-align: top;
 }
 
-#nzqhwzqmsr .gt_row_group_first td {
+#cmxpyjutft .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#nzqhwzqmsr .gt_row_group_first th {
+#cmxpyjutft .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#nzqhwzqmsr .gt_summary_row {
+#cmxpyjutft .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4758,16 +4756,16 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#nzqhwzqmsr .gt_first_summary_row {
+#cmxpyjutft .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#nzqhwzqmsr .gt_first_summary_row.thick {
+#cmxpyjutft .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#nzqhwzqmsr .gt_last_summary_row {
+#cmxpyjutft .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4777,7 +4775,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#nzqhwzqmsr .gt_grand_summary_row {
+#cmxpyjutft .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4787,7 +4785,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#nzqhwzqmsr .gt_first_grand_summary_row {
+#cmxpyjutft .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4797,7 +4795,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-top-color: #D3D3D3;
 }
 
-#nzqhwzqmsr .gt_last_grand_summary_row_top {
+#cmxpyjutft .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4807,11 +4805,11 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#nzqhwzqmsr .gt_striped {
+#cmxpyjutft .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#nzqhwzqmsr .gt_table_body {
+#cmxpyjutft .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4820,7 +4818,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#nzqhwzqmsr .gt_footnotes {
+#cmxpyjutft .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4834,7 +4832,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#nzqhwzqmsr .gt_footnote {
+#cmxpyjutft .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -4843,7 +4841,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#nzqhwzqmsr .gt_sourcenotes {
+#cmxpyjutft .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4857,7 +4855,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#nzqhwzqmsr .gt_sourcenote {
+#cmxpyjutft .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -4865,72 +4863,72 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#nzqhwzqmsr .gt_left {
+#cmxpyjutft .gt_left {
   text-align: left;
 }
 
-#nzqhwzqmsr .gt_center {
+#cmxpyjutft .gt_center {
   text-align: center;
 }
 
-#nzqhwzqmsr .gt_right {
+#cmxpyjutft .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#nzqhwzqmsr .gt_font_normal {
+#cmxpyjutft .gt_font_normal {
   font-weight: normal;
 }
 
-#nzqhwzqmsr .gt_font_bold {
+#cmxpyjutft .gt_font_bold {
   font-weight: bold;
 }
 
-#nzqhwzqmsr .gt_font_italic {
+#cmxpyjutft .gt_font_italic {
   font-style: italic;
 }
 
-#nzqhwzqmsr .gt_super {
+#cmxpyjutft .gt_super {
   font-size: 65%;
 }
 
-#nzqhwzqmsr .gt_footnote_marks {
+#cmxpyjutft .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#nzqhwzqmsr .gt_asterisk {
+#cmxpyjutft .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#nzqhwzqmsr .gt_indent_1 {
+#cmxpyjutft .gt_indent_1 {
   text-indent: 5px;
 }
 
-#nzqhwzqmsr .gt_indent_2 {
+#cmxpyjutft .gt_indent_2 {
   text-indent: 10px;
 }
 
-#nzqhwzqmsr .gt_indent_3 {
+#cmxpyjutft .gt_indent_3 {
   text-indent: 15px;
 }
 
-#nzqhwzqmsr .gt_indent_4 {
+#cmxpyjutft .gt_indent_4 {
   text-indent: 20px;
 }
 
-#nzqhwzqmsr .gt_indent_5 {
+#cmxpyjutft .gt_indent_5 {
   text-indent: 25px;
 }
 
-#nzqhwzqmsr .katex-display {
+#cmxpyjutft .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#nzqhwzqmsr div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#cmxpyjutft div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -6621,7 +6619,7 @@ Expand example for <code>expand_num = TRUE</code> and
 <p>Let’s add the gate for LAG3 of CD4+ and CD8+. This is a good
 visualization to see all sequential gating steps applied to the
 sample.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Grab gate as a numeric</span></span>
 <span><span class="va">current_gate</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">dens_gates</span> <span class="op">|&gt;</span></span>
@@ -6656,7 +6654,7 @@ sample.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">ggcyto</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">gs</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-31-1.png" width="768" style="display: block; margin: auto;"></p>
+<p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-30-1.png" class="r-plt" width="768" style="display: block; margin: auto;"></p>
 <p>After running {staRgate} to gate flow cytometry data, it is
 recommended to perform some quality checks (QC) on the gate placements
 to ensure they are reasonable. We suggest to use ridgeplots in addition
@@ -6676,9 +6674,9 @@ additional QC steps as well, stay tuned!</p>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; R version 4.5.1 (2025-06-13)</span></span>
+<span><span class="co">#&gt; R version 4.5.2 (2025-10-31)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
 <span><span class="co">#&gt; Running under: Ubuntu 24.04.3 LTS</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -6699,36 +6697,36 @@ additional QC steps as well, stay tuned!</p>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] ggcyto_1.36.1        ncdfFlow_2.54.0      BH_1.87.0-1         </span></span>
-<span><span class="co">#&gt; [4] ggplot2_4.0.0        flowCore_2.20.0      flowWorkspace_4.20.0</span></span>
-<span><span class="co">#&gt; [7] openCyto_2.20.1      staRgate_0.99.3      BiocStyle_2.36.0    </span></span>
+<span><span class="co">#&gt; [1] ggcyto_1.38.0        ncdfFlow_2.56.0      BH_1.87.0-1         </span></span>
+<span><span class="co">#&gt; [4] ggplot2_4.0.0        flowCore_2.22.0      flowWorkspace_4.22.0</span></span>
+<span><span class="co">#&gt; [7] openCyto_2.22.0      staRgate_0.99.3      BiocStyle_2.38.0    </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] gtable_0.3.6        xfun_0.53           bslib_0.9.0        </span></span>
-<span><span class="co">#&gt;  [4] htmlwidgets_1.6.4   Biobase_2.68.0      lattice_0.22-7     </span></span>
-<span><span class="co">#&gt;  [7] vctrs_0.6.5         tools_4.5.1         generics_0.1.4     </span></span>
-<span><span class="co">#&gt; [10] stats4_4.5.1        parallel_4.5.1      tibble_3.3.0       </span></span>
+<span><span class="co">#&gt;  [1] gtable_0.3.6        xfun_0.54           bslib_0.9.0        </span></span>
+<span><span class="co">#&gt;  [4] htmlwidgets_1.6.4   Biobase_2.70.0      lattice_0.22-7     </span></span>
+<span><span class="co">#&gt;  [7] vctrs_0.6.5         tools_4.5.2         generics_0.1.4     </span></span>
+<span><span class="co">#&gt; [10] stats4_4.5.2        parallel_4.5.2      tibble_3.3.0       </span></span>
 <span><span class="co">#&gt; [13] pkgconfig_2.0.3     data.table_1.17.8   RColorBrewer_1.1-3 </span></span>
-<span><span class="co">#&gt; [16] S7_0.2.0            desc_1.4.3          S4Vectors_0.46.0   </span></span>
-<span><span class="co">#&gt; [19] gt_1.1.0            graph_1.86.0        lifecycle_1.0.4    </span></span>
-<span><span class="co">#&gt; [22] compiler_4.5.1      farver_2.1.2        stringr_1.5.2      </span></span>
+<span><span class="co">#&gt; [16] S7_0.2.0            desc_1.4.3          S4Vectors_0.48.0   </span></span>
+<span><span class="co">#&gt; [19] gt_1.1.0            graph_1.88.0        lifecycle_1.0.4    </span></span>
+<span><span class="co">#&gt; [22] compiler_4.5.2      farver_2.1.2        stringr_1.6.0      </span></span>
 <span><span class="co">#&gt; [25] textshaping_1.0.4   janitor_2.2.1       snakecase_0.11.1   </span></span>
-<span><span class="co">#&gt; [28] litedown_0.7        htmltools_0.5.8.1   sass_0.4.10        </span></span>
-<span><span class="co">#&gt; [31] yaml_2.3.10         pillar_1.11.1       pkgdown_2.1.3      </span></span>
+<span><span class="co">#&gt; [28] litedown_0.8        htmltools_0.5.8.1   sass_0.4.10        </span></span>
+<span><span class="co">#&gt; [31] yaml_2.3.10         pillar_1.11.1       pkgdown_2.2.0      </span></span>
 <span><span class="co">#&gt; [34] hexbin_1.28.5       jquerylib_0.1.4     tidyr_1.3.1        </span></span>
-<span><span class="co">#&gt; [37] cachem_1.1.0        RProtoBufLib_2.20.0 commonmark_2.0.0   </span></span>
+<span><span class="co">#&gt; [37] cachem_1.1.0        RProtoBufLib_2.22.0 commonmark_2.0.0   </span></span>
 <span><span class="co">#&gt; [40] tidyselect_1.2.1    digest_0.6.37       stringi_1.8.7      </span></span>
-<span><span class="co">#&gt; [43] dplyr_1.1.4         purrr_1.1.0         bookdown_0.45      </span></span>
-<span><span class="co">#&gt; [46] labeling_0.4.3      flowClust_3.46.0    fastmap_1.2.0      </span></span>
-<span><span class="co">#&gt; [49] grid_4.5.1          cli_3.6.5           magrittr_2.0.4     </span></span>
-<span><span class="co">#&gt; [52] utf8_1.2.6          RBGL_1.84.0         XML_3.99-0.19      </span></span>
+<span><span class="co">#&gt; [43] dplyr_1.1.4         purrr_1.2.0         bookdown_0.45      </span></span>
+<span><span class="co">#&gt; [46] labeling_0.4.3      flowClust_3.48.0    fastmap_1.2.0      </span></span>
+<span><span class="co">#&gt; [49] grid_4.5.2          cli_3.6.5           magrittr_2.0.4     </span></span>
+<span><span class="co">#&gt; [52] utf8_1.2.6          RBGL_1.86.0         XML_3.99-0.20      </span></span>
 <span><span class="co">#&gt; [55] withr_3.0.2         scales_1.4.0        timechange_0.3.0   </span></span>
 <span><span class="co">#&gt; [58] lubridate_1.9.4     rmarkdown_2.30      matrixStats_1.5.0  </span></span>
-<span><span class="co">#&gt; [61] gridExtra_2.3       cytolib_2.20.0      ragg_1.5.0         </span></span>
+<span><span class="co">#&gt; [61] gridExtra_2.3       cytolib_2.22.0      ragg_1.5.0         </span></span>
 <span><span class="co">#&gt; [64] evaluate_1.0.5      knitr_1.50          markdown_2.0       </span></span>
 <span><span class="co">#&gt; [67] rlang_1.1.6         Rcpp_1.1.0          glue_1.8.0         </span></span>
-<span><span class="co">#&gt; [70] xml2_1.4.0          Rgraphviz_2.52.0    BiocManager_1.30.26</span></span>
-<span><span class="co">#&gt; [73] BiocGenerics_0.54.1 jsonlite_2.0.0      R6_2.6.1           </span></span>
+<span><span class="co">#&gt; [70] xml2_1.4.1          Rgraphviz_2.54.0    BiocManager_1.30.26</span></span>
+<span><span class="co">#&gt; [73] BiocGenerics_0.56.0 jsonlite_2.0.0      R6_2.6.1           </span></span>
 <span><span class="co">#&gt; [76] plyr_1.8.9          systemfonts_1.3.1   fs_1.6.6</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -6762,7 +6760,7 @@ open-source visualization software for cytometry,” Bioinformatics,
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
