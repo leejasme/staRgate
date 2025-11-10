@@ -52,7 +52,7 @@ getGatedDat <- function(intens_dat, cutoffs, subset_col) {
 
   ## use nest() to subset into separate dfs
   intens_dat |>
-    dplyr::group_by(.data[[subset_col]]) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(subset_col))) |>
     tidyr::nest() |>
     # Join the cutoffs
     dplyr::mutate(
@@ -79,7 +79,7 @@ getGatedDat <- function(intens_dat, cutoffs, subset_col) {
     ) |>
     # dont need the orginal data bc the indicators are
     # added to the data as additional cols
-    dplyr::select(-.data$data) |>
+    dplyr::select(-"data") |>
     # use unnest() to combine back the data
     tidyr::unnest(cols=c(gated_data)) |>
     # Ungroup data

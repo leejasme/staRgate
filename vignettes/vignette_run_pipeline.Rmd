@@ -38,14 +38,7 @@ Currently in this tutorial, we do not extend to the QC steps and suggest to lean
 The {staRgate} package relies on a few Biocondcutor R packages.
 Before installing {staRgate}, first setup Bioconductor and install all dependencies. 
 
-[Below instructions are instructions for installing Bioconductor](https://www.bioconductor.org/install/)
-
-```{r, echo = TRUE, eval = FALSE}
-if (!require("BiocManager", quietly = TRUE)) {
-  install.packages("BiocManager")
-}
-```
-
+[Follow instructions here for installing Bioconductor](https://www.bioconductor.org/install/)
 
 The essential dependencies for running the {staRgate} package include: `r BiocStyle::Biocpkg("flowCore")`, and `r BiocStyle::Biocpkg("flowWorkspace")`.
 
@@ -393,7 +386,9 @@ dens_gates
 
 # get indicator col
 example_intensity_gated <-
-  getGatedDat(intensity_dat,
+  getGatedDat(
+    # Only gate T-cells, which are CD3+ 
+    dplyr::filter(intensity_dat, cd3_pos == 1),
     subset_col = "cd4_pos_cd8_pos",
     cutoffs = dens_gates
   )

@@ -252,9 +252,9 @@ checkInputs <- function(intens_dat=NULL,
 getDensityDerivs <- function(dens,
                              marker,
                              subset_col,
-                             bin_n = 512,
-                             peak_detect_ratio = 10,
-                             pos_peak_threshold = 1800) {
+                             bin_n=512,
+                             peak_detect_ratio=10,
+                             pos_peak_threshold=1800) {
 
   # Meant for internally calling within get_density_peaks and for debug/checking matrices/calculations
   # input data is diff- expecting the density obj for general subset_col
@@ -264,38 +264,38 @@ getDensityDerivs <- function(dens,
   x_binned <-
     range(x) |>
     (function(r){
-      seq(r[[1]], r[[2]], by = 1)
+      seq(r[[1]], r[[2]], by=1)
     })()
 
   # Find interval
   new_d <-
     tibble::tibble(
-      x = x,
-      y = dens$y,
-      x_int = findInterval(x, x_binned)
+      x=x,
+      y=dens$y,
+      x_int=findInterval(x, x_binned)
     ) |>
     dplyr::group_by(.data$x_int) |>
     dplyr::summarize(
-      x_avg = mean(x),
-      y_avg = mean(y)
+      x_avg=mean(x),
+      y_avg=mean(y)
     ) |>
     dplyr::arrange(x_avg) |>
     # 2022-09-06 add the original row num here
     # Want the original row num for merging back later
     # Based on the x continuous value might be problematic with rounding
-    tibble::rownames_to_column(var = "original_row_num") |>
-    dplyr::mutate(original_row_num = as.numeric(original_row_num)) |>
+    tibble::rownames_to_column(var="original_row_num") |>
+    dplyr::mutate(original_row_num=as.numeric(original_row_num)) |>
     dplyr::mutate(
-      first_deriv = c(0, diff(y_avg) / diff(x_avg)),
-      first_deriv_sign = sign(first_deriv),
-      second_deriv = c(0, diff(first_deriv) / diff(x_avg)),
-      second_deriv_sign = sign(second_deriv),
-      third_deriv = c(0, diff(second_deriv) / diff(x_avg)),
-      third_deriv_sign = sign(third_deriv),
-      fourth_deriv = c(0, diff(third_deriv) / diff(x_avg)),
+      first_deriv=c(0, diff(y_avg) / diff(x_avg)),
+      first_deriv_sign=sign(first_deriv),
+      second_deriv=c(0, diff(first_deriv) / diff(x_avg)),
+      second_deriv_sign=sign(second_deriv),
+      third_deriv=c(0, diff(second_deriv) / diff(x_avg)),
+      third_deriv_sign=sign(third_deriv),
+      fourth_deriv=c(0, diff(third_deriv) / diff(x_avg)),
       # Peak if change from + to - for first deriv (-1 - 1 = -2)
       # second derive < 0 = peak
-      local_peak = (c(0, diff(first_deriv_sign)) == -2) & second_deriv_sign < 0
+      local_peak=(c(0, diff(first_deriv_sign)) == -2) & second_deriv_sign < 0
     )
 
   # Simpliest fix to shift local_peak 1 index "up"
@@ -358,9 +358,9 @@ getDensityDerivs <- function(dens,
 getDensityMats <- function(intens_dat,
                            marker,
                            subset_col,
-                           bin_n = 512,
-                           peak_detect_ratio = 10,
-                           pos_peak_threshold = 1800) {
+                           bin_n=512,
+                           peak_detect_ratio=10,
+                           pos_peak_threshold=1800) {
 
   # Meant for using internally in getDensityGates but also for debug
   # to grab the full matrix of density, peak and cutoff
@@ -380,10 +380,10 @@ getDensityMats <- function(intens_dat,
     tidyr::nest() |>
     # calculate density for each subset separately
     dplyr::mutate(
-      dens_obj = purrr::map(
+      dens_obj=purrr::map(
         data,
         ~ stats::density(.x[[marker]],
-          n = bin_n
+          n=bin_n
         )
       )
     ) |>
@@ -395,36 +395,36 @@ getDensityMats <- function(intens_dat,
   dens_binned <-
     dens |>
     dplyr::mutate(
-      dens_binned =
+      dens_binned=
         purrr::map(
           dens_obj,
           function(d) {
             getDensityDerivs(d,
-              subset_col = subset_col,
-              marker = marker,
-              bin_n = bin_n,
-              peak_detect_ratio = peak_detect_ratio,
-              pos_peak_threshold = pos_peak_threshold
+              subset_col=subset_col,
+              marker=marker,
+              bin_n=bin_n,
+              peak_detect_ratio=peak_detect_ratio,
+              pos_peak_threshold=pos_peak_threshold
             )
           }
         ),
-      dens_peaks =
+      dens_peaks=
         purrr::map(
           dens_binned,
           function(d) {
             getDensityPeakCutoff(d,
-              marker = marker,
-              subset_col = subset_col,
-              dens_flip = FALSE,
-              bin_n = bin_n,
-              peak_detect_ratio = peak_detect_ratio,
-              pos_peak_threshold = pos_peak_threshold
+              marker=marker,
+              subset_col=subset_col,
+              dens_flip=FALSE,
+              bin_n=bin_n,
+              peak_detect_ratio=peak_detect_ratio,
+              pos_peak_threshold=pos_peak_threshold
             )
           }
         ),
       # 2022-11-01 check how many peaks
       # if > 2, reduce bin width before checking for desnity flip
-      n_peaks =
+      n_peaks=
         purrr::map(
           dens_peaks,
           function(d) {
@@ -432,8 +432,7 @@ getDensityMats <- function(intens_dat,
           }
         ) |>
           unlist(),
-      # bin_width = bin_size,
-      bin_n = bin_n
+      bin_n=bin_n
     )
 
   # Check the peak value against threshold
@@ -441,7 +440,7 @@ getDensityMats <- function(intens_dat,
     dens_binned |>
     dplyr::select(!!dplyr::sym(subset_col), dens_peaks) |>
     dplyr::mutate(
-      peak_loc =
+      peak_loc=
         purrr::map(
           dens_peaks,
           function(x) {
@@ -459,7 +458,7 @@ getDensityMats <- function(intens_dat,
           }
         ) |>
           unlist(),
-      flag_pos_peak =
+      flag_pos_peak=
         peak_loc > pos_peak_threshold
     ) |>
     dplyr::select(-dens_peaks) |>
@@ -480,19 +479,19 @@ getDensityMats <- function(intens_dat,
         !!rlang::parse_expr(glue::glue("{subset_col} %in% flag_peak[[subset_col]]"))
       ) |>
       dplyr::mutate(
-        dens_peaks_flip =
+        dens_peaks_flip=
           purrr::map(
             # 2023-03-30 dont use a recalculated density with --1*x_avg
             # Use original density but with dens_flip = TRUE arg to search on left vs. right
             dens_binned,
             function(d) {
               getDensityPeakCutoff(d,
-                marker = marker,
-                subset_col = subset_col,
-                dens_flip = TRUE,
-                bin_n = bin_n,
-                peak_detect_ratio = peak_detect_ratio,
-                pos_peak_threshold = pos_peak_threshold
+                marker=marker,
+                subset_col=subset_col,
+                dens_flip=TRUE,
+                bin_n=bin_n,
+                peak_detect_ratio=peak_detect_ratio,
+                pos_peak_threshold=pos_peak_threshold
               )
             }
           )
@@ -506,7 +505,7 @@ getDensityMats <- function(intens_dat,
       dens |>
       dplyr::select(!!dplyr::sym(subset_col)) |>
       dplyr::mutate(
-        dens_peaks_flip =
+        dens_peaks_flip=
           rep(list(NULL), length(unique(dens[, subset_col])))
       )
   }
@@ -516,17 +515,17 @@ getDensityMats <- function(intens_dat,
     dplyr::left_join(
       dens_binned,
       dens_flipped,
-      by = subset_col
+      by=subset_col
     ) |>
     dplyr::mutate(
-      dens_peaks_final =
-        if (all(vapply(dens_peaks_flip, is.null, FUN.VALUE = logical(1)))) {
+      dens_peaks_final=
+        if (all(vapply(dens_peaks_flip, is.null, FUN.VALUE=logical(1)))) {
           dens_peaks
         } else {
           purrr::pmap(
             list(
-              dens_og = dens_peaks,
-              dens_f = dens_peaks_flip
+              dens_og=dens_peaks,
+              dens_f=dens_peaks_flip
             ),
             function(dens_og, dens_f) {
               if (!is.null(dens_f)) {
@@ -538,7 +537,7 @@ getDensityMats <- function(intens_dat,
                       original_row_num,
                       cutoff
                     ),
-                  by = "original_row_num"
+                  by="original_row_num"
                 )
               } else {
                 dens_og
@@ -583,10 +582,10 @@ getDensityMats <- function(intens_dat,
 getDensityPeakCutoff <- function(dens_binned_dat,
                                  marker,
                                  subset_col,
-                                 bin_n = 512,
-                                 peak_detect_ratio = 10,
-                                 pos_peak_threshold = 1800,
-                                 dens_flip = FALSE) {
+                                 bin_n=512,
+                                 peak_detect_ratio=10,
+                                 pos_peak_threshold=1800,
+                                 dens_flip=FALSE) {
 
   # Identify "real peaks"
   new_d <-
@@ -595,7 +594,7 @@ getDensityPeakCutoff <- function(dens_binned_dat,
     dplyr::arrange(-y_avg) |>
     # Get ratios relative to the highest peak
     dplyr::mutate(
-      ratio = vapply(
+      ratio=vapply(
         dplyr::row_number(),
         function(r) {
           y_avg[r] / y_avg[1]
@@ -609,17 +608,17 @@ getDensityPeakCutoff <- function(dens_binned_dat,
     # then the peak is too small
     dplyr::filter(ratio >= 1 / peak_detect_ratio) |>
     # denoting these as "true peaks"
-    dplyr::mutate(peak = TRUE) |>
+    dplyr::mutate(peak=TRUE) |>
     dplyr::select(original_row_num, peak) |>
     dplyr::left_join(
       dens_binned_dat,
-      y = _,
-      by = "original_row_num"
+      y=_,
+      by="original_row_num"
     ) |>
     # Replace the NA in the peak col to avoid confusion
     dplyr::mutate(
-      peak = dplyr::case_when(is.na(peak) ~ FALSE,
-                              .default=peak)
+      peak=dplyr::case_when(is.na(peak) ~ FALSE,
+                            .default=peak)
     )
 
   # 2022-04-14 for all peaks need to correct off-by-one error where "peak" is identified at the
@@ -633,7 +632,7 @@ getDensityPeakCutoff <- function(dens_binned_dat,
 
   new_d <-
     new_d |>
-    dplyr::mutate(peak = dplyr::case_when(
+    dplyr::mutate(peak=dplyr::case_when(
       # set the aux_ind_neg_peak as peak = TRUE to correct for off-by-one error
       # 2022-06-15 fixed local_peak off-by-one so no need to -1
       original_row_num %in% (aux_ind_all_peaks) ~ TRUE,
@@ -703,8 +702,8 @@ getDensityPeakCutoff <- function(dens_binned_dat,
       # instead subset to the first set of rows where 1st deriv < 0
       dplyr::filter((original_row_num > aux_ind_bound[1]) & (original_row_num <= aux_ind_bound[2])) |>
       dplyr::arrange(original_row_num) |>
-      dplyr::mutate(first_deriv_change = c(0, diff(first_deriv_sign)),
-                    new_anchor = (first_deriv_change != 0) & (dplyr::lag(first_deriv_sign) < 0)) |>
+      dplyr::mutate(first_deriv_change=c(0, diff(first_deriv_sign)),
+                    new_anchor=(first_deriv_change != 0) & (dplyr::lag(first_deriv_sign) < 0)) |>
       (function(df){
         # If 1st deriv <0 for all of search region, no need to additional filter
         if(all(df$new_anchor == FALSE)){
@@ -727,8 +726,8 @@ getDensityPeakCutoff <- function(dens_binned_dat,
       # instead subset to the first set of rows where 1st deriv > 0
       dplyr::filter((original_row_num > aux_ind_bound[1]) & (original_row_num <= aux_ind_bound[2])) |>
       dplyr::arrange(-original_row_num) |>
-      dplyr::mutate(first_deriv_change = c(0, diff(first_deriv_sign)),
-                    new_anchor = (first_deriv_change != 0) & (stats::lag(first_deriv_sign) > 0)) |>
+      dplyr::mutate(first_deriv_change=c(0, diff(first_deriv_sign)),
+                    new_anchor=(first_deriv_change != 0) & (stats::lag(first_deriv_sign) > 0)) |>
       (function(df){
         # If 1st deriv <0 for all of search region, no need to additional filter
         if(all(df$new_anchor == FALSE)){

@@ -169,7 +169,7 @@ getDensityGates <- function(intens_dat,
         dplyr::select(dplyr::all_of(c(subset_col, m)))
     }) |>
     # Reduce to a dataframe
-    purrr::reduce(.x = _, dplyr::left_join, by=subset_col)
+    purrr::reduce(.x=_, dplyr::left_join, by=subset_col)
 
   return(cutoffs)
 }

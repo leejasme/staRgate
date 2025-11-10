@@ -186,7 +186,6 @@ getPerc <- function(intens_dat,
   num_pre <-
     data.frame(num_filters=c(paste0(num_cols, " == 0"), paste0(num_cols, " == 1")))
 
-
   # Tag on the indicators
   num <-
     purrr::map(num_cols, function(c) {
