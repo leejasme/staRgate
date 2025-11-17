@@ -4,14 +4,7 @@
 \alias{getDensityDerivs}
 \title{Internal function: Estimate derivatives for density of \code{marker} for each unique subset of \code{subset_col}}
 \usage{
-getDensityDerivs(
-  dens,
-  marker,
-  subset_col,
-  bin_n = 512,
-  peak_detect_ratio = 10,
-  pos_peak_threshold = 1800
-)
+getDensityDerivs(dens)
 }
 \arguments{
 \item{dens}{\code{density} object from the \link[stats]{density}}

@@ -26,6 +26,8 @@ checkInputs <- function(intens_dat=NULL,
     }
 
   if (!is.null(marker)) {
+    marker <- toupper(marker)
+
     if (!all(marker %in% colnames(intens_dat))) {
       rlang::abort(message="Error: `marker` must be string matching column name(s) of `intens_dat`")
     }
@@ -145,13 +147,6 @@ checkInputs <- function(intens_dat=NULL,
     col_nms <-
       toupper(colnames(intens_dat))[grepl("_POS$", (toupper(colnames(intens_dat))))]
 
-    if (!is.character(num_marker) & !is.character(denom_marker)) {
-      rlang::abort(
-        c(message="Error: `num_marker` and/or `denom_marker` must be of character class.",
-          "i"="`num_marker` and `denom_marker` must be strings containing the names of the marker(s) of interest for calculating the subpopulations.")
-      )
-    }
-
     if (!all((col_nms_subset %in% col_nms))) {
       rlang::abort(
         message=c(
@@ -181,24 +176,16 @@ checkInputs <- function(intens_dat=NULL,
     }
   }
 
-  if (!is.null(expand_num) & !is.null(expand_denom)) {
-    if (!is.logical(expand_num)) {
+  if (!is.null(expand_num) | !is.null(expand_denom)) {
+    if (!is.logical(expand_num) | !is.logical(expand_denom)) {
       rlang::warn(
         message=c(
-          "Warning: `expand_num` not of class logical (either `TRUE` or `FALSE`)",
+          "Warning: `expand_num` and/or `expand_denom` not of class logical (either `TRUE` or `FALSE`)",
           "i"="Default value of `FALSE` will be used"
         )
       )
     }
 
-    if (!is.logical(expand_denom)) {
-      rlang::warn(
-        message=c(
-          "Warning: `expand_denom` not of class logical (either `TRUE` or `FALSE`)",
-          "i"="Default value of `FALSE` will be used"
-        )
-      )
-    }
   }
 
   if (!is.null(keep_indicators)) {
@@ -249,79 +236,60 @@ checkInputs <- function(intens_dat=NULL,
 #'
 #' @keywords internal
 
-getDensityDerivs <- function(dens,
-                             marker,
-                             subset_col,
-                             bin_n=512,
-                             peak_detect_ratio=10,
-                             pos_peak_threshold=1800) {
+getDensityDerivs <- function(dens) {
 
   # Meant for internally calling within get_density_peaks and for debug/checking matrices/calculations
   # input data is diff- expecting the density obj for general subset_col
-  x <- dens$x
+  if(class(dens) == "density"){
+    x <- dens$x
 
-  # x every 1
-  x_binned <-
-    range(x) |>
-    (function(r){
-      seq(r[[1]], r[[2]], by=1)
-    })()
+    # x every 1
+    x_binned <-
+      range(x) |>
+      (function(r){
+        seq(r[[1]], r[[2]], by=1)
+      })()
 
-  # Find interval
-  new_d <-
-    tibble::tibble(
-      x=x,
-      y=dens$y,
-      x_int=findInterval(x, x_binned)
-    ) |>
-    dplyr::group_by(.data$x_int) |>
-    dplyr::summarize(
-      x_avg=mean(x),
-      y_avg=mean(y)
-    ) |>
-    dplyr::arrange(x_avg) |>
-    # 2022-09-06 add the original row num here
-    # Want the original row num for merging back later
-    # Based on the x continuous value might be problematic with rounding
-    tibble::rownames_to_column(var="original_row_num") |>
-    dplyr::mutate(original_row_num=as.numeric(original_row_num)) |>
-    dplyr::mutate(
-      first_deriv=c(0, diff(y_avg) / diff(x_avg)),
-      first_deriv_sign=sign(first_deriv),
-      second_deriv=c(0, diff(first_deriv) / diff(x_avg)),
-      second_deriv_sign=sign(second_deriv),
-      third_deriv=c(0, diff(second_deriv) / diff(x_avg)),
-      third_deriv_sign=sign(third_deriv),
-      fourth_deriv=c(0, diff(third_deriv) / diff(x_avg)),
-      # Peak if change from + to - for first deriv (-1 - 1 = -2)
-      # second derive < 0 = peak
-      local_peak=(c(0, diff(first_deriv_sign)) == -2) & second_deriv_sign < 0
+    # Find interval
+    new_d <-
+      tibble::tibble(
+        x=x,
+        y=dens$y,
+        x_int=findInterval(x, x_binned)
+      ) |>
+      dplyr::group_by(.data$x_int) |>
+      dplyr::summarize(
+        x_avg=mean(x),
+        y_avg=mean(y)
+      ) |>
+      dplyr::arrange(x_avg) |>
+      tibble::rownames_to_column(var="original_row_num") |>
+      dplyr::mutate(original_row_num=as.numeric(original_row_num)) |>
+      dplyr::mutate(
+        first_deriv=c(0, diff(y_avg) / diff(x_avg)),
+        first_deriv_sign=sign(first_deriv),
+        second_deriv=c(0, diff(first_deriv) / diff(x_avg)),
+        second_deriv_sign=sign(second_deriv),
+        third_deriv=c(0, diff(second_deriv) / diff(x_avg)),
+        third_deriv_sign=sign(third_deriv),
+        fourth_deriv=c(0, diff(third_deriv) / diff(x_avg)),
+        # Peak if change from + to - for first deriv (-1 - 1 = -2)
+        # second derive < 0 = peak
+        local_peak=(c(0, diff(first_deriv_sign)) == -2) & second_deriv_sign < 0
+      )
+
+    # Simpliest fix to shift local_peak 1 index "up"
+    new_d$local_peak <-
+      c(new_d$local_peak[-1], FALSE)
+
+    return(new_d)
+  }else{
+    rlang::abort(
+      message=c(
+        "Error: Input `dens` is not a density object."
+      )
     )
-
-  # Simpliest fix to shift local_peak 1 index "up"
-  new_d$local_peak <-
-    c(new_d$local_peak[-1], FALSE)
-
-  # # 2022-06-15 split out the plateau_pre step bc need to fix the off-by-1 for local_peak identified
-  # new_d <-
-  #   new_d |>
-  #   dplyr::mutate(
-  #     # Due to how the diff and deriv are calculated, the point of interest is back tracked by 1 so check 2nd deriv of 1 point before
-  #     plateau_pre = ((c(0, diff(third_deriv_sign)) == -2) & (sign(fourth_deriv) < 0)),
-  #     plateau_pre_2 = vapply(
-  #       dplyr::row_number(),
-  #       function(r) {
-  #         if (r >= 2) {
-  #           (plateau_pre[r] == TRUE & second_deriv_sign[(r - 1)] > 0)
-  #         } else {
-  #           FALSE
-  #         }
-  #       },
-  #       logical(1)
-  #     )
-  #   )
-
-  return(new_d)
+  }
 }
 
 
@@ -370,7 +338,6 @@ getDensityMats <- function(intens_dat,
   # indicator of "real peaks" and cutoff
   # Same args as getDensityGates
 
-
   ## Calc density ---
   # Need to separate out per subset
   dens <-
@@ -399,13 +366,7 @@ getDensityMats <- function(intens_dat,
         purrr::map(
           dens_obj,
           function(d) {
-            getDensityDerivs(d,
-              subset_col=subset_col,
-              marker=marker,
-              bin_n=bin_n,
-              peak_detect_ratio=peak_detect_ratio,
-              pos_peak_threshold=pos_peak_threshold
-            )
+            getDensityDerivs(d)
           }
         ),
       dens_peaks=
@@ -743,24 +704,6 @@ getDensityPeakCutoff <- function(dens_binned_dat,
       # diff in the derivs
       dplyr::pull(original_row_num)
   }
-
-
-  # aux_ind_cutoff_pre <-
-  #   new_d |>
-  #   # # 2023-03-14 Add a condition to check for right side of neg peak (left if flipped)
-  #   dplyr::filter((original_row_num > aux_ind_bound[1]) & (original_row_num <= aux_ind_bound[2])) |>
-  #   dplyr::slice_max(plateau_pre_2) |>
-  #   (function(df){
-  #     if(dens_flip == FALSE){
-  #       dplyr::slice_min(df, x_avg)
-  #     }else{
-  #       dplyr::slice_max(df, x_avg)
-  #     }
-  #   })()|>
-  #   dplyr::pull(original_row_num)
-  #
-  # # 2023-03-30 Offset by 1 due to calculation of diff and derivs
-  # aux_ind_cutoff <- aux_ind_cutoff_pre - 1
 
   # Creating a column for cutoff
   if (length(aux_ind_cutoff) == 0) {
