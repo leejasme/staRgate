@@ -98,7 +98,7 @@ path_comp_mat <- system.file("extdata", "comp_mat_example_fcs.csv", package = "s
 path_out <- tempdir()
 # Print the path_out for user to see
 path_out
-#> [1] "/tmp/RtmpQ34mpI"
+#> [1] "/tmp/RtmplRC88S"
 
 ## File path Gating template
 gtFile <- system.file("extdata", "gating_template_x50_tcell.csv", package = "staRgate", mustWork = TRUE)
@@ -1609,7 +1609,7 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggcyto_1.38.0        ncdfFlow_2.56.0      BH_1.87.0-1         
-#> [4] ggplot2_4.0.0        flowCore_2.22.0      flowWorkspace_4.22.0
+#> [4] ggplot2_4.0.1        flowCore_2.22.0      flowWorkspace_4.22.0
 #> [7] openCyto_2.22.0      staRgate_0.99.3      BiocStyle_2.38.0    
 #> 
 #> loaded via a namespace (and not attached):
@@ -1618,7 +1618,7 @@ sessionInfo()
 #>  [7] vctrs_0.6.5         tools_4.5.2         generics_0.1.4     
 #> [10] stats4_4.5.2        parallel_4.5.2      tibble_3.3.0       
 #> [13] pkgconfig_2.0.3     data.table_1.17.8   RColorBrewer_1.1-3 
-#> [16] S7_0.2.0            desc_1.4.3          S4Vectors_0.48.0   
+#> [16] S7_0.2.1            desc_1.4.3          S4Vectors_0.48.0   
 #> [19] gt_1.1.0            graph_1.88.0        lifecycle_1.0.4    
 #> [22] compiler_4.5.2      farver_2.1.2        stringr_1.6.0      
 #> [25] textshaping_1.0.4   janitor_2.2.1       snakecase_0.11.1   
@@ -1626,7 +1626,7 @@ sessionInfo()
 #> [31] yaml_2.3.10         pillar_1.11.1       pkgdown_2.2.0      
 #> [34] hexbin_1.28.5       jquerylib_0.1.4     tidyr_1.3.1        
 #> [37] cachem_1.1.0        RProtoBufLib_2.22.0 commonmark_2.0.0   
-#> [40] tidyselect_1.2.1    digest_0.6.37       stringi_1.8.7      
+#> [40] tidyselect_1.2.1    digest_0.6.38       stringi_1.8.7      
 #> [43] dplyr_1.1.4         purrr_1.2.0         bookdown_0.45      
 #> [46] labeling_0.4.3      flowClust_3.48.0    fastmap_1.2.0      
 #> [49] grid_4.5.2          cli_3.6.5           magrittr_2.0.4     
@@ -1636,7 +1636,7 @@ sessionInfo()
 #> [61] gridExtra_2.3       cytolib_2.22.0      ragg_1.5.0         
 #> [64] evaluate_1.0.5      knitr_1.50          markdown_2.0       
 #> [67] rlang_1.1.6         Rcpp_1.1.0          glue_1.8.0         
-#> [70] xml2_1.4.1          Rgraphviz_2.54.0    BiocManager_1.30.26
+#> [70] xml2_1.4.1          Rgraphviz_2.54.0    BiocManager_1.30.27
 #> [73] BiocGenerics_0.56.0 jsonlite_2.0.0      R6_2.6.1           
 #> [76] plyr_1.8.9          systemfonts_1.3.1   fs_1.6.6
 ```

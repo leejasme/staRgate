@@ -6,14 +6,7 @@ Internal function for `get_density_gates` For each unique value in
 ## Usage
 
 ``` r
-getDensityDerivs(
-  dens,
-  marker,
-  subset_col,
-  bin_n = 512,
-  peak_detect_ratio = 10,
-  pos_peak_threshold = 1800
-)
+getDensityDerivs(dens)
 ```
 
 ## Arguments
