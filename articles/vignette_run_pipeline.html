@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">staRgate</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,11 +70,11 @@
 <p>staRgate is an automated gating pipeline to process and analyze flow
 cytometry data to characterize the lineage, differentiation and
 functional states of T-cells.</p>
-<p>This pipeline is designed to mimic the manual gating of defining flow
-biomarker positive populations relative to a unimodal background
-population to include cells with varying intensities of marker
-expression. This is achieved via estimating the kernel density of the
-intensity distribution and corresponding derivatives. This pipeline
+<p>This pipeline is designed to mimic the manual gating strategy of
+defining flow biomarker positive populations relative to a unimodal
+background population to include cells with varying intensities of
+marker expression. This is achieved via estimating the kernel density of
+the intensity distribution and corresponding derivatives. This pipeline
 integrates the density gating method in conjuction with some
 pre-processing steps achieved via the R package <em><a href="https://bioconductor.org/packages/3.22/openCyto" class="external-link">openCyto</a></em>
 and an optional step with <em><a href="https://bioconductor.org/packages/3.22/flowAI" class="external-link">flowAI</a></em>.
@@ -86,7 +86,8 @@ starting from importing an flow cytometry standard (FCS) file into R to
 preprocessing and gating, as well as identifying T-cell subpopulations
 for downstream analysis. This pipeline returns results at the
 single-cell level as well as the summarized sample-level data (for the
-percentages of T-cell cells when identifying the subpopulations).</p>
+percentages of positively expressing cells when identifying the
+subpopulations).</p>
 <p>For illustration purposes, the example FCS file used in this vignette
 and stored in the package data is a concatenated file limited to the
 first 30k events/cells acquired to reduce the run time and file
@@ -154,7 +155,7 @@ run: <em><a href="https://bioconductor.org/packages/3.22/openCyto" class="extern
 <span><span class="va">path_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># Print the path_out for user to see</span></span>
 <span><span class="va">path_out</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmplRC88S"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/RtmprmwtZO"</span></span>
 <span></span>
 <span><span class="co">## File path Gating template</span></span>
 <span><span class="va">gtFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"gating_template_x50_tcell.csv"</span>, package <span class="op">=</span> <span class="st">"staRgate"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -173,9 +174,9 @@ run: <em><a href="https://bioconductor.org/packages/3.22/openCyto" class="extern
 </h2>
 <p>In order to run the pipeline, the user must have the data in flow
 cytometry standard (FCS) format. This is usually the output from flowJo.
-All of these input files are expected to be comma-separated values (csv)
-files. Please see the <code>inst</code> folder of the package for
-examples of the formats.</p>
+All of these input files except the <code>bin size</code> are expected
+to be comma-separated values (csv) files. Please see the
+<code>inst</code> folder of the package for examples of the formats.</p>
 <ul>
 <li>Compensation matrix from manual gating-
 <ul>
@@ -315,7 +316,8 @@ package also allows for an automated transformation calculation
 “guessing” appropriate parameters. We chose to explicitly specify the
 biexponential transformation with fixed parameters for all channels to
 match the manual gating strategy used in flowJo for a more direct
-comparison of {staRgate} to the manual gating results.</p>
+comparison of {staRgate} when benchmarking against the manual gating
+results.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Save the pre-transformed data to compare ranges </span></span>
 <span><span class="co"># And check that transformation was applied</span></span>
@@ -341,8 +343,8 @@ comparison of {staRgate} to the manual gating results.</p>
 <h3 id="pre-gating">Pre-gating<a class="anchor" aria-label="anchor" href="#pre-gating"></a>
 </h3>
 <p>In this context, pre-gating is defined as gating from the root
-population up to CD3+, or CD4+/CD8+ subsets</p>
-<p>Then we will pass the data to the density gating step.</p>
+population (all cells acquired) up to key parent populations: CD3+, or
+CD4+/CD8+ subsets. Then we will gate each marker indpendently.</p>
 <p>The <em><a href="https://bioconductor.org/packages/3.22/flowAI" class="external-link">flowAI</a></em>
 step serves as a quality control (QC) to match the first Time gate step
 that is typically done in manual gating. It is possible, however, that
@@ -352,7 +354,7 @@ excludes too many cells.</p>
 important to include if the user chooses to exclude the <em><a href="https://bioconductor.org/packages/3.22/flowAI" class="external-link">flowAI</a></em>
 step.</p>
 <p>In this tutorial, we will skip the <em><a href="https://bioconductor.org/packages/3.22/flowAI" class="external-link">flowAI</a></em>
-step.</p>
+step to ease the length.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Pre-gating up to CD4/8+ with `r BiocStyle::Biocpkg("openCyto")`</span></span>
 <span><span class="co">## Set seed using today's date</span></span>
@@ -405,53 +407,43 @@ step.</p>
 <p>Grab the channel and marker names in the <code>gs</code> object</p>
 <ul>
 <li>When extracting <code>intensity_matrix</code>, it is labeled with
-channel names as the marker names</li>
+the channel names rather than the marker names.</li>
 <li>The <code>marker_chnl_names</code> mapping created below will be
 used to rename the column names to the marker names, which will make
 calling the appropriate columns easier when analyzing the data</li>
 </ul>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Grab marker names from GatingSet for labeling col names in intensity matrix</span></span>
-<span><span class="co">## Can skip this step if you know the exact namings of the marker names in your FCS files</span></span>
-<span><span class="co"># In that case, supply a string is fine:</span></span>
-<span><span class="co"># marker_chnl_names = c("CD45RA", "CCR7", "LAG3", ...)</span></span>
-<span><span class="va">marker_chnl_names</span> <span class="op">&lt;-</span></span>
-<span>  <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_data.html" class="external-link">gh_pop_get_data</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowCore/man/markernames.html" class="external-link">markernames</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"marker_full"</span> <span class="op">=</span> <span class="va">_</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html" class="external-link">rownames_to_column</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"chnl"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="co"># clean up the names</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    marker_full <span class="op">=</span> <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/make_clean_names.html" class="external-link">make_clean_names</a></span><span class="op">(</span><span class="va">marker_full</span>, replace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-"</span> <span class="op">=</span> <span class="st">""</span>, <span class="st">"_"</span> <span class="op">=</span> <span class="st">""</span>, <span class="st">" "</span> <span class="op">=</span> <span class="st">""</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/chartr.html" class="external-link">toupper</a></span><span class="op">(</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="co"># Reorder the marker channel names to start with CD3, CD4, CD8 then the rest</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">marker_full</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD3"</span>, <span class="st">"CD4"</span>, <span class="st">"CD8"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="co"># Clean up</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>marker_full <span class="op">=</span> </span>
-<span>                  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">marker_full</span> <span class="op">==</span> <span class="st">"FOX_P3"</span> <span class="op">~</span> <span class="st">"FOXP3"</span>,</span>
-<span>                                   .default <span class="op">=</span> <span class="va">marker_full</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">## Can skip this step if you know the names of the channels that correspond to your marker names in your FCS files</span></span>
+<span><span class="co"># In that case, supply strings for `chnl` and `marker_full` is fine. Such as:</span></span>
+<span><span class="co"># chnl = c("BV750-A", "BUV496-A")</span></span>
+<span><span class="co"># marker_full = c("CD3", "CD4)</span></span>
 <span></span>
+<span><span class="co"># This returns a named character vector</span></span>
+<span><span class="co"># With the channel names as names and marker names as the values</span></span>
+<span><span class="va">marker_chnl_names</span> <span class="op">&lt;-</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowCore/man/markernames.html" class="external-link">markernames</a></span><span class="op">(</span><span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_data.html" class="external-link">gh_pop_get_data</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Specify which markers to gate based on individual density distributions</span></span>
 <span><span class="co"># For our Tcell panel, we only want to apply the density gating on</span></span>
 <span><span class="co"># these 23 markers</span></span>
 <span><span class="va">markers_to_gate</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD45RA"</span>, <span class="st">"ICOS"</span>, <span class="st">"CD25"</span>, <span class="st">"TIM3"</span>, </span>
 <span>                    <span class="st">"CD27"</span>, <span class="st">"CD57"</span>, <span class="st">"CXCR5"</span>, <span class="st">"CCR4"</span>, </span>
 <span>                    <span class="st">"CCR7"</span>, <span class="st">"HLADR"</span>, <span class="st">"CD28"</span>, <span class="st">"PD1"</span>, </span>
 <span>                    <span class="st">"LAG3"</span>, <span class="st">"CD127"</span>, <span class="st">"CD38"</span>, <span class="st">"TIGIT"</span>, </span>
-<span>                    <span class="st">"EOMES"</span>, <span class="st">"CTLA4"</span>, <span class="st">"FOXP3"</span>, <span class="st">"GITR"</span>,</span>
+<span>                    <span class="st">"EOMES"</span>, <span class="st">"CTLA4"</span>, <span class="st">"FOX_P3"</span>, <span class="st">"GITR"</span>,</span>
 <span>                    <span class="st">"TBET"</span>, <span class="st">"KI67"</span>, <span class="st">"GZM_B"</span><span class="op">)</span></span></code></pre></div>
 <p>Next we grab the intensity values and indicators for the pre-gating
 steps.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract intensity matrix from GatingSet object</span></span>
 <span><span class="co">## Grab the intensity matrix from GatingSet</span></span>
-<span><span class="co">## the gh_pop_get_indices grabs the 0/1 for whether gated as CD3</span></span>
 <span><span class="va">intensity_dat</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
 <span>    <span class="co"># This grabs the intensity matrix with intensity values</span></span>
 <span>    <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_data.html" class="external-link">gh_pop_get_data</a></span><span class="op">(</span><span class="va">gs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>      <span class="fu">flowCore</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/exprs.html" class="external-link">exprs</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    <span class="co"># Each of these grabs the 0/1 for gated as positive or negative for</span></span>
-<span>    <span class="co"># each step</span></span>
+<span>    <span class="co"># the gh_pop_get_indices grabs the 0/1 for whether gated as pos/neg </span></span>
+<span>    <span class="co"># for each step specified</span></span>
 <span>    <span class="st">"fsc_ssc_qc"</span> <span class="op">=</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_indices.html" class="external-link">gh_pop_get_indices</a></span><span class="op">(</span><span class="va">gs</span>, y <span class="op">=</span> <span class="st">"fsc_ssc_qc"</span><span class="op">)</span>,</span>
 <span>    <span class="st">"nonDebris"</span> <span class="op">=</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_indices.html" class="external-link">gh_pop_get_indices</a></span><span class="op">(</span><span class="va">gs</span>, y <span class="op">=</span> <span class="st">"nonDebris"</span><span class="op">)</span>,</span>
 <span>    <span class="st">"singlets"</span> <span class="op">=</span> <span class="fu">flowWorkspace</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/flowWorkspace/man/gh_pop_get_indices.html" class="external-link">gh_pop_get_indices</a></span><span class="op">(</span><span class="va">gs</span>, y <span class="op">=</span> <span class="st">"singlets"</span><span class="op">)</span>,</span>
@@ -463,13 +455,22 @@ steps.</p>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># The intensity matrix is a matrix object. Convert to tibble.</span></span>
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="co"># Rename with marker names with a named vector</span></span>
+<span>  <span class="co"># Rename with colnames which are the channel names</span></span>
+<span>  <span class="co"># to marker names because it's easier to call columns by markers</span></span>
+<span>  <span class="co"># Rename using the marker_chnl_names we created above</span></span>
+<span>  <span class="co"># But we need it flipped when supplying to dplyr::rename()</span></span>
 <span>  <span class="co"># Where the names = value to rename to (marker names) </span></span>
 <span>  <span class="co"># The values of the vector = current names (Channel names)</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">marker_chnl_names</span><span class="op">$</span><span class="va">chnl</span>, </span>
-<span>                                <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">marker_chnl_names</span><span class="op">$</span><span class="va">marker_full</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span></span>
+<span>    <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">marker_chnl_names</span><span class="op">)</span>,</span>
+<span>                    <span class="co"># Clean up the marker names, make them all caps</span></span>
+<span>                    <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/make_clean_names.html" class="external-link">make_clean_names</a></span><span class="op">(</span><span class="va">marker_chnl_names</span>, </span>
+<span>                                              case <span class="op">=</span> <span class="st">"all_caps"</span>, </span>
+<span>                                              replace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-"</span> <span class="op">=</span> <span class="st">""</span>, <span class="st">"_"</span> <span class="op">=</span> <span class="st">""</span>, <span class="st">" "</span> <span class="op">=</span> <span class="st">""</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>                <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    <span class="co"># Create a 4-level category for cd4, cd8 neg/pos</span></span>
+<span>    <span class="co"># in order to calculate the percentages individually within these parent populations</span></span>
 <span>    cd4_pos_cd8_pos <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
 <span>      <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">cd4_pos</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">cd8_pos</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">~</span> <span class="st">"cd4_pos_cd8_pos"</span>,</span>
 <span>      <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">cd4_pos</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">cd8_pos</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">~</span> <span class="st">"cd4_pos_cd8_neg"</span>,</span>
@@ -488,7 +489,7 @@ steps.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 33 more variables: CD127 &lt;dbl&gt;, CD38 &lt;dbl&gt;, CD45RA &lt;dbl&gt;, CD4 &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   ICOS &lt;dbl&gt;, CD25 &lt;dbl&gt;, TIM3 &lt;dbl&gt;, CD27 &lt;dbl&gt;, CD8 &lt;dbl&gt;, CD57 &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   CXCR5 &lt;dbl&gt;, LD &lt;dbl&gt;, CD1419 &lt;dbl&gt;, CCR4 &lt;dbl&gt;, CCR7 &lt;dbl&gt;, HLADR &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   CD3 &lt;dbl&gt;, CD28 &lt;dbl&gt;, TIGIT &lt;dbl&gt;, EOMES &lt;dbl&gt;, CTLA4 &lt;dbl&gt;, FOXP3 &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   CD3 &lt;dbl&gt;, CD28 &lt;dbl&gt;, TIGIT &lt;dbl&gt;, EOMES &lt;dbl&gt;, CTLA4 &lt;dbl&gt;, FOX_P3 &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   GITR &lt;dbl&gt;, Time &lt;dbl&gt;, fsc_ssc_qc &lt;dbl&gt;, nonDebris &lt;dbl&gt;, singlets &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   cd14_neg_19_neg &lt;dbl&gt;, live &lt;dbl&gt;, cd3_pos &lt;dbl&gt;, cd4_pos &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   cd8_pos &lt;dbl&gt;, cd4_pos_cd8_pos &lt;chr&gt;</span></span></span></code></pre></div>
@@ -529,10 +530,10 @@ function</li>
 <li>The suggested number of bins for density estimation is
 <code>40</code> as some level of smoothing is required to reduce the
 noise and picking up false peaks.</li>
-<li>When multiple samples from the same batch or experiment run (samples
-are processed together), we recommend to borrow information from other
-samples by pooling all CD3+ across the same batch before applying the
-density gating.</li>
+<li>When multiple samples from the same batch or experiment run (e.g.,
+samples are processed on the same day), we recommend to borrow
+information from other samples by pooling all CD3+ across the same batch
+before applying the density gating.</li>
 <li>If interested in pooling across experiment runs, consider
 visualizing for any batch-level intensity shifts and variations before
 pooling samples together.</li>
@@ -541,9 +542,17 @@ pooling samples together.</li>
 markers.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Density gating parameters</span></span>
-<span><span class="va">peak_r</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
+<span><span class="co"># peak detection ratio where any peak &lt; 1/10 of the tallest peak will be </span></span>
+<span><span class="co"># considered as noise</span></span>
+<span><span class="va">peak_r</span> <span class="op">&lt;-</span> <span class="fl">10</span> </span>
+<span><span class="co"># smoothing to apply to the density estimation</span></span>
+<span><span class="co"># Using the default of 512 creates many little bumps/noise that are artifacts </span></span>
+<span><span class="co"># From a systematic grid search, we found the bin sizes of ~40-50 works best</span></span>
 <span><span class="va">bin_i</span> <span class="op">&lt;-</span> <span class="fl">40</span></span>
 <span></span>
+<span><span class="co"># Remove any very negative values that are artifacts from autogating</span></span>
+<span><span class="co"># -1000 on the biexp transformed scale corresponds to roughly -3300 on the original</span></span>
+<span><span class="co"># intensity scale so this is quite conservative.</span></span>
 <span><span class="va">neg_intensity_thres</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">1000</span></span>
 <span></span>
 <span><span class="co"># select a few markers to gate</span></span>
@@ -553,7 +562,7 @@ markers.</p>
 <span><span class="va">pos_thres</span> <span class="op">&lt;-</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">path_pos_peak_thresholds</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/clean_names.html" class="external-link">clean_names</a></span><span class="op">(</span>case <span class="op">=</span> <span class="st">"all_caps"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Show the exact output from the get_density_gates() function</span></span>
+<code class="sourceCode R"><span><span class="co"># calculate the gates</span></span>
 <span><span class="va">dens_gates_pre</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">intensity_dat</span>, <span class="va">cd3_pos</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/getDensityGates.html">getDensityGates</a></span><span class="op">(</span></span>
@@ -569,6 +578,7 @@ markers.</p>
 <span><span class="co"># Since we apply density gating on CD3+ cells but</span></span>
 <span><span class="co"># Would like to calculate subpopulations with CD4+ and CD8+ as</span></span>
 <span><span class="co"># the starting parent population, we need to add corresponding rows</span></span>
+<span><span class="co"># to pass into getGatedDat()</span></span>
 <span><span class="va">dens_gates</span> <span class="op">&lt;-</span></span>
 <span>  <span class="co"># Stack the pseudo-neg gated markers and empirically gated markers</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="va">dens_gates_pre</span>, <span class="va">gates_pseudo_neg</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -641,7 +651,7 @@ gates<a class="anchor" aria-label="anchor" href="#visualizing-the-gates"></a>
 <span>    color <span class="op">=</span> <span class="st">"blue"</span>,</span>
 <span>    linetype <span class="op">=</span> <span class="st">"dashed"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of LAG3 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of LAG3 intensity by CD4/CD8 subsets. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">cd4_pos_cd8_pos</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" width="768" style="display: block; margin: auto;"></p>
 </div>
@@ -684,7 +694,7 @@ gates<a class="anchor" aria-label="anchor" href="#visualizing-the-gates"></a>
 <span>    color <span class="op">=</span> <span class="st">"blue"</span>,</span>
 <span>    linetype <span class="op">=</span> <span class="st">"dashed"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CCR7 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CCR7 intensity for CD4/CD8 subsets. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">cd4_pos_cd8_pos</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-17-1.png" class="r-plt" width="768" style="display: block; margin: auto;"></p>
 </div>
@@ -727,7 +737,7 @@ gates<a class="anchor" aria-label="anchor" href="#visualizing-the-gates"></a>
 <span>    color <span class="op">=</span> <span class="st">"blue"</span>,</span>
 <span>    linetype <span class="op">=</span> <span class="st">"dashed"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CD45RA intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CD45RA intensity for CD4/CD8 subsets. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">cd4_pos_cd8_pos</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-19-1.png" class="r-plt" width="768" style="display: block; margin: auto;"></p>
 </div>
@@ -770,7 +780,7 @@ gates<a class="anchor" aria-label="anchor" href="#visualizing-the-gates"></a>
 <span>    color <span class="op">=</span> <span class="st">"blue"</span>,</span>
 <span>    linetype <span class="op">=</span> <span class="st">"dashed"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CD127 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CD127 intensity for CD4/CD8 subsets. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">cd4_pos_cd8_pos</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-21-1.png" class="r-plt" width="768" style="display: block; margin: auto;"></p>
 </div>
@@ -813,7 +823,7 @@ gates<a class="anchor" aria-label="anchor" href="#visualizing-the-gates"></a>
 <span>    color <span class="op">=</span> <span class="st">"blue"</span>,</span>
 <span>    linetype <span class="op">=</span> <span class="st">"dashed"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CD28 intensity on all CD3+. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"Distribution of CD28 intensity for CD4/CD8 subsets. Gate identifed by {staRgate} in blue."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">cd4_pos_cd8_pos</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette_run_pipeline_files/figure-html/unnamed-chunk-23-1.png" class="r-plt" width="768" style="display: block; margin: auto;"></p>
 </div>
@@ -828,7 +838,10 @@ gates<a class="anchor" aria-label="anchor" href="#visualizing-the-gates"></a>
 percentages of cells for all combinations of markers.</p>
 <p>For the subpopulations, the <code>denominator</code> is defined as
 the parent population and <code>numerator</code> is the population of
-interest out of the parent population. The
+interest out of the parent population. For example, the subpopulation
+CD4+ of CD3+ cells correspond to the CD4+ as the <code>numerator</code>
+and CD3+ as the <code>denominator</code>.</p>
+<p>The
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>d</mi></msub><annotation encoding="application/x-tex">n_d</annotation></semantics></math>
 refers to the number of markers considered for the denominator and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
@@ -849,31 +862,33 @@ markers we gated on using <code>c("LAG3", "CCR7", "CD45RA")</code>
 <code>expand_denom</code> generates different lists of subpopulations to
 calculate counts/percentages for:</p>
 <ul>
-<li>expand_num: should calculations consider up to pairs of numerator
-markers included?,</li>
-<li>expand_denom: should the calculations consider combinations of each
-numerator marker and parent populations specified in the
-denominator?</li>
+<li>
+<code>expand_num</code>: should calculations consider up to pairs of
+numerator markers included?,</li>
+<li>
+<code>expand_denom</code>: should the calculations consider
+combinations of each numerator marker and parent populations specified
+in the denominator?</li>
 </ul>
 <details><summary>
 Currently, we support the four scenarios listed:
-</summary><div id="kqeuhmokzy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#kqeuhmokzy table {
+</summary><div id="xejaontuwu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#xejaontuwu table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#kqeuhmokzy thead, #kqeuhmokzy tbody, #kqeuhmokzy tfoot, #kqeuhmokzy tr, #kqeuhmokzy td, #kqeuhmokzy th {
+#xejaontuwu thead, #xejaontuwu tbody, #xejaontuwu tfoot, #xejaontuwu tr, #xejaontuwu td, #xejaontuwu th {
   border-style: none;
 }
 
-#kqeuhmokzy p {
+#xejaontuwu p {
   margin: 0;
   padding: 0;
 }
 
-#kqeuhmokzy .gt_table {
+#xejaontuwu .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -899,12 +914,12 @@ Currently, we support the four scenarios listed:
   border-left-color: #D3D3D3;
 }
 
-#kqeuhmokzy .gt_caption {
+#xejaontuwu .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#kqeuhmokzy .gt_title {
+#xejaontuwu .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -916,7 +931,7 @@ Currently, we support the four scenarios listed:
   border-bottom-width: 0;
 }
 
-#kqeuhmokzy .gt_subtitle {
+#xejaontuwu .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -928,7 +943,7 @@ Currently, we support the four scenarios listed:
   border-top-width: 0;
 }
 
-#kqeuhmokzy .gt_heading {
+#xejaontuwu .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -940,13 +955,13 @@ Currently, we support the four scenarios listed:
   border-right-color: #D3D3D3;
 }
 
-#kqeuhmokzy .gt_bottom_border {
+#xejaontuwu .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#kqeuhmokzy .gt_col_headings {
+#xejaontuwu .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -961,7 +976,7 @@ Currently, we support the four scenarios listed:
   border-right-color: #D3D3D3;
 }
 
-#kqeuhmokzy .gt_col_heading {
+#xejaontuwu .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -981,7 +996,7 @@ Currently, we support the four scenarios listed:
   overflow-x: hidden;
 }
 
-#kqeuhmokzy .gt_column_spanner_outer {
+#xejaontuwu .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -993,15 +1008,15 @@ Currently, we support the four scenarios listed:
   padding-right: 4px;
 }
 
-#kqeuhmokzy .gt_column_spanner_outer:first-child {
+#xejaontuwu .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#kqeuhmokzy .gt_column_spanner_outer:last-child {
+#xejaontuwu .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#kqeuhmokzy .gt_column_spanner {
+#xejaontuwu .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1013,11 +1028,11 @@ Currently, we support the four scenarios listed:
   width: 100%;
 }
 
-#kqeuhmokzy .gt_spanner_row {
+#xejaontuwu .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#kqeuhmokzy .gt_group_heading {
+#xejaontuwu .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1043,7 +1058,7 @@ Currently, we support the four scenarios listed:
   text-align: left;
 }
 
-#kqeuhmokzy .gt_empty_group_heading {
+#xejaontuwu .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1058,15 +1073,15 @@ Currently, we support the four scenarios listed:
   vertical-align: middle;
 }
 
-#kqeuhmokzy .gt_from_md > :first-child {
+#xejaontuwu .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#kqeuhmokzy .gt_from_md > :last-child {
+#xejaontuwu .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#kqeuhmokzy .gt_row {
+#xejaontuwu .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1085,7 +1100,7 @@ Currently, we support the four scenarios listed:
   overflow-x: hidden;
 }
 
-#kqeuhmokzy .gt_stub {
+#xejaontuwu .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1098,7 +1113,7 @@ Currently, we support the four scenarios listed:
   padding-right: 5px;
 }
 
-#kqeuhmokzy .gt_stub_row_group {
+#xejaontuwu .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1112,15 +1127,15 @@ Currently, we support the four scenarios listed:
   vertical-align: top;
 }
 
-#kqeuhmokzy .gt_row_group_first td {
+#xejaontuwu .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#kqeuhmokzy .gt_row_group_first th {
+#xejaontuwu .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#kqeuhmokzy .gt_summary_row {
+#xejaontuwu .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1130,16 +1145,16 @@ Currently, we support the four scenarios listed:
   padding-right: 5px;
 }
 
-#kqeuhmokzy .gt_first_summary_row {
+#xejaontuwu .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#kqeuhmokzy .gt_first_summary_row.thick {
+#xejaontuwu .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#kqeuhmokzy .gt_last_summary_row {
+#xejaontuwu .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1149,7 +1164,7 @@ Currently, we support the four scenarios listed:
   border-bottom-color: #D3D3D3;
 }
 
-#kqeuhmokzy .gt_grand_summary_row {
+#xejaontuwu .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1159,7 +1174,7 @@ Currently, we support the four scenarios listed:
   padding-right: 5px;
 }
 
-#kqeuhmokzy .gt_first_grand_summary_row {
+#xejaontuwu .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1169,7 +1184,7 @@ Currently, we support the four scenarios listed:
   border-top-color: #D3D3D3;
 }
 
-#kqeuhmokzy .gt_last_grand_summary_row_top {
+#xejaontuwu .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1179,11 +1194,11 @@ Currently, we support the four scenarios listed:
   border-bottom-color: #D3D3D3;
 }
 
-#kqeuhmokzy .gt_striped {
+#xejaontuwu .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#kqeuhmokzy .gt_table_body {
+#xejaontuwu .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1192,7 +1207,7 @@ Currently, we support the four scenarios listed:
   border-bottom-color: #D3D3D3;
 }
 
-#kqeuhmokzy .gt_footnotes {
+#xejaontuwu .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1206,7 +1221,7 @@ Currently, we support the four scenarios listed:
   border-right-color: #D3D3D3;
 }
 
-#kqeuhmokzy .gt_footnote {
+#xejaontuwu .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1215,7 +1230,7 @@ Currently, we support the four scenarios listed:
   padding-right: 5px;
 }
 
-#kqeuhmokzy .gt_sourcenotes {
+#xejaontuwu .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1229,7 +1244,7 @@ Currently, we support the four scenarios listed:
   border-right-color: #D3D3D3;
 }
 
-#kqeuhmokzy .gt_sourcenote {
+#xejaontuwu .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1237,72 +1252,72 @@ Currently, we support the four scenarios listed:
   padding-right: 5px;
 }
 
-#kqeuhmokzy .gt_left {
+#xejaontuwu .gt_left {
   text-align: left;
 }
 
-#kqeuhmokzy .gt_center {
+#xejaontuwu .gt_center {
   text-align: center;
 }
 
-#kqeuhmokzy .gt_right {
+#xejaontuwu .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#kqeuhmokzy .gt_font_normal {
+#xejaontuwu .gt_font_normal {
   font-weight: normal;
 }
 
-#kqeuhmokzy .gt_font_bold {
+#xejaontuwu .gt_font_bold {
   font-weight: bold;
 }
 
-#kqeuhmokzy .gt_font_italic {
+#xejaontuwu .gt_font_italic {
   font-style: italic;
 }
 
-#kqeuhmokzy .gt_super {
+#xejaontuwu .gt_super {
   font-size: 65%;
 }
 
-#kqeuhmokzy .gt_footnote_marks {
+#xejaontuwu .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#kqeuhmokzy .gt_asterisk {
+#xejaontuwu .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#kqeuhmokzy .gt_indent_1 {
+#xejaontuwu .gt_indent_1 {
   text-indent: 5px;
 }
 
-#kqeuhmokzy .gt_indent_2 {
+#xejaontuwu .gt_indent_2 {
   text-indent: 10px;
 }
 
-#kqeuhmokzy .gt_indent_3 {
+#xejaontuwu .gt_indent_3 {
   text-indent: 15px;
 }
 
-#kqeuhmokzy .gt_indent_4 {
+#xejaontuwu .gt_indent_4 {
   text-indent: 20px;
 }
 
-#kqeuhmokzy .gt_indent_5 {
+#xejaontuwu .gt_indent_5 {
   text-indent: 25px;
 }
 
-#kqeuhmokzy .katex-display {
+#xejaontuwu .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#kqeuhmokzy div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#xejaontuwu div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1432,9 +1447,11 @@ Currently, we support the four scenarios listed:
 </details><p>The <code>keep_indicators</code> argument provides the 0/1 for which
 marker is considered in the numerator and denominator for each
 subpopulation. This is especially useful when merging onto other data
-that does not have the same format.</p>
+that does not have the same naming conventions.</p>
 <p>For example, when matching strings: “CD4+ &amp; CD8- of CD3+” is
-different from “CD8- &amp; CD4+ of CD3+” and “CD4+ and CD8- of CD3+”</p>
+different from “CD8- &amp; CD4+ of CD3+” and “CD4+ and CD8- of CD3+”.
+But using indicator columns, we can match the subpopulations regardless
+of the subpopulation naming convention.</p>
 <p>Below is we show examples of each of the four combinations for the
 <code>expand_num</code> and <code>expand_denom</code> arguments.</p>
 <p>For the example of when <code>expand_num = FALSE</code> and
@@ -1475,23 +1492,23 @@ Expand example for <code>expand_num = FALSE</code> and
 <span>    columns <span class="op">=</span> <span class="st">"perc"</span>,</span>
 <span>    decimals <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div id="lfotbkcxet" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#lfotbkcxet table {
+<div id="oicpwlqigc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#oicpwlqigc table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#lfotbkcxet thead, #lfotbkcxet tbody, #lfotbkcxet tfoot, #lfotbkcxet tr, #lfotbkcxet td, #lfotbkcxet th {
+#oicpwlqigc thead, #oicpwlqigc tbody, #oicpwlqigc tfoot, #oicpwlqigc tr, #oicpwlqigc td, #oicpwlqigc th {
   border-style: none;
 }
 
-#lfotbkcxet p {
+#oicpwlqigc p {
   margin: 0;
   padding: 0;
 }
 
-#lfotbkcxet .gt_table {
+#oicpwlqigc .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1517,12 +1534,12 @@ Expand example for <code>expand_num = FALSE</code> and
   border-left-color: #D3D3D3;
 }
 
-#lfotbkcxet .gt_caption {
+#oicpwlqigc .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#lfotbkcxet .gt_title {
+#oicpwlqigc .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1534,7 +1551,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-width: 0;
 }
 
-#lfotbkcxet .gt_subtitle {
+#oicpwlqigc .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1546,7 +1563,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-top-width: 0;
 }
 
-#lfotbkcxet .gt_heading {
+#oicpwlqigc .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1558,13 +1575,13 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#lfotbkcxet .gt_bottom_border {
+#oicpwlqigc .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#lfotbkcxet .gt_col_headings {
+#oicpwlqigc .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1579,7 +1596,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#lfotbkcxet .gt_col_heading {
+#oicpwlqigc .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1599,7 +1616,7 @@ Expand example for <code>expand_num = FALSE</code> and
   overflow-x: hidden;
 }
 
-#lfotbkcxet .gt_column_spanner_outer {
+#oicpwlqigc .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1611,15 +1628,15 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 4px;
 }
 
-#lfotbkcxet .gt_column_spanner_outer:first-child {
+#oicpwlqigc .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#lfotbkcxet .gt_column_spanner_outer:last-child {
+#oicpwlqigc .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#lfotbkcxet .gt_column_spanner {
+#oicpwlqigc .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1631,11 +1648,11 @@ Expand example for <code>expand_num = FALSE</code> and
   width: 100%;
 }
 
-#lfotbkcxet .gt_spanner_row {
+#oicpwlqigc .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#lfotbkcxet .gt_group_heading {
+#oicpwlqigc .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1661,7 +1678,7 @@ Expand example for <code>expand_num = FALSE</code> and
   text-align: left;
 }
 
-#lfotbkcxet .gt_empty_group_heading {
+#oicpwlqigc .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1676,15 +1693,15 @@ Expand example for <code>expand_num = FALSE</code> and
   vertical-align: middle;
 }
 
-#lfotbkcxet .gt_from_md > :first-child {
+#oicpwlqigc .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#lfotbkcxet .gt_from_md > :last-child {
+#oicpwlqigc .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#lfotbkcxet .gt_row {
+#oicpwlqigc .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1703,7 +1720,7 @@ Expand example for <code>expand_num = FALSE</code> and
   overflow-x: hidden;
 }
 
-#lfotbkcxet .gt_stub {
+#oicpwlqigc .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1716,7 +1733,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#lfotbkcxet .gt_stub_row_group {
+#oicpwlqigc .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1730,15 +1747,15 @@ Expand example for <code>expand_num = FALSE</code> and
   vertical-align: top;
 }
 
-#lfotbkcxet .gt_row_group_first td {
+#oicpwlqigc .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#lfotbkcxet .gt_row_group_first th {
+#oicpwlqigc .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#lfotbkcxet .gt_summary_row {
+#oicpwlqigc .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1748,16 +1765,16 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#lfotbkcxet .gt_first_summary_row {
+#oicpwlqigc .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#lfotbkcxet .gt_first_summary_row.thick {
+#oicpwlqigc .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#lfotbkcxet .gt_last_summary_row {
+#oicpwlqigc .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1767,7 +1784,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#lfotbkcxet .gt_grand_summary_row {
+#oicpwlqigc .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1777,7 +1794,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#lfotbkcxet .gt_first_grand_summary_row {
+#oicpwlqigc .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1787,7 +1804,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-top-color: #D3D3D3;
 }
 
-#lfotbkcxet .gt_last_grand_summary_row_top {
+#oicpwlqigc .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1797,11 +1814,11 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#lfotbkcxet .gt_striped {
+#oicpwlqigc .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#lfotbkcxet .gt_table_body {
+#oicpwlqigc .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1810,7 +1827,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#lfotbkcxet .gt_footnotes {
+#oicpwlqigc .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1824,7 +1841,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#lfotbkcxet .gt_footnote {
+#oicpwlqigc .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1833,7 +1850,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#lfotbkcxet .gt_sourcenotes {
+#oicpwlqigc .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1847,7 +1864,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#lfotbkcxet .gt_sourcenote {
+#oicpwlqigc .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1855,72 +1872,72 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#lfotbkcxet .gt_left {
+#oicpwlqigc .gt_left {
   text-align: left;
 }
 
-#lfotbkcxet .gt_center {
+#oicpwlqigc .gt_center {
   text-align: center;
 }
 
-#lfotbkcxet .gt_right {
+#oicpwlqigc .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#lfotbkcxet .gt_font_normal {
+#oicpwlqigc .gt_font_normal {
   font-weight: normal;
 }
 
-#lfotbkcxet .gt_font_bold {
+#oicpwlqigc .gt_font_bold {
   font-weight: bold;
 }
 
-#lfotbkcxet .gt_font_italic {
+#oicpwlqigc .gt_font_italic {
   font-style: italic;
 }
 
-#lfotbkcxet .gt_super {
+#oicpwlqigc .gt_super {
   font-size: 65%;
 }
 
-#lfotbkcxet .gt_footnote_marks {
+#oicpwlqigc .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#lfotbkcxet .gt_asterisk {
+#oicpwlqigc .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#lfotbkcxet .gt_indent_1 {
+#oicpwlqigc .gt_indent_1 {
   text-indent: 5px;
 }
 
-#lfotbkcxet .gt_indent_2 {
+#oicpwlqigc .gt_indent_2 {
   text-indent: 10px;
 }
 
-#lfotbkcxet .gt_indent_3 {
+#oicpwlqigc .gt_indent_3 {
   text-indent: 15px;
 }
 
-#lfotbkcxet .gt_indent_4 {
+#oicpwlqigc .gt_indent_4 {
   text-indent: 20px;
 }
 
-#lfotbkcxet .gt_indent_5 {
+#oicpwlqigc .gt_indent_5 {
   text-indent: 25px;
 }
 
-#lfotbkcxet .katex-display {
+#oicpwlqigc .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#lfotbkcxet div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#oicpwlqigc div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2249,23 +2266,23 @@ Expand example for <code>expand_num = TRUE</code> and
 <span>    columns <span class="op">=</span> <span class="st">"perc"</span>,</span>
 <span>    decimals <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div id="gacefyuvod" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#gacefyuvod table {
+<div id="mpljzsivah" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#mpljzsivah table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#gacefyuvod thead, #gacefyuvod tbody, #gacefyuvod tfoot, #gacefyuvod tr, #gacefyuvod td, #gacefyuvod th {
+#mpljzsivah thead, #mpljzsivah tbody, #mpljzsivah tfoot, #mpljzsivah tr, #mpljzsivah td, #mpljzsivah th {
   border-style: none;
 }
 
-#gacefyuvod p {
+#mpljzsivah p {
   margin: 0;
   padding: 0;
 }
 
-#gacefyuvod .gt_table {
+#mpljzsivah .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2291,12 +2308,12 @@ Expand example for <code>expand_num = TRUE</code> and
   border-left-color: #D3D3D3;
 }
 
-#gacefyuvod .gt_caption {
+#mpljzsivah .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#gacefyuvod .gt_title {
+#mpljzsivah .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2308,7 +2325,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-width: 0;
 }
 
-#gacefyuvod .gt_subtitle {
+#mpljzsivah .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2320,7 +2337,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-top-width: 0;
 }
 
-#gacefyuvod .gt_heading {
+#mpljzsivah .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2332,13 +2349,13 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#gacefyuvod .gt_bottom_border {
+#mpljzsivah .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#gacefyuvod .gt_col_headings {
+#mpljzsivah .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2353,7 +2370,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#gacefyuvod .gt_col_heading {
+#mpljzsivah .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2373,7 +2390,7 @@ Expand example for <code>expand_num = TRUE</code> and
   overflow-x: hidden;
 }
 
-#gacefyuvod .gt_column_spanner_outer {
+#mpljzsivah .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2385,15 +2402,15 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 4px;
 }
 
-#gacefyuvod .gt_column_spanner_outer:first-child {
+#mpljzsivah .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#gacefyuvod .gt_column_spanner_outer:last-child {
+#mpljzsivah .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#gacefyuvod .gt_column_spanner {
+#mpljzsivah .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2405,11 +2422,11 @@ Expand example for <code>expand_num = TRUE</code> and
   width: 100%;
 }
 
-#gacefyuvod .gt_spanner_row {
+#mpljzsivah .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#gacefyuvod .gt_group_heading {
+#mpljzsivah .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2435,7 +2452,7 @@ Expand example for <code>expand_num = TRUE</code> and
   text-align: left;
 }
 
-#gacefyuvod .gt_empty_group_heading {
+#mpljzsivah .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2450,15 +2467,15 @@ Expand example for <code>expand_num = TRUE</code> and
   vertical-align: middle;
 }
 
-#gacefyuvod .gt_from_md > :first-child {
+#mpljzsivah .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#gacefyuvod .gt_from_md > :last-child {
+#mpljzsivah .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#gacefyuvod .gt_row {
+#mpljzsivah .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2477,7 +2494,7 @@ Expand example for <code>expand_num = TRUE</code> and
   overflow-x: hidden;
 }
 
-#gacefyuvod .gt_stub {
+#mpljzsivah .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2490,7 +2507,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#gacefyuvod .gt_stub_row_group {
+#mpljzsivah .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2504,15 +2521,15 @@ Expand example for <code>expand_num = TRUE</code> and
   vertical-align: top;
 }
 
-#gacefyuvod .gt_row_group_first td {
+#mpljzsivah .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#gacefyuvod .gt_row_group_first th {
+#mpljzsivah .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#gacefyuvod .gt_summary_row {
+#mpljzsivah .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2522,16 +2539,16 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#gacefyuvod .gt_first_summary_row {
+#mpljzsivah .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#gacefyuvod .gt_first_summary_row.thick {
+#mpljzsivah .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#gacefyuvod .gt_last_summary_row {
+#mpljzsivah .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2541,7 +2558,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#gacefyuvod .gt_grand_summary_row {
+#mpljzsivah .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2551,7 +2568,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#gacefyuvod .gt_first_grand_summary_row {
+#mpljzsivah .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2561,7 +2578,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-top-color: #D3D3D3;
 }
 
-#gacefyuvod .gt_last_grand_summary_row_top {
+#mpljzsivah .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2571,11 +2588,11 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#gacefyuvod .gt_striped {
+#mpljzsivah .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#gacefyuvod .gt_table_body {
+#mpljzsivah .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2584,7 +2601,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#gacefyuvod .gt_footnotes {
+#mpljzsivah .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2598,7 +2615,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#gacefyuvod .gt_footnote {
+#mpljzsivah .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2607,7 +2624,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#gacefyuvod .gt_sourcenotes {
+#mpljzsivah .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2621,7 +2638,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#gacefyuvod .gt_sourcenote {
+#mpljzsivah .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2629,72 +2646,72 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#gacefyuvod .gt_left {
+#mpljzsivah .gt_left {
   text-align: left;
 }
 
-#gacefyuvod .gt_center {
+#mpljzsivah .gt_center {
   text-align: center;
 }
 
-#gacefyuvod .gt_right {
+#mpljzsivah .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#gacefyuvod .gt_font_normal {
+#mpljzsivah .gt_font_normal {
   font-weight: normal;
 }
 
-#gacefyuvod .gt_font_bold {
+#mpljzsivah .gt_font_bold {
   font-weight: bold;
 }
 
-#gacefyuvod .gt_font_italic {
+#mpljzsivah .gt_font_italic {
   font-style: italic;
 }
 
-#gacefyuvod .gt_super {
+#mpljzsivah .gt_super {
   font-size: 65%;
 }
 
-#gacefyuvod .gt_footnote_marks {
+#mpljzsivah .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#gacefyuvod .gt_asterisk {
+#mpljzsivah .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#gacefyuvod .gt_indent_1 {
+#mpljzsivah .gt_indent_1 {
   text-indent: 5px;
 }
 
-#gacefyuvod .gt_indent_2 {
+#mpljzsivah .gt_indent_2 {
   text-indent: 10px;
 }
 
-#gacefyuvod .gt_indent_3 {
+#mpljzsivah .gt_indent_3 {
   text-indent: 15px;
 }
 
-#gacefyuvod .gt_indent_4 {
+#mpljzsivah .gt_indent_4 {
   text-indent: 20px;
 }
 
-#gacefyuvod .gt_indent_5 {
+#mpljzsivah .gt_indent_5 {
   text-indent: 25px;
 }
 
-#gacefyuvod .katex-display {
+#mpljzsivah .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#gacefyuvod div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#mpljzsivah div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -3186,23 +3203,23 @@ Expand example for <code>expand_num = FALSE</code> and
 <span>    columns <span class="op">=</span> <span class="st">"perc"</span>,</span>
 <span>    decimals <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div id="xbyqrurjwg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#xbyqrurjwg table {
+<div id="mzdvjwbbft" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#mzdvjwbbft table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#xbyqrurjwg thead, #xbyqrurjwg tbody, #xbyqrurjwg tfoot, #xbyqrurjwg tr, #xbyqrurjwg td, #xbyqrurjwg th {
+#mzdvjwbbft thead, #mzdvjwbbft tbody, #mzdvjwbbft tfoot, #mzdvjwbbft tr, #mzdvjwbbft td, #mzdvjwbbft th {
   border-style: none;
 }
 
-#xbyqrurjwg p {
+#mzdvjwbbft p {
   margin: 0;
   padding: 0;
 }
 
-#xbyqrurjwg .gt_table {
+#mzdvjwbbft .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3228,12 +3245,12 @@ Expand example for <code>expand_num = FALSE</code> and
   border-left-color: #D3D3D3;
 }
 
-#xbyqrurjwg .gt_caption {
+#mzdvjwbbft .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#xbyqrurjwg .gt_title {
+#mzdvjwbbft .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3245,7 +3262,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-width: 0;
 }
 
-#xbyqrurjwg .gt_subtitle {
+#mzdvjwbbft .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3257,7 +3274,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-top-width: 0;
 }
 
-#xbyqrurjwg .gt_heading {
+#mzdvjwbbft .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3269,13 +3286,13 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#xbyqrurjwg .gt_bottom_border {
+#mzdvjwbbft .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#xbyqrurjwg .gt_col_headings {
+#mzdvjwbbft .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3290,7 +3307,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#xbyqrurjwg .gt_col_heading {
+#mzdvjwbbft .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3310,7 +3327,7 @@ Expand example for <code>expand_num = FALSE</code> and
   overflow-x: hidden;
 }
 
-#xbyqrurjwg .gt_column_spanner_outer {
+#mzdvjwbbft .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3322,15 +3339,15 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 4px;
 }
 
-#xbyqrurjwg .gt_column_spanner_outer:first-child {
+#mzdvjwbbft .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#xbyqrurjwg .gt_column_spanner_outer:last-child {
+#mzdvjwbbft .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#xbyqrurjwg .gt_column_spanner {
+#mzdvjwbbft .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3342,11 +3359,11 @@ Expand example for <code>expand_num = FALSE</code> and
   width: 100%;
 }
 
-#xbyqrurjwg .gt_spanner_row {
+#mzdvjwbbft .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#xbyqrurjwg .gt_group_heading {
+#mzdvjwbbft .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3372,7 +3389,7 @@ Expand example for <code>expand_num = FALSE</code> and
   text-align: left;
 }
 
-#xbyqrurjwg .gt_empty_group_heading {
+#mzdvjwbbft .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3387,15 +3404,15 @@ Expand example for <code>expand_num = FALSE</code> and
   vertical-align: middle;
 }
 
-#xbyqrurjwg .gt_from_md > :first-child {
+#mzdvjwbbft .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#xbyqrurjwg .gt_from_md > :last-child {
+#mzdvjwbbft .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#xbyqrurjwg .gt_row {
+#mzdvjwbbft .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3414,7 +3431,7 @@ Expand example for <code>expand_num = FALSE</code> and
   overflow-x: hidden;
 }
 
-#xbyqrurjwg .gt_stub {
+#mzdvjwbbft .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3427,7 +3444,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#xbyqrurjwg .gt_stub_row_group {
+#mzdvjwbbft .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3441,15 +3458,15 @@ Expand example for <code>expand_num = FALSE</code> and
   vertical-align: top;
 }
 
-#xbyqrurjwg .gt_row_group_first td {
+#mzdvjwbbft .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#xbyqrurjwg .gt_row_group_first th {
+#mzdvjwbbft .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#xbyqrurjwg .gt_summary_row {
+#mzdvjwbbft .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3459,16 +3476,16 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#xbyqrurjwg .gt_first_summary_row {
+#mzdvjwbbft .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#xbyqrurjwg .gt_first_summary_row.thick {
+#mzdvjwbbft .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#xbyqrurjwg .gt_last_summary_row {
+#mzdvjwbbft .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3478,7 +3495,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#xbyqrurjwg .gt_grand_summary_row {
+#mzdvjwbbft .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3488,7 +3505,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#xbyqrurjwg .gt_first_grand_summary_row {
+#mzdvjwbbft .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3498,7 +3515,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-top-color: #D3D3D3;
 }
 
-#xbyqrurjwg .gt_last_grand_summary_row_top {
+#mzdvjwbbft .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3508,11 +3525,11 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#xbyqrurjwg .gt_striped {
+#mzdvjwbbft .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#xbyqrurjwg .gt_table_body {
+#mzdvjwbbft .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3521,7 +3538,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#xbyqrurjwg .gt_footnotes {
+#mzdvjwbbft .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3535,7 +3552,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#xbyqrurjwg .gt_footnote {
+#mzdvjwbbft .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3544,7 +3561,7 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#xbyqrurjwg .gt_sourcenotes {
+#mzdvjwbbft .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3558,7 +3575,7 @@ Expand example for <code>expand_num = FALSE</code> and
   border-right-color: #D3D3D3;
 }
 
-#xbyqrurjwg .gt_sourcenote {
+#mzdvjwbbft .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3566,72 +3583,72 @@ Expand example for <code>expand_num = FALSE</code> and
   padding-right: 5px;
 }
 
-#xbyqrurjwg .gt_left {
+#mzdvjwbbft .gt_left {
   text-align: left;
 }
 
-#xbyqrurjwg .gt_center {
+#mzdvjwbbft .gt_center {
   text-align: center;
 }
 
-#xbyqrurjwg .gt_right {
+#mzdvjwbbft .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#xbyqrurjwg .gt_font_normal {
+#mzdvjwbbft .gt_font_normal {
   font-weight: normal;
 }
 
-#xbyqrurjwg .gt_font_bold {
+#mzdvjwbbft .gt_font_bold {
   font-weight: bold;
 }
 
-#xbyqrurjwg .gt_font_italic {
+#mzdvjwbbft .gt_font_italic {
   font-style: italic;
 }
 
-#xbyqrurjwg .gt_super {
+#mzdvjwbbft .gt_super {
   font-size: 65%;
 }
 
-#xbyqrurjwg .gt_footnote_marks {
+#mzdvjwbbft .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#xbyqrurjwg .gt_asterisk {
+#mzdvjwbbft .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#xbyqrurjwg .gt_indent_1 {
+#mzdvjwbbft .gt_indent_1 {
   text-indent: 5px;
 }
 
-#xbyqrurjwg .gt_indent_2 {
+#mzdvjwbbft .gt_indent_2 {
   text-indent: 10px;
 }
 
-#xbyqrurjwg .gt_indent_3 {
+#mzdvjwbbft .gt_indent_3 {
   text-indent: 15px;
 }
 
-#xbyqrurjwg .gt_indent_4 {
+#mzdvjwbbft .gt_indent_4 {
   text-indent: 20px;
 }
 
-#xbyqrurjwg .gt_indent_5 {
+#mzdvjwbbft .gt_indent_5 {
   text-indent: 25px;
 }
 
-#xbyqrurjwg .katex-display {
+#mzdvjwbbft .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#xbyqrurjwg div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#mzdvjwbbft div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -4483,23 +4500,23 @@ Expand example for <code>expand_num = TRUE</code> and
 <span>    columns <span class="op">=</span> <span class="st">"perc"</span>,</span>
 <span>    decimals <span class="op">=</span> <span class="fl">1</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div id="lfwwgxatdo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#lfwwgxatdo table {
+<div id="ukhaejcpax" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ukhaejcpax table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#lfwwgxatdo thead, #lfwwgxatdo tbody, #lfwwgxatdo tfoot, #lfwwgxatdo tr, #lfwwgxatdo td, #lfwwgxatdo th {
+#ukhaejcpax thead, #ukhaejcpax tbody, #ukhaejcpax tfoot, #ukhaejcpax tr, #ukhaejcpax td, #ukhaejcpax th {
   border-style: none;
 }
 
-#lfwwgxatdo p {
+#ukhaejcpax p {
   margin: 0;
   padding: 0;
 }
 
-#lfwwgxatdo .gt_table {
+#ukhaejcpax .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -4525,12 +4542,12 @@ Expand example for <code>expand_num = TRUE</code> and
   border-left-color: #D3D3D3;
 }
 
-#lfwwgxatdo .gt_caption {
+#ukhaejcpax .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#lfwwgxatdo .gt_title {
+#ukhaejcpax .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -4542,7 +4559,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-width: 0;
 }
 
-#lfwwgxatdo .gt_subtitle {
+#ukhaejcpax .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -4554,7 +4571,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-top-width: 0;
 }
 
-#lfwwgxatdo .gt_heading {
+#ukhaejcpax .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -4566,13 +4583,13 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#lfwwgxatdo .gt_bottom_border {
+#ukhaejcpax .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#lfwwgxatdo .gt_col_headings {
+#ukhaejcpax .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4587,7 +4604,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#lfwwgxatdo .gt_col_heading {
+#ukhaejcpax .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4607,7 +4624,7 @@ Expand example for <code>expand_num = TRUE</code> and
   overflow-x: hidden;
 }
 
-#lfwwgxatdo .gt_column_spanner_outer {
+#ukhaejcpax .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4619,15 +4636,15 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 4px;
 }
 
-#lfwwgxatdo .gt_column_spanner_outer:first-child {
+#ukhaejcpax .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#lfwwgxatdo .gt_column_spanner_outer:last-child {
+#ukhaejcpax .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#lfwwgxatdo .gt_column_spanner {
+#ukhaejcpax .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -4639,11 +4656,11 @@ Expand example for <code>expand_num = TRUE</code> and
   width: 100%;
 }
 
-#lfwwgxatdo .gt_spanner_row {
+#ukhaejcpax .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#lfwwgxatdo .gt_group_heading {
+#ukhaejcpax .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4669,7 +4686,7 @@ Expand example for <code>expand_num = TRUE</code> and
   text-align: left;
 }
 
-#lfwwgxatdo .gt_empty_group_heading {
+#ukhaejcpax .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -4684,15 +4701,15 @@ Expand example for <code>expand_num = TRUE</code> and
   vertical-align: middle;
 }
 
-#lfwwgxatdo .gt_from_md > :first-child {
+#ukhaejcpax .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#lfwwgxatdo .gt_from_md > :last-child {
+#ukhaejcpax .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#lfwwgxatdo .gt_row {
+#ukhaejcpax .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4711,7 +4728,7 @@ Expand example for <code>expand_num = TRUE</code> and
   overflow-x: hidden;
 }
 
-#lfwwgxatdo .gt_stub {
+#ukhaejcpax .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4724,7 +4741,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#lfwwgxatdo .gt_stub_row_group {
+#ukhaejcpax .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4738,15 +4755,15 @@ Expand example for <code>expand_num = TRUE</code> and
   vertical-align: top;
 }
 
-#lfwwgxatdo .gt_row_group_first td {
+#ukhaejcpax .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#lfwwgxatdo .gt_row_group_first th {
+#ukhaejcpax .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#lfwwgxatdo .gt_summary_row {
+#ukhaejcpax .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4756,16 +4773,16 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#lfwwgxatdo .gt_first_summary_row {
+#ukhaejcpax .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#lfwwgxatdo .gt_first_summary_row.thick {
+#ukhaejcpax .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#lfwwgxatdo .gt_last_summary_row {
+#ukhaejcpax .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4775,7 +4792,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#lfwwgxatdo .gt_grand_summary_row {
+#ukhaejcpax .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4785,7 +4802,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#lfwwgxatdo .gt_first_grand_summary_row {
+#ukhaejcpax .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4795,7 +4812,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-top-color: #D3D3D3;
 }
 
-#lfwwgxatdo .gt_last_grand_summary_row_top {
+#ukhaejcpax .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4805,11 +4822,11 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#lfwwgxatdo .gt_striped {
+#ukhaejcpax .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#lfwwgxatdo .gt_table_body {
+#ukhaejcpax .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4818,7 +4835,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-bottom-color: #D3D3D3;
 }
 
-#lfwwgxatdo .gt_footnotes {
+#ukhaejcpax .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4832,7 +4849,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#lfwwgxatdo .gt_footnote {
+#ukhaejcpax .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -4841,7 +4858,7 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#lfwwgxatdo .gt_sourcenotes {
+#ukhaejcpax .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4855,7 +4872,7 @@ Expand example for <code>expand_num = TRUE</code> and
   border-right-color: #D3D3D3;
 }
 
-#lfwwgxatdo .gt_sourcenote {
+#ukhaejcpax .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -4863,72 +4880,72 @@ Expand example for <code>expand_num = TRUE</code> and
   padding-right: 5px;
 }
 
-#lfwwgxatdo .gt_left {
+#ukhaejcpax .gt_left {
   text-align: left;
 }
 
-#lfwwgxatdo .gt_center {
+#ukhaejcpax .gt_center {
   text-align: center;
 }
 
-#lfwwgxatdo .gt_right {
+#ukhaejcpax .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#lfwwgxatdo .gt_font_normal {
+#ukhaejcpax .gt_font_normal {
   font-weight: normal;
 }
 
-#lfwwgxatdo .gt_font_bold {
+#ukhaejcpax .gt_font_bold {
   font-weight: bold;
 }
 
-#lfwwgxatdo .gt_font_italic {
+#ukhaejcpax .gt_font_italic {
   font-style: italic;
 }
 
-#lfwwgxatdo .gt_super {
+#ukhaejcpax .gt_super {
   font-size: 65%;
 }
 
-#lfwwgxatdo .gt_footnote_marks {
+#ukhaejcpax .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#lfwwgxatdo .gt_asterisk {
+#ukhaejcpax .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#lfwwgxatdo .gt_indent_1 {
+#ukhaejcpax .gt_indent_1 {
   text-indent: 5px;
 }
 
-#lfwwgxatdo .gt_indent_2 {
+#ukhaejcpax .gt_indent_2 {
   text-indent: 10px;
 }
 
-#lfwwgxatdo .gt_indent_3 {
+#ukhaejcpax .gt_indent_3 {
   text-indent: 15px;
 }
 
-#lfwwgxatdo .gt_indent_4 {
+#ukhaejcpax .gt_indent_4 {
   text-indent: 20px;
 }
 
-#lfwwgxatdo .gt_indent_5 {
+#ukhaejcpax .gt_indent_5 {
   text-indent: 25px;
 }
 
-#lfwwgxatdo .katex-display {
+#ukhaejcpax .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#lfwwgxatdo div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ukhaejcpax div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -6699,7 +6716,7 @@ additional QC steps as well, stay tuned!</p>
 <span><span class="co">#&gt; other attached packages:</span></span>
 <span><span class="co">#&gt; [1] ggcyto_1.38.0        ncdfFlow_2.56.0      BH_1.87.0-1         </span></span>
 <span><span class="co">#&gt; [4] ggplot2_4.0.1        flowCore_2.22.0      flowWorkspace_4.22.0</span></span>
-<span><span class="co">#&gt; [7] openCyto_2.22.0      staRgate_0.99.3      BiocStyle_2.38.0    </span></span>
+<span><span class="co">#&gt; [7] openCyto_2.22.0      staRgate_0.99.4      BiocStyle_2.38.0    </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] gtable_0.3.6        xfun_0.54           bslib_0.9.0        </span></span>
@@ -6725,12 +6742,12 @@ additional QC steps as well, stay tuned!</p>
 <span><span class="co">#&gt; [61] gridExtra_2.3       cytolib_2.22.0      ragg_1.5.0         </span></span>
 <span><span class="co">#&gt; [64] evaluate_1.0.5      knitr_1.50          markdown_2.0       </span></span>
 <span><span class="co">#&gt; [67] rlang_1.1.6         Rcpp_1.1.0          glue_1.8.0         </span></span>
-<span><span class="co">#&gt; [70] xml2_1.4.1          Rgraphviz_2.54.0    BiocManager_1.30.27</span></span>
+<span><span class="co">#&gt; [70] xml2_1.5.0          Rgraphviz_2.54.0    BiocManager_1.30.27</span></span>
 <span><span class="co">#&gt; [73] BiocGenerics_0.56.0 jsonlite_2.0.0      R6_2.6.1           </span></span>
 <span><span class="co">#&gt; [76] plyr_1.8.9          systemfonts_1.3.1   fs_1.6.6</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <p>G. Finak, J. Frelinger, W. Jiang, E. W. Newell, J. Ramey, M. M.
 Davis, S. A. Kalams, S. C. De Rosa and R. Gottardo, “OpenCyto: An Open

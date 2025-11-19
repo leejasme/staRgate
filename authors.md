@@ -12,13 +12,13 @@ Source:
 
 Lee J (2025). *staRgate: Automated gating pipeline for flow cytometry
 analysis to characterize the lineage, differentiation, and functional
-states of T-cells*. R package version 0.99.3,
+states of T-cells*. R package version 0.99.4,
 <https://leejasme.github.io/staRgate/>.
 
     @Manual{,
       title = {staRgate: Automated gating pipeline for flow cytometry analysis to characterize the lineage, differentiation, and functional states of T-cells},
       author = {Jasme Lee},
       year = {2025},
-      note = {R package version 0.99.3},
+      note = {R package version 0.99.4},
       url = {https://leejasme.github.io/staRgate/},
     }

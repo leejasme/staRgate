@@ -6,11 +6,11 @@ staRgate is an automated gating pipeline to process and analyze flow
 cytometry data to characterize the lineage, differentiation and
 functional states of T-cells.
 
-This pipeline is designed to mimic the manual gating of defining flow
-biomarker positive populations relative to a unimodal background
-population to include cells with varying intensities of marker
-expression. This is achieved via estimating the kernel density of the
-intensity distribution and corresponding derivatives. This pipeline
+This pipeline is designed to mimic the manual gating strategy of
+defining flow biomarker positive populations relative to a unimodal
+background population to include cells with varying intensities of
+marker expression. This is achieved via estimating the kernel density of
+the intensity distribution and corresponding derivatives. This pipeline
 integrates the density gating method in conjuction with some
 pre-processing steps achieved via the R package
 *[openCyto](https://bioconductor.org/packages/3.22/openCyto)* and an
@@ -25,7 +25,8 @@ starting from importing an flow cytometry standard (FCS) file into R to
 preprocessing and gating, as well as identifying T-cell subpopulations
 for downstream analysis. This pipeline returns results at the
 single-cell level as well as the summarized sample-level data (for the
-percentages of T-cell cells when identifying the subpopulations).
+percentages of positively expressing cells when identifying the
+subpopulations).
 
 For illustration purposes, the example FCS file used in this vignette
 and stored in the package data is a concatenated file limited to the
@@ -98,7 +99,7 @@ path_comp_mat <- system.file("extdata", "comp_mat_example_fcs.csv", package = "s
 path_out <- tempdir()
 # Print the path_out for user to see
 path_out
-#> [1] "/tmp/RtmplRC88S"
+#> [1] "/tmp/RtmprmwtZO"
 
 ## File path Gating template
 gtFile <- system.file("extdata", "gating_template_x50_tcell.csv", package = "staRgate", mustWork = TRUE)
@@ -117,9 +118,9 @@ path_pos_peak_thresholds <- system.file("extdata", "pos_peak_thresholds.csv", pa
 
 In order to run the pipeline, the user must have the data in flow
 cytometry standard (FCS) format. This is usually the output from flowJo.
-All of these input files are expected to be comma-separated values (csv)
-files. Please see the `inst` folder of the package for examples of the
-formats.
+All of these input files except the `bin size` are expected to be
+comma-separated values (csv) files. Please see the `inst` folder of the
+package for examples of the formats.
 
 - Compensation matrix from manual gating-
   - Matrix where the column and row names correspond to the channel
@@ -253,7 +254,8 @@ package also allows for an automated transformation calculation
 “guessing” appropriate parameters. We chose to explicitly specify the
 biexponential transformation with fixed parameters for all channels to
 match the manual gating strategy used in flowJo for a more direct
-comparison of {staRgate} to the manual gating results.
+comparison of {staRgate} when benchmarking against the manual gating
+results.
 
 ``` r
 # Save the pre-transformed data to compare ranges 
@@ -280,9 +282,8 @@ dat_post_transform <-
 ### Pre-gating
 
 In this context, pre-gating is defined as gating from the root
-population up to CD3+, or CD4+/CD8+ subsets
-
-Then we will pass the data to the density gating step.
+population (all cells acquired) up to key parent populations: CD3+, or
+CD4+/CD8+ subsets. Then we will gate each marker indpendently.
 
 The *[flowAI](https://bioconductor.org/packages/3.22/flowAI)* step
 serves as a quality control (QC) to match the first Time gate step that
@@ -296,7 +297,8 @@ important to include if the user chooses to exclude the
 *[flowAI](https://bioconductor.org/packages/3.22/flowAI)* step.
 
 In this tutorial, we will skip the
-*[flowAI](https://bioconductor.org/packages/3.22/flowAI)* step.
+*[flowAI](https://bioconductor.org/packages/3.22/flowAI)* step to ease
+the length.
 
 ``` r
 # Pre-gating up to CD4/8+ with `r BiocStyle::Biocpkg("openCyto")`
@@ -352,40 +354,31 @@ ggcyto::autoplot(gs[[1]])
 
 Grab the channel and marker names in the `gs` object
 
-- When extracting `intensity_matrix`, it is labeled with channel names
-  as the marker names
+- When extracting `intensity_matrix`, it is labeled with the channel
+  names rather than the marker names.
 - The `marker_chnl_names` mapping created below will be used to rename
   the column names to the marker names, which will make calling the
   appropriate columns easier when analyzing the data
 
 ``` r
 ## Grab marker names from GatingSet for labeling col names in intensity matrix
-## Can skip this step if you know the exact namings of the marker names in your FCS files
-# In that case, supply a string is fine:
-# marker_chnl_names = c("CD45RA", "CCR7", "LAG3", ...)
-marker_chnl_names <-
-  flowWorkspace::gh_pop_get_data(gs) |>
-  flowWorkspace::markernames() |>
-  data.frame("marker_full" = _) |>
-  tibble::rownames_to_column(var = "chnl") |>
-  # clean up the names
-  dplyr::mutate(
-    marker_full = janitor::make_clean_names(marker_full, replace = c("-" = "", "_" = "", " " = "")) |> toupper()
-  ) |>
-  # Reorder the marker channel names to start with CD3, CD4, CD8 then the rest
-  dplyr::arrange(match(marker_full, c("CD3", "CD4", "CD8"))) |> 
-  # Clean up
-  dplyr::mutate(marker_full = 
-                  dplyr::case_when(marker_full == "FOX_P3" ~ "FOXP3",
-                                   .default = marker_full))
+## Can skip this step if you know the names of the channels that correspond to your marker names in your FCS files
+# In that case, supply strings for `chnl` and `marker_full` is fine. Such as:
+# chnl = c("BV750-A", "BUV496-A")
+# marker_full = c("CD3", "CD4)
 
+# This returns a named character vector
+# With the channel names as names and marker names as the values
+marker_chnl_names <- flowWorkspace::markernames(flowWorkspace::gh_pop_get_data(gs))
+
+## Specify which markers to gate based on individual density distributions
 # For our Tcell panel, we only want to apply the density gating on
 # these 23 markers
 markers_to_gate = c("CD45RA", "ICOS", "CD25", "TIM3", 
                     "CD27", "CD57", "CXCR5", "CCR4", 
                     "CCR7", "HLADR", "CD28", "PD1", 
                     "LAG3", "CD127", "CD38", "TIGIT", 
-                    "EOMES", "CTLA4", "FOXP3", "GITR",
+                    "EOMES", "CTLA4", "FOX_P3", "GITR",
                     "TBET", "KI67", "GZM_B")
 ```
 
@@ -395,14 +388,13 @@ steps.
 ``` r
 # Extract intensity matrix from GatingSet object
 ## Grab the intensity matrix from GatingSet
-## the gh_pop_get_indices grabs the 0/1 for whether gated as CD3
 intensity_dat <-
   cbind(
     # This grabs the intensity matrix with intensity values
     flowWorkspace::gh_pop_get_data(gs) |>
       flowCore::exprs(),
-    # Each of these grabs the 0/1 for gated as positive or negative for
-    # each step
+    # the gh_pop_get_indices grabs the 0/1 for whether gated as pos/neg 
+    # for each step specified
     "fsc_ssc_qc" = flowWorkspace::gh_pop_get_indices(gs, y = "fsc_ssc_qc"),
     "nonDebris" = flowWorkspace::gh_pop_get_indices(gs, y = "nonDebris"),
     "singlets" = flowWorkspace::gh_pop_get_indices(gs, y = "singlets"),
@@ -414,13 +406,22 @@ intensity_dat <-
   ) |>
   # The intensity matrix is a matrix object. Convert to tibble.
   tibble::as_tibble() |>
-  # Rename with marker names with a named vector
+  # Rename with colnames which are the channel names
+  # to marker names because it's easier to call columns by markers
+  # Rename using the marker_chnl_names we created above
+  # But we need it flipped when supplying to dplyr::rename()
   # Where the names = value to rename to (marker names) 
   # The values of the vector = current names (Channel names)
-  dplyr::rename(stats::setNames(marker_chnl_names$chnl, 
-                                as.character(marker_chnl_names$marker_full))) |>
+  dplyr::rename(
+    stats::setNames(names(marker_chnl_names),
+                    # Clean up the marker names, make them all caps
+                    janitor::make_clean_names(marker_chnl_names, 
+                                              case = "all_caps", 
+                                              replace = c("-" = "", "_" = "", " " = "")))
+                ) |>
   dplyr::mutate(
     # Create a 4-level category for cd4, cd8 neg/pos
+    # in order to calculate the percentages individually within these parent populations
     cd4_pos_cd8_pos = dplyr::case_when(
       cd3_pos == 1 & cd4_pos == 1 & cd8_pos == 1 ~ "cd4_pos_cd8_pos",
       cd3_pos == 1 & cd4_pos == 1 & cd8_pos == 0 ~ "cd4_pos_cd8_neg",
@@ -439,7 +440,7 @@ head(intensity_dat, 2)
 #> # ℹ 33 more variables: CD127 <dbl>, CD38 <dbl>, CD45RA <dbl>, CD4 <dbl>,
 #> #   ICOS <dbl>, CD25 <dbl>, TIM3 <dbl>, CD27 <dbl>, CD8 <dbl>, CD57 <dbl>,
 #> #   CXCR5 <dbl>, LD <dbl>, CD1419 <dbl>, CCR4 <dbl>, CCR7 <dbl>, HLADR <dbl>,
-#> #   CD3 <dbl>, CD28 <dbl>, TIGIT <dbl>, EOMES <dbl>, CTLA4 <dbl>, FOXP3 <dbl>,
+#> #   CD3 <dbl>, CD28 <dbl>, TIGIT <dbl>, EOMES <dbl>, CTLA4 <dbl>, FOX_P3 <dbl>,
 #> #   GITR <dbl>, Time <dbl>, fsc_ssc_qc <dbl>, nonDebris <dbl>, singlets <dbl>,
 #> #   cd14_neg_19_neg <dbl>, live <dbl>, cd3_pos <dbl>, cd4_pos <dbl>,
 #> #   cd8_pos <dbl>, cd4_pos_cd8_pos <chr>
@@ -480,10 +481,10 @@ the CD3+ density distribution per marker.
 - The suggested number of bins for density estimation is `40` as some
   level of smoothing is required to reduce the noise and picking up
   false peaks.
-- When multiple samples from the same batch or experiment run (samples
-  are processed together), we recommend to borrow information from other
-  samples by pooling all CD3+ across the same batch before applying the
-  density gating.
+- When multiple samples from the same batch or experiment run (e.g.,
+  samples are processed on the same day), we recommend to borrow
+  information from other samples by pooling all CD3+ across the same
+  batch before applying the density gating.
 - If interested in pooling across experiment runs, consider visualizing
   for any batch-level intensity shifts and variations before pooling
   samples together.
@@ -493,9 +494,17 @@ markers.
 
 ``` r
 # Density gating parameters
-peak_r <- 10
+# peak detection ratio where any peak < 1/10 of the tallest peak will be 
+# considered as noise
+peak_r <- 10 
+# smoothing to apply to the density estimation
+# Using the default of 512 creates many little bumps/noise that are artifacts 
+# From a systematic grid search, we found the bin sizes of ~40-50 works best
 bin_i <- 40
 
+# Remove any very negative values that are artifacts from autogating
+# -1000 on the biexp transformed scale corresponds to roughly -3300 on the original
+# intensity scale so this is quite conservative.
 neg_intensity_thres <- -1000
 
 # select a few markers to gate
@@ -507,7 +516,7 @@ pos_thres <- utils::read.csv(path_pos_peak_thresholds) |>
 ```
 
 ``` r
-# Show the exact output from the get_density_gates() function
+# calculate the gates
 dens_gates_pre <-
   dplyr::filter(intensity_dat, cd3_pos == 1) |>
   getDensityGates(
@@ -523,6 +532,7 @@ dens_gates_pre <-
 # Since we apply density gating on CD3+ cells but
 # Would like to calculate subpopulations with CD4+ and CD8+ as
 # the starting parent population, we need to add corresponding rows
+# to pass into getGatedDat()
 dens_gates <-
   # Stack the pseudo-neg gated markers and empirically gated markers
   dplyr::bind_cols(dens_gates_pre, gates_pseudo_neg) |>
@@ -593,7 +603,7 @@ intensity_dat |>
     color = "blue",
     linetype = "dashed"
   ) +
-  labs(subtitle = "Distribution of LAG3 intensity on all CD3+. Gate identifed by {staRgate} in blue.") +
+  labs(subtitle = "Distribution of LAG3 intensity by CD4/CD8 subsets. Gate identifed by {staRgate} in blue.") +
   facet_wrap(~cd4_pos_cd8_pos)
 ```
 
@@ -638,7 +648,7 @@ intensity_dat |>
     color = "blue",
     linetype = "dashed"
   ) +
-  labs(subtitle = "Distribution of CCR7 intensity on all CD3+. Gate identifed by {staRgate} in blue.") +
+  labs(subtitle = "Distribution of CCR7 intensity for CD4/CD8 subsets. Gate identifed by {staRgate} in blue.") +
   facet_wrap(~cd4_pos_cd8_pos)
 ```
 
@@ -683,7 +693,7 @@ intensity_dat |>
     color = "blue",
     linetype = "dashed"
   ) +
-  labs(subtitle = "Distribution of CD45RA intensity on all CD3+. Gate identifed by {staRgate} in blue.") +
+  labs(subtitle = "Distribution of CD45RA intensity for CD4/CD8 subsets. Gate identifed by {staRgate} in blue.") +
   facet_wrap(~cd4_pos_cd8_pos)
 ```
 
@@ -728,7 +738,7 @@ intensity_dat |>
     color = "blue",
     linetype = "dashed"
   ) +
-  labs(subtitle = "Distribution of CD127 intensity on all CD3+. Gate identifed by {staRgate} in blue.") +
+  labs(subtitle = "Distribution of CD127 intensity for CD4/CD8 subsets. Gate identifed by {staRgate} in blue.") +
   facet_wrap(~cd4_pos_cd8_pos)
 ```
 
@@ -773,7 +783,7 @@ intensity_dat |>
     color = "blue",
     linetype = "dashed"
   ) +
-  labs(subtitle = "Distribution of CD28 intensity on all CD3+. Gate identifed by {staRgate} in blue.") +
+  labs(subtitle = "Distribution of CD28 intensity for CD4/CD8 subsets. Gate identifed by {staRgate} in blue.") +
   facet_wrap(~cd4_pos_cd8_pos)
 ```
 
@@ -788,9 +798,12 @@ percentages of cells for all combinations of markers.
 
 For the subpopulations, the `denominator` is defined as the parent
 population and `numerator` is the population of interest out of the
-parent population. The $n_{d}$ refers to the number of markers
-considered for the denominator and $n$ for the number of markers
-considered for the numerator.
+parent population. For example, the subpopulation CD4+ of CD3+ cells
+correspond to the CD4+ as the `numerator` and CD3+ as the `denominator`.
+
+The $n_{d}$ refers to the number of markers considered for the
+denominator and $n$ for the number of markers considered for the
+numerator.
 
 For the 29-marker panel, if the `denominator` is specified as the CD4
 and CD8 subsets, then $n_{d} = 2$ and $n = 23$ for the markers of
@@ -806,9 +819,9 @@ gated on using `c("LAG3", "CCR7", "CD45RA")` (`numerator` markers).
 The additional arguments `expand_num` and `expand_denom` generates
 different lists of subpopulations to calculate counts/percentages for:
 
-- expand_num: should calculations consider up to pairs of numerator
+- `expand_num`: should calculations consider up to pairs of numerator
   markers included?,
-- expand_denom: should the calculations consider combinations of each
+- `expand_denom`: should the calculations consider combinations of each
   numerator marker and parent populations specified in the denominator?
 
 Currently, we support the four scenarios listed:
@@ -818,10 +831,12 @@ Currently, we support the four scenarios listed:
 The `keep_indicators` argument provides the 0/1 for which marker is
 considered in the numerator and denominator for each subpopulation. This
 is especially useful when merging onto other data that does not have the
-same format.
+same naming conventions.
 
 For example, when matching strings: “CD4+ & CD8- of CD3+” is different
-from “CD8- & CD4+ of CD3+” and “CD4+ and CD8- of CD3+”
+from “CD8- & CD4+ of CD3+” and “CD4+ and CD8- of CD3+”. But using
+indicator columns, we can match the subpopulations regardless of the
+subpopulation naming convention.
 
 Below is we show examples of each of the four combinations for the
 `expand_num` and `expand_denom` arguments.
@@ -1610,7 +1625,7 @@ sessionInfo()
 #> other attached packages:
 #> [1] ggcyto_1.38.0        ncdfFlow_2.56.0      BH_1.87.0-1         
 #> [4] ggplot2_4.0.1        flowCore_2.22.0      flowWorkspace_4.22.0
-#> [7] openCyto_2.22.0      staRgate_0.99.3      BiocStyle_2.38.0    
+#> [7] openCyto_2.22.0      staRgate_0.99.4      BiocStyle_2.38.0    
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] gtable_0.3.6        xfun_0.54           bslib_0.9.0        
@@ -1636,7 +1651,7 @@ sessionInfo()
 #> [61] gridExtra_2.3       cytolib_2.22.0      ragg_1.5.0         
 #> [64] evaluate_1.0.5      knitr_1.50          markdown_2.0       
 #> [67] rlang_1.1.6         Rcpp_1.1.0          glue_1.8.0         
-#> [70] xml2_1.4.1          Rgraphviz_2.54.0    BiocManager_1.30.27
+#> [70] xml2_1.5.0          Rgraphviz_2.54.0    BiocManager_1.30.27
 #> [73] BiocGenerics_0.56.0 jsonlite_2.0.0      R6_2.6.1           
 #> [76] plyr_1.8.9          systemfonts_1.3.1   fs_1.6.6
 ```

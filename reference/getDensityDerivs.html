@@ -11,7 +11,7 @@ marker (intensity values)"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">staRgate</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,33 +57,6 @@ For each unique value in <code>subset_col</code>, estimate the derivatives for
 
 <dl><dt id="arg-dens">dens<a class="anchor" aria-label="anchor" href="#arg-dens"></a></dt>
 <dd><p><code>density</code> object from the <a href="https://rdrr.io/r/stats/density.html" class="external-link">density</a></p></dd>
-
-
-<dt id="arg-marker">marker<a class="anchor" aria-label="anchor" href="#arg-marker"></a></dt>
-<dd><p>string for the marker to gate on
-the name needs to match exactly the column name in <code>intens_dat</code></p></dd>
-
-
-<dt id="arg-subset-col">subset_col<a class="anchor" aria-label="anchor" href="#arg-subset-col"></a></dt>
-<dd><p>string for the column name to indicate the subsets to apply density gating on
-will perform operation on subsets corresponding to each unique value in column</p></dd>
-
-
-<dt id="arg-bin-n">bin_n<a class="anchor" aria-label="anchor" href="#arg-bin-n"></a></dt>
-<dd><p>numeric to be passed to <code>n</code> parameter of <code>density(n = bin_n)</code> for
-number of equally spaced points at which the density is to be estimated
-default is 512, which is the default of <code>density(n = 512)</code></p></dd>
-
-
-<dt id="arg-peak-detect-ratio">peak_detect_ratio<a class="anchor" aria-label="anchor" href="#arg-peak-detect-ratio"></a></dt>
-<dd><p>numeric threshold for eliminating small peaks where
-a peak that is &lt; than the highest peak by <code>peak_detect_ratio</code> times will be ignored
-default = 10</p></dd>
-
-
-<dt id="arg-pos-peak-threshold">pos_peak_threshold<a class="anchor" aria-label="anchor" href="#arg-pos-peak-threshold"></a></dt>
-<dd><p>numeric for threshold to identify a positive peak
-default is 1800, which is on the biexponential scale</p></dd>
 
 </dl></div>
     <div class="section level2">
