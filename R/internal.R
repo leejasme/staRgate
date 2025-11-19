@@ -216,18 +216,6 @@ checkInputs <- function(intens_dat=NULL,
 #'
 #'
 #' @param dens `density` object from the \link[stats]{density}
-#' @param marker string for the marker to gate on
-#'              the name needs to match exactly the column name in `intens_dat`
-#' @param subset_col string for the column name to indicate the subsets to apply density gating on
-#'              will perform operation on subsets corresponding to each unique value in column
-#' @param bin_n numeric to be passed to `n` parameter of `density(n = bin_n)` for
-#'              number of equally spaced points at which the density is to be estimated
-#'              default is 512, which is the default of `density(n = 512)`
-#' @param peak_detect_ratio numeric threshold for eliminating small peaks where
-#'              a peak that is < than the highest peak by `peak_detect_ratio` times will be ignored
-#'              default = 10
-#' @param pos_peak_threshold numeric for threshold to identify a positive peak
-#'              default is 1800, which is on the biexponential scale
 #'
 #' @return list of dataframe with density estimation and corresponding 1st-4th derivatives,
 #'         indicators of local peaks, plateau_pre \cr
@@ -240,7 +228,7 @@ getDensityDerivs <- function(dens) {
 
   # Meant for internally calling within get_density_peaks and for debug/checking matrices/calculations
   # input data is diff- expecting the density obj for general subset_col
-  if(class(dens) == "density"){
+  if(inherits(dens, "density")){
     x <- dens$x
 
     # x every 1

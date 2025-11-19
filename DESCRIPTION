@@ -1,7 +1,7 @@
 Package: staRgate
 Title: Automated gating pipeline for flow cytometry analysis to characterize 
     the lineage, differentiation, and functional states of T-cells
-Version: 0.99.3
+Version: 0.99.4
 Authors@R: 
     person("Jasme", "Lee", email = "leej22@mskcc.org", role = c("aut", "cre"),
     comment = c(ORCID = "0009-0006-4492-4872"))
@@ -17,6 +17,7 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 biocViews: FlowCytometry, Preprocessing, ImmunoOncology
+Depends: R (>= 4.5.0)
 Imports: 
     dplyr,
     janitor,

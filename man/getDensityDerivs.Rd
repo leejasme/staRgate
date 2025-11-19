@@ -8,23 +8,6 @@ getDensityDerivs(dens)
 }
 \arguments{
 \item{dens}{\code{density} object from the \link[stats]{density}}
-
-\item{marker}{string for the marker to gate on
-the name needs to match exactly the column name in \code{intens_dat}}
-
-\item{subset_col}{string for the column name to indicate the subsets to apply density gating on
-will perform operation on subsets corresponding to each unique value in column}
-
-\item{bin_n}{numeric to be passed to \code{n} parameter of \code{density(n = bin_n)} for
-number of equally spaced points at which the density is to be estimated
-default is 512, which is the default of \code{density(n = 512)}}
-
-\item{peak_detect_ratio}{numeric threshold for eliminating small peaks where
-a peak that is < than the highest peak by \code{peak_detect_ratio} times will be ignored
-default = 10}
-
-\item{pos_peak_threshold}{numeric for threshold to identify a positive peak
-default is 1800, which is on the biexponential scale}
 }
 \value{
 list of dataframe with density estimation and corresponding 1st-4th derivatives,
