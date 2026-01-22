@@ -23,3 +23,23 @@ Useful links:
 
 **Maintainer**: Jasme Lee <leej22@mskcc.org>
 ([ORCID](https://orcid.org/0009-0006-4492-4872))
+
+Authors:
+
+- Matthew Adamow
+
+- Colleen Maher
+
+- Xiyu Peng
+
+- Phillip Wong
+
+- Fiona Ehrich
+
+- Michael A Postow
+
+- Margaret K Callahan
+
+- Ronglai Shen
+
+- Katherine S Panageas
