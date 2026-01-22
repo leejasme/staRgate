@@ -23,6 +23,14 @@
 
 - **Katherine S Panageas**. Author.
 
+- **V foundation**. Funder.
+
+- **MSK-MIND**. Funder.
+
+- **NIH R01CA276286**. Funder.
+
+- **NIH P30CA008748**. Funder.
+
 ## Citation
 
 Source:
@@ -32,12 +40,12 @@ Lee J, Adamow M, Maher C, Peng X, Wong P, Ehrich F, Postow MA, Callahan
 MK, Shen R, Panageas KS (2026). *staRgate: Automated gating pipeline for
 flow cytometry analysis to characterize the lineage, differentiation,
 and functional states of T-cells*. R package version 0.99.5,
-<https://leejasme.github.io/staRgate/>.
+<https://bioconductor.org/packages/staRgate>.
 
     @Manual{,
       title = {staRgate: Automated gating pipeline for flow cytometry analysis to characterize the lineage, differentiation, and functional states of T-cells},
       author = {Jasme Lee and Matthew Adamow and Colleen Maher and Xiyu Peng and Phillip Wong and Fiona Ehrich and Michael A Postow and Margaret K Callahan and Ronglai Shen and Katherine S Panageas},
       year = {2026},
       note = {R package version 0.99.5},
-      url = {https://leejasme.github.io/staRgate/},
+      url = {https://bioconductor.org/packages/staRgate},
     }

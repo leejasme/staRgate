@@ -99,7 +99,7 @@ path_comp_mat <- system.file("extdata", "comp_mat_example_fcs.csv", package = "s
 path_out <- tempdir()
 # Print the path_out for user to see
 path_out
-#> [1] "/tmp/RtmpFDxsEo"
+#> [1] "/tmp/Rtmp6fq5ck"
 
 ## File path Gating template
 gtFile <- system.file("extdata", "gating_template_x50_tcell.csv", package = "staRgate", mustWork = TRUE)

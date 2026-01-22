@@ -4,27 +4,29 @@ A density-based automated gating pipeline for flow cytometry data to
 characterize the lineage, differentiation, and functional states of
 T-cells
 
-This GitHub stores the {staRgate} R package.
+This is the GitHub repo for the *staRgate* R package.
+
+# Authors
+
+Jasme Lee, Matthew Adamow, Colleen Maher, Xiyu Peng, Phillip Wong, Fiona
+Ehrich, Michael A. Postow, Margaret K. Callahan, Ronglai Shen, Katherine
+S. Panageas
 
 # Installation
 
-The {staRgate} package relies on a few Biocondcutor R packages. Before
-installing {staRgate}, first setup Bioconductor and install all
-packages.
+**Bioconductor version**
 
-- {flowCore} and {flowWorkspace} are dependencies for the {staRgate}
-  package
-- {openCyto}, {flowAI}, {ggcyto} are not required to run the functions
-  of {staRgate} but are used in the full gating pipeline as shown in the
-  [Tutorial](https://leejasme.github.io/staRgate/articles/vignette_run_pipeline.html)
+- [Please refer to Bioconductor for full details on installation
+  guidelines](https://www.bioconductor.org/install/)
 
-[Please refer to Bioconductor for full details on installation
-guidelines](https://www.bioconductor.org/install/)
+&nbsp;
 
     if (!require("BiocManager", quietly = TRUE))
         install.packages("BiocManager")
 
-To install staRgate (currently install from GitHub):
+    BiocManager::install("staRgate")
+
+**GitHub version (developmental)**
 
     devtools::install_github("leejasme/staRgate")
 
@@ -32,6 +34,11 @@ To install staRgate (currently install from GitHub):
 
 A full example on [how to run the pipeline is on the
 webpage](https://leejasme.github.io/staRgate/articles/vignette_run_pipeline.html)
+
+# Funding Sources
+
+This research was funded by the V foundation, MSK-MIND, NIH R01CA276286,
+and NIH P30CA008748.
 
 # Contact
 

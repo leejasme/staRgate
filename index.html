@@ -55,27 +55,36 @@
 <div class="page-header"><h1 id="stargate">staRgate<a class="anchor" aria-label="anchor" href="#stargate"></a>
 </h1></div>
 <p>A density-based automated gating pipeline for flow cytometry data to characterize the lineage, differentiation, and functional states of T-cells</p>
-<p>This GitHub stores the {staRgate} R package.</p>
+<p>This is the GitHub repo for the <em>staRgate</em> R package.</p>
+</div>
+<div class="section level1">
+<h1 id="authors">Authors<a class="anchor" aria-label="anchor" href="#authors"></a>
+</h1>
+<p>Jasme Lee, Matthew Adamow, Colleen Maher, Xiyu Peng, Phillip Wong, Fiona Ehrich, Michael A. Postow, Margaret K. Callahan, Ronglai Shen, Katherine S. Panageas</p>
 </div>
 <div class="section level1">
 <h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h1>
-<p>The {staRgate} package relies on a few Biocondcutor R packages. Before installing {staRgate}, first setup Bioconductor and install all packages.</p>
+<p><strong>Bioconductor version</strong></p>
 <ul>
-<li>{flowCore} and {flowWorkspace} are dependencies for the {staRgate} package</li>
-<li>{openCyto}, {flowAI}, {ggcyto} are not required to run the functions of {staRgate} but are used in the full gating pipeline as shown in the <a href="https://leejasme.github.io/staRgate/articles/vignette_run_pipeline.html">Tutorial</a>
-</li>
+<li><a href="https://www.bioconductor.org/install/" class="external-link">Please refer to Bioconductor for full details on installation guidelines</a></li>
 </ul>
-<p><a href="https://www.bioconductor.org/install/" class="external-link">Please refer to Bioconductor for full details on installation guidelines</a></p>
 <pre><code><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://bioconductor.github.io/BiocManager/" class="external-link">"BiocManager"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span></code></pre>
-<p>To install staRgate (currently install from GitHub):</p>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"staRgate"</span><span class="op">)</span></span></code></pre>
+<p><strong>GitHub version (developmental)</strong></p>
 <pre><code><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"leejasme/staRgate"</span><span class="op">)</span></span></code></pre>
 </div>
 <div class="section level1">
 <h1 id="tutorial">Tutorial<a class="anchor" aria-label="anchor" href="#tutorial"></a>
 </h1>
 <p>A full example on <a href="https://leejasme.github.io/staRgate/articles/vignette_run_pipeline.html">how to run the pipeline is on the webpage</a></p>
+</div>
+<div class="section level1">
+<h1 id="funding-sources">Funding Sources<a class="anchor" aria-label="anchor" href="#funding-sources"></a>
+</h1>
+<p>This research was funded by the V foundation, MSK-MIND, NIH R01CA276286, and NIH P30CA008748.</p>
 </div>
 <div class="section level1">
 <h1 id="contact">Contact<a class="anchor" aria-label="anchor" href="#contact"></a>
@@ -121,6 +130,10 @@
 <li>Margaret K Callahan <br><small class="roles"> Author </small>   </li>
 <li>Ronglai Shen <br><small class="roles"> Author </small>   </li>
 <li>Katherine S Panageas <br><small class="roles"> Author </small>   </li>
+<li>V foundation <br><small class="roles"> Funder </small>   </li>
+<li>MSK-MIND <br><small class="roles"> Funder </small>   </li>
+<li>NIH R01CA276286 <br><small class="roles"> Funder </small>   </li>
+<li>NIH P30CA008748 <br><small class="roles"> Funder </small>   </li>
 </ul>
 </div>
 
@@ -131,7 +144,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Jasme Lee, Matthew Adamow, Colleen Maher, Xiyu Peng, Phillip Wong, Fiona Ehrich, Michael A Postow, Margaret K Callahan, Ronglai Shen, Katherine S Panageas.</p>
+  <p>Developed by Jasme Lee, Matthew Adamow, Colleen Maher, Xiyu Peng, Phillip Wong, Fiona Ehrich, Michael A Postow, Margaret K Callahan, Ronglai Shen, Katherine S Panageas, V foundation, MSK-MIND, NIH R01CA276286, NIH P30CA008748.</p>
 </div>
 
 <div class="pkgdown-footer-right">

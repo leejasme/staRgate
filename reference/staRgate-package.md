@@ -13,9 +13,9 @@ and functional states.
 
 Useful links:
 
-- <https://leejasme.github.io/staRgate/>
+- <https://bioconductor.org/packages/staRgate>
 
-- <https://github.com/leejasme/staRgate>
+- <https://leejasme.github.io/staRgate>
 
 - Report bugs at <https://github.com/leejasme/staRgate/issues>
 
@@ -43,3 +43,13 @@ Authors:
 - Ronglai Shen
 
 - Katherine S Panageas
+
+Other contributors:
+
+- V foundation \[funder\]
+
+- MSK-MIND \[funder\]
+
+- NIH R01CA276286 \[funder\]
+
+- NIH P30CA008748 \[funder\]
