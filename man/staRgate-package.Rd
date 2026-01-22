@@ -20,5 +20,18 @@ Useful links:
 \author{
 \strong{Maintainer}: Jasme Lee \email{leej22@mskcc.org} (\href{https://orcid.org/0009-0006-4492-4872}{ORCID})
 
+Authors:
+\itemize{
+  \item Matthew Adamow
+  \item Colleen Maher
+  \item Xiyu Peng
+  \item Phillip Wong
+  \item Fiona Ehrich
+  \item Michael A Postow
+  \item Margaret K Callahan
+  \item Ronglai Shen
+  \item Katherine S Panageas
+}
+
 }
 \keyword{internal}

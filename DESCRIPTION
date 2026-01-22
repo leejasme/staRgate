@@ -1,10 +1,21 @@
 Package: staRgate
 Title: Automated gating pipeline for flow cytometry analysis to characterize 
     the lineage, differentiation, and functional states of T-cells
-Version: 0.99.4
+Version: 0.99.5
 Authors@R: 
+    c(
     person("Jasme", "Lee", email = "leej22@mskcc.org", role = c("aut", "cre"),
-    comment = c(ORCID = "0009-0006-4492-4872"))
+           comment = c(ORCID = "0009-0006-4492-4872")),
+    person("Matthew", "Adamow", role = c("aut")),
+    person("Colleen", "Maher", role = c("aut")),
+    person("Xiyu", "Peng", role = c("aut")),
+    person("Phillip", "Wong", role = c("aut")),
+    person("Fiona", "Ehrich", role = c("aut")),
+    person("Michael", "Postow", middle = "A", role = c("aut")),
+    person("Margaret", "Callahan", middle = "K", role = c("aut")),
+    person("Ronglai", "Shen", role = c("aut")),
+    person("Katherine", "Panageas", middle = "S", role = c("aut"))
+    )
 Description: An R-based automated gating pipeline for flow cytometry data designed 
     to mimic the manual gating strategy of defining flow biomarker positive populations 
     relative to a unimodal background population to include cells with varying 
