@@ -157,7 +157,7 @@ test_that("Warning when `expand_num` and `expand_denom` set to `TRUE` but insuff
   # Do not pass >= 3 markers
   testthat::expect_warning(staRgate::getPerc(intens_dat_2, num_marker = c("CD4"), denom_marker = "CD3",
                                              expand_num = TRUE, expand_denom = TRUE),
-                           "Warning",
+                           "only if >= 3 markers are supplied",
                            ignore.case=TRUE
   )
 })

@@ -134,7 +134,7 @@ getPerc <- function(intens_dat,
     expand_denom == TRUE & length(num_marker) < 3) {
     rlang::warn(
       message=c(
-        "Warning: Both `expand_num` and `expand_denom` can be `TRUE` only if >= 3 markers are supplied in `num_marker",
+        "Both `expand_num` and `expand_denom` can be `TRUE` only if >= 3 markers are supplied in `num_marker",
         "i"=stringr::str_glue(
           "`expand_num`={expand_num}, `num_marker` length={length(num_marker)}"
         ),
@@ -149,7 +149,7 @@ getPerc <- function(intens_dat,
   if (expand_num == TRUE & length(num_marker) < 2) {
     rlang::warn(
       message=c(
-        "Warning: `expand_num` only applies if multiple markers are supplied in `num_marker",
+        "`expand_num` only applies if multiple markers are supplied in `num_marker",
         "i"=stringr::str_glue(
           "`expand_num`={expand_num}, `num_marker` length={length(num_marker)}"
         ),
@@ -164,7 +164,7 @@ getPerc <- function(intens_dat,
   if (expand_denom == TRUE & length(num_marker) < 2) {
     rlang::warn(
       message=c(
-        "Warning: `expand_denom` only applies if multiple markers are supplied in `num_marker",
+        "`expand_denom` only applies if multiple markers are supplied in `num_marker",
         "i"=stringr::str_glue(
           "`expand_denom`={expand_denom}, `num_marker` length={length(num_marker)}"
         ),

@@ -21,7 +21,7 @@ checkInputs <- function(intens_dat=NULL,
 
   if (!is.null(intens_dat)) {
     if (!(is.data.frame(intens_dat))) {
-      rlang::abort(message="Error: `intens_dat` must be of data.frame class")
+      rlang::abort(message="`intens_dat` must be of data.frame class")
       }
     }
 
@@ -29,20 +29,20 @@ checkInputs <- function(intens_dat=NULL,
     marker <- toupper(marker)
 
     if (!all(marker %in% colnames(intens_dat))) {
-      rlang::abort(message="Error: `marker` must be string matching column name(s) of `intens_dat`")
+      rlang::abort(message="`marker` must be string matching column name(s) of `intens_dat`")
     }
   }
 
   if (!is.null(subset_col)) {
     if (!(subset_col %in% colnames(intens_dat))) {
-      rlang::abort(message="Error: `subset_col` must be string matching column name of `intens_dat`")
+      rlang::abort(message="`subset_col` must be string matching column name of `intens_dat`")
     }
   }
 
   if (!is.null(bin_n)) {
     if (!(is.numeric(bin_n))) {
       rlang::warn(
-        message=c("Warning: `bin_n` not specified as numeric.",
+        message=c("`bin_n` not specified as numeric.",
                   "i"="Default value `bin_n = 512` will be used.")
       )
     }
@@ -52,7 +52,7 @@ checkInputs <- function(intens_dat=NULL,
     if (!(is.numeric(peak_detect_ratio))) {
       rlang::warn(
         message=c(
-          "Warning: `peak_detect_ratio` not specified as numeric.",
+          "`peak_detect_ratio` not specified as numeric.",
           "i"="Default value `peak_detect_ratio = 10` will be used."
         )
       )
@@ -66,7 +66,7 @@ checkInputs <- function(intens_dat=NULL,
       if (!(is.data.frame(pos_peak_threshold))) {
         rlang::warn(
           message=c(
-            "Warning: `pos_peak_threshold` must be a numeric or dataframe",
+            "`pos_peak_threshold` must be a numeric or dataframe",
             "i"="Default value `pos_peak_threshold=1800` will be used."
           )
         )
@@ -91,14 +91,14 @@ checkInputs <- function(intens_dat=NULL,
         if (!chk2 & chk1) {
           rlang::warn(
             message=c(
-              "Error: Not all markers in `marker` argument have a `pos_peak_threshold` supplied",
+              "Not all markers in `marker` argument have a `pos_peak_threshold` supplied",
               "i"="Default value of `pos_peak_threshold=1800` will be used for the markers without a value supplied."
             )
           )
         } else if (!(chk1 & chk2)) {
           rlang::abort(
             message=c(
-              "Error: `pos_peak_threshold` is not of correct format",
+              "`pos_peak_threshold` is not of correct format",
               "i"="Column names for `pos_peak_threshold` should be `marker` and `pos_peak_threshold`",
               "i"="Not all markers in `marker` argument have a `pos_peak_threshold` supplied."
             )
@@ -106,7 +106,7 @@ checkInputs <- function(intens_dat=NULL,
         } else if (!chk1) {
           rlang::abort(
             message=c(
-              "Error: `pos_peak_threshold` is not of correct format",
+              "`pos_peak_threshold` is not of correct format",
               "i"="Column names for `pos_peak_threshold` should be `marker` and `pos_peak_threshold`"
             )
           )
@@ -119,7 +119,7 @@ checkInputs <- function(intens_dat=NULL,
     if (!(is.numeric(neg_intensity_threshold))) {
       rlang::warn(
         message=c(
-          "Warning: `neg_intensity_threshold` must be a numeric if supplied",
+          "`neg_intensity_threshold` must be a numeric if supplied",
           "i"="Default value `neg_intensity_threshold = NULL` will be used (no filtering)."
         )
       )
@@ -128,7 +128,7 @@ checkInputs <- function(intens_dat=NULL,
 
   if (!is.null(cutoffs)) {
     if (!is.data.frame(cutoffs)) {
-      rlang::abort(message="Error: `cutoffs` must be of data.frame class")
+      rlang::abort(message="`cutoffs` must be of data.frame class")
     }
 
     # Check the colnames match intens dat
@@ -136,7 +136,7 @@ checkInputs <- function(intens_dat=NULL,
     mrks <- c_nms[!(c_nms %in% c(subset_col, "subpop"))]
 
     if (!all((mrks %in% colnames(intens_dat)))) {
-      rlang::abort(message="Error: `cutoffs` must have marker names matching names in `intens_dat`")
+      rlang::abort(message="`cutoffs` must have marker names matching names in `intens_dat`")
     }
   }
 
@@ -150,7 +150,7 @@ checkInputs <- function(intens_dat=NULL,
     if (!all((col_nms_subset %in% col_nms))) {
       rlang::abort(
         message=c(
-          "Error: `num_marker` and `denom_marker` must have indicator columns in `intens_dat`",
+          "`num_marker` and `denom_marker` must have indicator columns in `intens_dat`",
           "i"="`intens_dat` should contain 0/1 columns to indicate negative/positive with column name <marker>_pos for each marker specified in `num_marker` and `denom_marker`"
         )
       )
@@ -160,7 +160,7 @@ checkInputs <- function(intens_dat=NULL,
     if (!all(unique(unlist(intens_dat[, col_nms_subset])) %in% c(0, 1))) {
       rlang::abort(
         message=c(
-          "Error: Unique values in indicator columns corresponding to `num_marker` and `denom_marker` should only contain 0 and 1.",
+          "Unique values in indicator columns corresponding to `num_marker` and `denom_marker` should only contain 0 and 1.",
           "i"=glue::glue(
             "Currently detected unique values: {paste(unique(unlist(intens_dat[, col_nms_subset])), collapse=', ')}"
           )
@@ -172,7 +172,7 @@ checkInputs <- function(intens_dat=NULL,
     # For now, make it an error but can consider for the future to convert it with readr::parse_number and print a warning
     # But not sure how badly that could break down if the parsing did not show the expected values?
     if (!all(apply(intens_dat[, col_nms_subset], 2, class, simplify=TRUE) == "numeric")) {
-      rlang::abort(message="Error: Not all indicator columns corresponding to `num_marker` and `denom_marker` are numeric")
+      rlang::abort(message="Not all indicator columns corresponding to `num_marker` and `denom_marker` are numeric")
     }
   }
 
@@ -180,7 +180,7 @@ checkInputs <- function(intens_dat=NULL,
     if (!is.logical(expand_num) | !is.logical(expand_denom)) {
       rlang::warn(
         message=c(
-          "Warning: `expand_num` and/or `expand_denom` not of class logical (either `TRUE` or `FALSE`)",
+          "`expand_num` and/or `expand_denom` not of class logical (either `TRUE` or `FALSE`)",
           "i"="Default value of `FALSE` will be used"
         )
       )
@@ -192,7 +192,7 @@ checkInputs <- function(intens_dat=NULL,
     if (!is.logical(keep_indicators)) {
       rlang::warn(
         message=c(
-          "Warning: `keep_indicators` not of class logical (either `TRUE` or `FALSE`)",
+          "`keep_indicators` not of class logical (either `TRUE` or `FALSE`)",
           "i"="Default value of `TRUE` will be used"
         )
       )
@@ -274,7 +274,7 @@ getDensityDerivs <- function(dens) {
   }else{
     rlang::abort(
       message=c(
-        "Error: Input `dens` is not a density object."
+        "Input `dens` is not a density object."
       )
     )
   }

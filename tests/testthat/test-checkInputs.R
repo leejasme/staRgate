@@ -31,7 +31,7 @@ test_that("No errors when passing in a data.frame", {
 test_that("Returns warning if not numeric values passed in for `bin_n`", {
   # Pass in char for all expected numeric inputs
   testthat::expect_warning(checkInputs(bin_n="512"),
-                           "Warning",
+                           "not specified as numeric",
                            ignore.case=TRUE
   )
 })
@@ -39,7 +39,7 @@ test_that("Returns warning if not numeric values passed in for `bin_n`", {
 test_that("Returns warning if not numeric values passed in for `peak_detect_ratio`", {
   # Pass in char for all expected numeric inputs
   testthat::expect_warning(checkInputs(peak_detect_ratio=FALSE),
-                           "Warning",
+                           "not specified as numeric",
                            ignore.case=TRUE
   )
 })
@@ -47,7 +47,7 @@ test_that("Returns warning if not numeric values passed in for `peak_detect_rati
 test_that("Returns warning if not numeric values passed in for `neg_intensity_threshold`", {
   # Pass in logical for all expected numeric inputs
   testthat::expect_warning(checkInputs(neg_intensity_threshold=TRUE),
-                           "Warning",
+                           "must be a numeric",
                            ignore.case=TRUE
   )
 })
