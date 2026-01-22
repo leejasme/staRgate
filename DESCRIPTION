@@ -14,7 +14,11 @@ Authors@R:
     person("Michael", "Postow", middle = "A", role = c("aut")),
     person("Margaret", "Callahan", middle = "K", role = c("aut")),
     person("Ronglai", "Shen", role = c("aut")),
-    person("Katherine", "Panageas", middle = "S", role = c("aut"))
+    person("Katherine", "Panageas", middle = "S", role = c("aut")),
+    person("V foundation", role = "fnd"),
+    person("MSK-MIND", role = "fnd"),
+    person("NIH R01CA276286", role = "fnd"),
+    person("NIH P30CA008748", role = "fnd")
     )
 Description: An R-based automated gating pipeline for flow cytometry data designed 
     to mimic the manual gating strategy of defining flow biomarker positive populations 
@@ -54,5 +58,5 @@ Suggests:
     BiocStyle
 VignetteBuilder: knitr
 BugReports: https://github.com/leejasme/staRgate/issues
-URL: https://leejasme.github.io/staRgate/, https://github.com/leejasme/staRgate
+URL: https://bioconductor.org/packages/staRgate, https://leejasme.github.io/staRgate
 Config/testthat/edition: 3

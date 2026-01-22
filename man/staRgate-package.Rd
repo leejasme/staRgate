@@ -11,8 +11,8 @@ An R-based automated gating pipeline for flow cytometry data designed to mimic t
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://leejasme.github.io/staRgate/}
-  \item \url{https://github.com/leejasme/staRgate}
+  \item \url{https://bioconductor.org/packages/staRgate}
+  \item \url{https://leejasme.github.io/staRgate}
   \item Report bugs at \url{https://github.com/leejasme/staRgate/issues}
 }
 
@@ -31,6 +31,14 @@ Authors:
   \item Margaret K Callahan
   \item Ronglai Shen
   \item Katherine S Panageas
+}
+
+Other contributors:
+\itemize{
+  \item V foundation [funder]
+  \item MSK-MIND [funder]
+  \item NIH R01CA276286 [funder]
+  \item NIH P30CA008748 [funder]
 }
 
 }
