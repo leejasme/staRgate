@@ -80,8 +80,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c3ed78>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c86599aae0>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -119,8 +119,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c3c528>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c8659981d0>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -158,8 +158,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c39538>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c8659997b0>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -197,8 +197,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c3ab18>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c865996f60>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -236,8 +236,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c382c8>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c865994710>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -275,8 +275,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c33ce0>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c865991ec0>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -314,8 +314,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c35410>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c8659934a0>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -353,8 +353,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c32bc0>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c86598ed30>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -392,8 +392,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c30370>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c86598c4e0>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -431,8 +431,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c2d9f0>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c86598dac0>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -470,8 +470,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c2f158>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c86598b270>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -509,8 +509,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c2c940>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c865988a20>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -548,8 +548,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c29e80>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c86598a000>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -587,8 +587,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c2b498>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c8659877b0>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -626,8 +626,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c28b50>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c865984f60>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -665,8 +665,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c265d8>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c865982710>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -704,8 +704,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c21ea0>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c865983cf0>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -743,8 +743,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c23480>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c86597f580>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -782,8 +782,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c1ead8>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c86597cd30>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -821,8 +821,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c1c190>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c86597e310>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -860,8 +860,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c19c18>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c86597bac0>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -899,8 +899,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c1b1f8>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c865979270>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -938,8 +938,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c189e0>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c865976a20>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -977,8 +977,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c15e28>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c865978000>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -1016,8 +1016,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c17440>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c8659757b0>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -1055,8 +1055,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c14c40>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c865972f60>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -1094,8 +1094,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c0e270>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c865974540>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
@@ -1133,8 +1133,8 @@ flowWorkspace::gh_get_transformations(gs)
 #>         res[ind] <- ifelse(deriv == 1, z$y[1L], 0)
 #>     res
 #> }
-#> <bytecode: 0x55f4f24a2d10>
-#> <environment: 0x55f4f1c0b240>
+#> <bytecode: 0x55c8661a9d00>
+#> <environment: 0x55c865971550>
 #> attr(,"type")
 #> [1] "biexp"
 #> attr(,"parameters")
