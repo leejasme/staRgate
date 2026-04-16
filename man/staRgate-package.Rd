@@ -6,6 +6,8 @@
 \alias{staRgate-package}
 \title{staRgate: Automated gating pipeline for flow cytometry analysis to characterize the lineage, differentiation, and functional states of T-cells}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 An R-based automated gating pipeline for flow cytometry data designed to mimic the manual gating strategy of defining flow biomarker positive populations relative to a unimodal background population to include cells with varying intensities of marker expression. The pipeline’s main feature is a flexible density-based gating strategy capable of capturing varying scenarios based on marker expression patterns to analyze a 29-marker flow panel that characterizes T-cell lineage, differentiation, and functional states.
 }
 \seealso{
