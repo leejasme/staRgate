@@ -5,3 +5,5 @@ template:
 navbar:
   structure:
     right: [search, github]
+home:
+  logo: man/figures/logo.png
