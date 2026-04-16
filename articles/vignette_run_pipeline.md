@@ -99,7 +99,7 @@ path_comp_mat <- system.file("extdata", "comp_mat_example_fcs.csv", package = "s
 path_out <- tempdir()
 # Print the path_out for user to see
 path_out
-#> [1] "/tmp/RtmpZmw1Jm"
+#> [1] "/tmp/RtmpPK11hK"
 
 ## File path Gating template
 gtFile <- system.file("extdata", "gating_template_x50_tcell.csv", package = "staRgate", mustWork = TRUE)
@@ -1630,10 +1630,10 @@ sessionInfo()
 #> loaded via a namespace (and not attached):
 #>  [1] gtable_0.3.6        xfun_0.57           bslib_0.10.0       
 #>  [4] htmlwidgets_1.6.4   Biobase_2.70.0      lattice_0.22-9     
-#>  [7] vctrs_0.7.2         tools_4.5.3         generics_0.1.4     
+#>  [7] vctrs_0.7.3         tools_4.5.3         generics_0.1.4     
 #> [10] stats4_4.5.3        parallel_4.5.3      tibble_3.3.1       
 #> [13] pkgconfig_2.0.3     data.table_1.18.2.1 RColorBrewer_1.1-3 
-#> [16] S7_0.2.1            desc_1.4.3          S4Vectors_0.48.1   
+#> [16] S7_0.2.1            desc_1.4.3          S4Vectors_0.49.1-1 
 #> [19] gt_1.3.0            graph_1.88.1        lifecycle_1.0.5    
 #> [22] compiler_4.5.3      farver_2.1.2        stringr_1.6.0      
 #> [25] textshaping_1.0.5   janitor_2.2.1       snakecase_0.11.1   
@@ -1642,9 +1642,9 @@ sessionInfo()
 #> [34] hexbin_1.28.5       jquerylib_0.1.4     tidyr_1.3.2        
 #> [37] cachem_1.1.0        RProtoBufLib_2.22.0 commonmark_2.0.0   
 #> [40] tidyselect_1.2.1    digest_0.6.39       stringi_1.8.7      
-#> [43] dplyr_1.2.1         purrr_1.2.1         bookdown_0.46      
+#> [43] dplyr_1.2.1         purrr_1.2.2         bookdown_0.46      
 #> [46] labeling_0.4.3      flowClust_3.48.0    fastmap_1.2.0      
-#> [49] grid_4.5.3          cli_3.6.5           magrittr_2.0.5     
+#> [49] grid_4.5.3          cli_3.6.6           magrittr_2.0.5     
 #> [52] utf8_1.2.6          RBGL_1.86.0         XML_3.99-0.23      
 #> [55] withr_3.0.2         scales_1.4.0        timechange_0.4.0   
 #> [58] lubridate_1.9.5     rmarkdown_2.31      matrixStats_1.5.0  
