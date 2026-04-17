@@ -10,7 +10,6 @@ Jasme Lee, Matthew Adamow, Colleen Maher, Xiyu Peng, Phillip Wong, Fiona Ehrich,
 # Installation
 
 
-
 **Bioconductor version**
 
 + [Please refer to Bioconductor for full details on installation guidelines](https://www.bioconductor.org/install/)
@@ -41,3 +40,4 @@ This research was funded by the V foundation, MSK-MIND, NIH R01CA276286, and NIH
 
 Jasme Lee (leej22@mskcc.org)
 
+Hexsticker designed by Jasme Lee. [Original image of Constellation Ursa Major is from NASA's Hubble Space Telescope](https://science.nasa.gov/asset/hubble/constellation-ursa-major/).
