@@ -43,3 +43,7 @@ and NIH P30CA008748.
 # Contact
 
 Jasme Lee (<leej22@mskcc.org>)
+
+Hexsticker designed by Jasme Lee. [Original image of Constellation Ursa
+Major is from NASA’s Hubble Space
+Telescope](https://science.nasa.gov/asset/hubble/constellation-ursa-major/).
