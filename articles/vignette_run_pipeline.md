@@ -100,7 +100,7 @@ path_comp_mat <- system.file("extdata", "comp_mat_example_fcs.csv", package = "s
 path_out <- tempdir()
 # Print the path_out for user to see
 path_out
-#> [1] "/tmp/RtmpRK7GpA"
+#> [1] "/tmp/RtmpmuBOMK"
 
 ## File path Gating template
 gtFile <- system.file("extdata", "gating_template_x50_tcell.csv", package = "staRgate", mustWork = TRUE)
@@ -1653,7 +1653,7 @@ sessionInfo()
 #> other attached packages:
 #> [1] ggcyto_1.40.0        ncdfFlow_2.58.0      BH_1.90.0-1         
 #> [4] ggplot2_4.0.3        flowCore_2.24.0      flowWorkspace_4.24.0
-#> [7] openCyto_2.24.0      staRgate_1.1.0       BiocStyle_2.40.0    
+#> [7] openCyto_2.24.0      staRgate_0.99.8      BiocStyle_2.40.0    
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
