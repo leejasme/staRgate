@@ -13,9 +13,9 @@ marker expression. This is achieved via estimating the kernel density of
 the intensity distribution and corresponding derivatives. This pipeline
 integrates the density gating method in conjuction with some
 pre-processing steps achieved via the R package
-*[openCyto](https://bioconductor.org/packages/3.22/openCyto)* and an
+*[openCyto](https://bioconductor.org/packages/3.23/openCyto)* and an
 optional step with
-*[flowAI](https://bioconductor.org/packages/3.22/flowAI)*. The flow data
+*[flowAI](https://bioconductor.org/packages/3.23/flowAI)*. The flow data
 is stored within R as a `GatingSet` object, which makes it easily
 transferable to other flow cytometry workflows available on
 BioConductor.
@@ -57,17 +57,18 @@ dependencies.
 Bioconductor](https://www.bioconductor.org/install/)
 
 The essential dependencies for running the {staRgate} package include:
-*[flowCore](https://bioconductor.org/packages/3.22/flowCore)*, and
-*[flowWorkspace](https://bioconductor.org/packages/3.22/flowWorkspace)*.
+*[flowCore](https://bioconductor.org/packages/3.23/flowCore)*, and
+*[flowWorkspace](https://bioconductor.org/packages/3.23/flowWorkspace)*.
 
 The following packages are needed to fully run the pipeline as shown in
 this Tutorial, but not required for the {staRgate} code chunks to run:
-*[openCyto](https://bioconductor.org/packages/3.22/openCyto)*,
+*[openCyto](https://bioconductor.org/packages/3.23/openCyto)*,
 *[ggplot2](https://CRAN.R-project.org/package=ggplot2)*,
-*[ggcyto](https://bioconductor.org/packages/3.22/ggcyto)*,
+*[ggcyto](https://bioconductor.org/packages/3.23/ggcyto)*,
 *[gt](https://CRAN.R-project.org/package=gt)*
 
 ``` r
+
 # Load libraries
 library(staRgate)
 library(openCyto)
@@ -99,7 +100,7 @@ path_comp_mat <- system.file("extdata", "comp_mat_example_fcs.csv", package = "s
 path_out <- tempdir()
 # Print the path_out for user to see
 path_out
-#> [1] "/tmp/RtmpYQIxfb"
+#> [1] "/tmp/RtmpRK7GpA"
 
 ## File path Gating template
 gtFile <- system.file("extdata", "gating_template_x50_tcell.csv", package = "staRgate", mustWork = TRUE)
@@ -132,7 +133,7 @@ package for examples of the formats.
     basis and positive decades) to be applied to the listed channels
 - Gating template
   - A gating template is required to run the pre-gating via
-    *[openCyto](https://bioconductor.org/packages/3.22/openCyto)*
+    *[openCyto](https://bioconductor.org/packages/3.23/openCyto)*
   - The package includes a gating template tailored for gating this
     panel of T-cell markers.
   - For examples of how to modify the gating template, please refer to
@@ -148,7 +149,7 @@ A few things to keep in mind when debugging/iterating through gating:
   code), the GatingSet folder from the
   [`flowWorkspace::save_gs()`](https://rdrr.io/pkg/flowWorkspace/man/save_gs.html)
   command needs to be deleted for
-  *[openCyto](https://bioconductor.org/packages/3.22/openCyto)* to save
+  *[openCyto](https://bioconductor.org/packages/3.23/openCyto)* to save
   again, otherwise, will encounter an error related to an invalid path
   from the
   [`flowWorkspace::save_gs()`](https://rdrr.io/pkg/flowWorkspace/man/save_gs.html)
@@ -161,6 +162,7 @@ Below is an example of gating 1 FCS sample.
 ### Import FCS
 
 ``` r
+
 # Read in gating template
 dtTemplate <- data.table::fread(gtFile)
 
@@ -196,6 +198,7 @@ n_root
 ### Compensation
 
 ``` r
+
 # Apply comp
 gs <- getCompGS(gs, path_comp_mat = path_comp_mat)
 
@@ -232,6 +235,7 @@ first column for the flurochrome names corresponding to the panel,
 followed by the parameters.
 
 ``` r
+
 tbl_biexp_params <-
   utils::read.csv(path_biexp_params) |>
   janitor::clean_names(case="all_caps")
@@ -249,7 +253,7 @@ function. However, the user may choose to create a transformation list
 explicitly if other transformations (e.g., archsin) are desired.
 
 Note that the
-*[flowWorkspace](https://bioconductor.org/packages/3.22/flowWorkspace)*
+*[flowWorkspace](https://bioconductor.org/packages/3.23/flowWorkspace)*
 package also allows for an automated transformation calculation
 “guessing” appropriate parameters. We chose to explicitly specify the
 biexponential transformation with fixed parameters for all channels to
@@ -258,6 +262,7 @@ comparison of {staRgate} when benchmarking against the manual gating
 results.
 
 ``` r
+
 # Save the pre-transformed data to compare ranges 
 # And check that transformation was applied
 dat_pre_transform <-
@@ -285,22 +290,23 @@ In this context, pre-gating is defined as gating from the root
 population (all cells acquired) up to key parent populations: CD3+, or
 CD4+/CD8+ subsets. Then we will gate each marker indpendently.
 
-The *[flowAI](https://bioconductor.org/packages/3.22/flowAI)* step
+The *[flowAI](https://bioconductor.org/packages/3.23/flowAI)* step
 serves as a quality control (QC) to match the first Time gate step that
 is typically done in manual gating. It is possible, however, that the
 user may choose to skip this step if
-*[flowAI](https://bioconductor.org/packages/3.22/flowAI)* excludes too
+*[flowAI](https://bioconductor.org/packages/3.23/flowAI)* excludes too
 many cells.
 
 The first step of the gating template is a QC step that is especially
 important to include if the user chooses to exclude the
-*[flowAI](https://bioconductor.org/packages/3.22/flowAI)* step.
+*[flowAI](https://bioconductor.org/packages/3.23/flowAI)* step.
 
 In this tutorial, we will skip the
-*[flowAI](https://bioconductor.org/packages/3.22/flowAI)* step to ease
+*[flowAI](https://bioconductor.org/packages/3.23/flowAI)* step to ease
 the length.
 
 ``` r
+
 # Pre-gating up to CD4/8+ with `r BiocStyle::Biocpkg("openCyto")`
 ## Set seed using today's date
 set.seed(glue::glue({
@@ -344,6 +350,7 @@ openCyto::gt_gating(gt_tcell, gs)
 ```
 
 ``` r
+
 ## Check autoplot
 ggcyto::autoplot(gs[[1]])
 ```
@@ -361,6 +368,7 @@ Grab the channel and marker names in the `gs` object
   appropriate columns easier when analyzing the data
 
 ``` r
+
 ## Grab marker names from GatingSet for labeling col names in intensity matrix
 ## Can skip this step if you know the names of the channels that correspond to your marker names in your FCS files
 # In that case, supply strings for `chnl` and `marker_full` is fine. Such as:
@@ -386,6 +394,7 @@ Next we grab the intensity values and indicators for the pre-gating
 steps.
 
 ``` r
+
 # Extract intensity matrix from GatingSet object
 ## Grab the intensity matrix from GatingSet
 intensity_dat <-
@@ -460,6 +469,7 @@ To ensure we only capture the CD3- cells, we first filter to the live
 cells then to `cd3_pos == 0`
 
 ``` r
+
 gates_pseudo_neg = 
   dplyr::filter(intensity_dat, live == 1, cd3_pos == 0) |>
   dplyr::select(CD127, CD28) |>
@@ -493,6 +503,7 @@ For illustration purposes, we will only apply density gating on a few
 markers.
 
 ``` r
+
 # Density gating parameters
 # peak detection ratio where any peak < 1/10 of the tallest peak will be 
 # considered as noise
@@ -516,6 +527,7 @@ pos_thres <- utils::read.csv(path_pos_peak_thresholds) |>
 ```
 
 ``` r
+
 # calculate the gates
 dens_gates_pre <-
   dplyr::filter(intensity_dat, cd3_pos == 1) |>
@@ -567,6 +579,7 @@ example_intensity_gated <-
 #### LAG3 for all CD3+
 
 ``` r
+
 # Plot the gate for visual
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -589,6 +602,7 @@ intensity_dat |>
 #### LAG3 by CD4 and CD8 subsets
 
 ``` r
+
 # If by CD4/CD8,
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -612,6 +626,7 @@ intensity_dat |>
 #### CCR7 for all CD3+
 
 ``` r
+
 # For CCR7
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -634,6 +649,7 @@ intensity_dat |>
 #### CCR7 by CD4 and CD8 subsets
 
 ``` r
+
 # If by CD4/CD8,
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -657,6 +673,7 @@ intensity_dat |>
 #### CD45RA for all CD3+
 
 ``` r
+
 # For CD45RA
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -679,6 +696,7 @@ intensity_dat |>
 #### CD45RA by CD4 and CD8 subsets
 
 ``` r
+
 # If by CD4/CD8,
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -702,6 +720,7 @@ intensity_dat |>
 #### CD127 for all CD3+
 
 ``` r
+
 # For CD127
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -724,6 +743,7 @@ intensity_dat |>
 #### CD127 by CD4 and CD8 subsets
 
 ``` r
+
 # If by CD4/CD8,
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -747,6 +767,7 @@ intensity_dat |>
 #### CD28 for all CD3+
 
 ``` r
+
 # For CD28
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -769,6 +790,7 @@ intensity_dat |>
 #### CD28 by CD4 and CD8 subsets
 
 ``` r
+
 # If by CD4/CD8,
 intensity_dat |>
   dplyr::filter(cd3_pos == 1) |>
@@ -801,12 +823,12 @@ population and `numerator` is the population of interest out of the
 parent population. For example, the subpopulation CD4+ of CD3+ cells
 correspond to the CD4+ as the `numerator` and CD3+ as the `denominator`.
 
-The $n_{d}$ refers to the number of markers considered for the
-denominator and $n$ for the number of markers considered for the
+The $`n_d`$ refers to the number of markers considered for the
+denominator and $`n`$ for the number of markers considered for the
 numerator.
 
 For the 29-marker panel, if the `denominator` is specified as the CD4
-and CD8 subsets, then $n_{d} = 2$ and $n = 23$ for the markers of
+and CD8 subsets, then $`n_d = 2`$ and $`n = 23`$ for the markers of
 interest.
 
 The `getPerc` function allows user to list the markers of interest for
@@ -849,6 +871,7 @@ Expand example for `expand_num = FALSE` and `expand_denom = FALSE`, and
 `keep_indicators = TRUE`
 
 ``` r
+
 example_perc1 <-
   # Should only count the CD3+ cells
   dplyr::filter(example_intensity_gated, cd3_pos == 1) |> 
@@ -879,41 +902,42 @@ example_perc1 |>
   )
 ```
 
-| num                     | n_num | n_denom | perc | LAG3_POS | CCR7_POS | CD45RA_POS | CD4_POS_D | CD8_POS_D |
-|-------------------------|-------|---------|------|----------|----------|------------|-----------|-----------|
-| Denom = CD4_NEG_CD8_NEG |       |         |      |          |          |            |           |           |
-| LAG3_NEG                | 196   | 271     | 72.3 | 0        | NA       | NA         | 0         | 0         |
-| CCR7_NEG                | 220   | 271     | 81.2 | NA       | 0        | NA         | 0         | 0         |
-| CD45RA_NEG              | 21    | 271     | 7.7  | NA       | NA       | 0          | 0         | 0         |
-| LAG3_POS                | 75    | 271     | 27.7 | 1        | NA       | NA         | 0         | 0         |
-| CCR7_POS                | 51    | 271     | 18.8 | NA       | 1        | NA         | 0         | 0         |
-| CD45RA_POS              | 250   | 271     | 92.3 | NA       | NA       | 1          | 0         | 0         |
-| Denom = CD4_NEG_CD8_POS |       |         |      |          |          |            |           |           |
-| LAG3_NEG                | 1711  | 2302    | 74.3 | 0        | NA       | NA         | 0         | 1         |
-| CCR7_NEG                | 1699  | 2302    | 73.8 | NA       | 0        | NA         | 0         | 1         |
-| CD45RA_NEG              | 413   | 2302    | 17.9 | NA       | NA       | 0          | 0         | 1         |
-| LAG3_POS                | 591   | 2302    | 25.7 | 1        | NA       | NA         | 0         | 1         |
-| CCR7_POS                | 603   | 2302    | 26.2 | NA       | 1        | NA         | 0         | 1         |
-| CD45RA_POS              | 1889  | 2302    | 82.1 | NA       | NA       | 1          | 0         | 1         |
-| Denom = CD4_POS_CD8_NEG |       |         |      |          |          |            |           |           |
-| LAG3_NEG                | 8289  | 8615    | 96.2 | 0        | NA       | NA         | 1         | 0         |
-| CCR7_NEG                | 1395  | 8615    | 16.2 | NA       | 0        | NA         | 1         | 0         |
-| CD45RA_NEG              | 1830  | 8615    | 21.2 | NA       | NA       | 0          | 1         | 0         |
-| LAG3_POS                | 326   | 8615    | 3.8  | 1        | NA       | NA         | 1         | 0         |
-| CCR7_POS                | 7220  | 8615    | 83.8 | NA       | 1        | NA         | 1         | 0         |
-| CD45RA_POS              | 6785  | 8615    | 78.8 | NA       | NA       | 1          | 1         | 0         |
-| Denom = CD4_POS_CD8_POS |       |         |      |          |          |            |           |           |
-| LAG3_NEG                | 139   | 276     | 50.4 | 0        | NA       | NA         | 1         | 1         |
-| CCR7_NEG                | 152   | 276     | 55.1 | NA       | 0        | NA         | 1         | 1         |
-| CD45RA_NEG              | 35    | 276     | 12.7 | NA       | NA       | 0          | 1         | 1         |
-| LAG3_POS                | 137   | 276     | 49.6 | 1        | NA       | NA         | 1         | 1         |
-| CCR7_POS                | 124   | 276     | 44.9 | NA       | 1        | NA         | 1         | 1         |
-| CD45RA_POS              | 241   | 276     | 87.3 | NA       | NA       | 1          | 1         | 1         |
+| num | n_num | n_denom | perc | LAG3_POS | CCR7_POS | CD45RA_POS | CD4_POS_D | CD8_POS_D |
+|----|----|----|----|----|----|----|----|----|
+| Denom = CD4_NEG_CD8_NEG |  |  |  |  |  |  |  |  |
+| LAG3_NEG | 196 | 271 | 72.3 | 0 | NA | NA | 0 | 0 |
+| CCR7_NEG | 220 | 271 | 81.2 | NA | 0 | NA | 0 | 0 |
+| CD45RA_NEG | 21 | 271 | 7.7 | NA | NA | 0 | 0 | 0 |
+| LAG3_POS | 75 | 271 | 27.7 | 1 | NA | NA | 0 | 0 |
+| CCR7_POS | 51 | 271 | 18.8 | NA | 1 | NA | 0 | 0 |
+| CD45RA_POS | 250 | 271 | 92.3 | NA | NA | 1 | 0 | 0 |
+| Denom = CD4_NEG_CD8_POS |  |  |  |  |  |  |  |  |
+| LAG3_NEG | 1711 | 2302 | 74.3 | 0 | NA | NA | 0 | 1 |
+| CCR7_NEG | 1699 | 2302 | 73.8 | NA | 0 | NA | 0 | 1 |
+| CD45RA_NEG | 413 | 2302 | 17.9 | NA | NA | 0 | 0 | 1 |
+| LAG3_POS | 591 | 2302 | 25.7 | 1 | NA | NA | 0 | 1 |
+| CCR7_POS | 603 | 2302 | 26.2 | NA | 1 | NA | 0 | 1 |
+| CD45RA_POS | 1889 | 2302 | 82.1 | NA | NA | 1 | 0 | 1 |
+| Denom = CD4_POS_CD8_NEG |  |  |  |  |  |  |  |  |
+| LAG3_NEG | 8289 | 8615 | 96.2 | 0 | NA | NA | 1 | 0 |
+| CCR7_NEG | 1395 | 8615 | 16.2 | NA | 0 | NA | 1 | 0 |
+| CD45RA_NEG | 1830 | 8615 | 21.2 | NA | NA | 0 | 1 | 0 |
+| LAG3_POS | 326 | 8615 | 3.8 | 1 | NA | NA | 1 | 0 |
+| CCR7_POS | 7220 | 8615 | 83.8 | NA | 1 | NA | 1 | 0 |
+| CD45RA_POS | 6785 | 8615 | 78.8 | NA | NA | 1 | 1 | 0 |
+| Denom = CD4_POS_CD8_POS |  |  |  |  |  |  |  |  |
+| LAG3_NEG | 139 | 276 | 50.4 | 0 | NA | NA | 1 | 1 |
+| CCR7_NEG | 152 | 276 | 55.1 | NA | 0 | NA | 1 | 1 |
+| CD45RA_NEG | 35 | 276 | 12.7 | NA | NA | 0 | 1 | 1 |
+| LAG3_POS | 137 | 276 | 49.6 | 1 | NA | NA | 1 | 1 |
+| CCR7_POS | 124 | 276 | 44.9 | NA | 1 | NA | 1 | 1 |
+| CD45RA_POS | 241 | 276 | 87.3 | NA | NA | 1 | 1 | 1 |
 
 Expand example for `expand_num = TRUE` and `expand_denom = FALSE`, and
 `keep_indicators = FALSE`
 
 ``` r
+
 example_perc2 <-
   # Should only count the CD3+ cells
   dplyr::filter(example_intensity_gated, cd3_pos == 1) |>
@@ -1027,6 +1051,7 @@ Expand example for `expand_num = FALSE` and `expand_denom = TRUE`, and
 `keep_indicators = FALSE`
 
 ``` r
+
 example_perc3 <-
   # Should only count the CD3+ cells
   dplyr::filter(example_intensity_gated, cd3_pos == 1) |>
@@ -1212,6 +1237,7 @@ Expand example for `expand_num = TRUE` and `expand_denom = TRUE` , and
 `keep_indicators = FALSE`
 
 ``` r
+
 example_perc4 <-
   # Should only count the CD3+ cells
   dplyr::filter(example_intensity_gated, cd3_pos == 1) |>
@@ -1543,6 +1569,7 @@ Let’s add the gate for LAG3 of CD4+ and CD8+. This is a good
 visualization to see all sequential gating steps applied to the sample.
 
 ``` r
+
 # Grab gate as a numeric
 current_gate <-
   dens_gates |>
@@ -1601,8 +1628,9 @@ additional QC steps as well, stay tuned!
 ## Session info
 
 ``` r
+
 sessionInfo()
-#> R version 4.5.3 (2026-03-11)
+#> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -1623,37 +1651,38 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] ggcyto_1.38.1        ncdfFlow_2.56.0      BH_1.90.0-1         
-#> [4] ggplot2_4.0.2        flowCore_2.22.1      flowWorkspace_4.22.1
-#> [7] openCyto_2.22.0      staRgate_0.99.8      BiocStyle_2.38.0    
+#> [1] ggcyto_1.40.0        ncdfFlow_2.58.0      BH_1.90.0-1         
+#> [4] ggplot2_4.0.3        flowCore_2.24.0      flowWorkspace_4.24.0
+#> [7] openCyto_2.24.0      staRgate_1.1.0       BiocStyle_2.40.0    
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.57           bslib_0.10.0       
-#>  [4] htmlwidgets_1.6.4   Biobase_2.70.0      lattice_0.22-9     
-#>  [7] vctrs_0.7.3         tools_4.5.3         generics_0.1.4     
-#> [10] stats4_4.5.3        parallel_4.5.3      tibble_3.3.1       
-#> [13] pkgconfig_2.0.3     data.table_1.18.2.1 RColorBrewer_1.1-3 
-#> [16] S7_0.2.1            desc_1.4.3          S4Vectors_0.48.1   
-#> [19] gt_1.3.0            graph_1.88.1        lifecycle_1.0.5    
-#> [22] compiler_4.5.3      farver_2.1.2        stringr_1.6.0      
+#>  [1] gtable_0.3.6        xfun_0.60           bslib_0.12.0       
+#>  [4] htmlwidgets_1.6.4   Biobase_2.72.0      lattice_0.22-9     
+#>  [7] vctrs_0.7.3         tools_4.6.1         generics_0.1.4     
+#> [10] stats4_4.6.1        parallel_4.6.1      tibble_3.3.1       
+#> [13] pkgconfig_2.0.3     data.table_1.18.4   RColorBrewer_1.1-3 
+#> [16] S7_0.2.2            desc_1.4.3          S4Vectors_0.50.1   
+#> [19] gt_1.3.0            graph_1.90.0        lifecycle_1.0.5    
+#> [22] compiler_4.6.1      farver_2.1.2        stringr_1.6.0      
 #> [25] textshaping_1.0.5   janitor_2.2.1       snakecase_0.11.1   
-#> [28] litedown_0.9        htmltools_0.5.9     sass_0.4.10        
-#> [31] yaml_2.3.12         pillar_1.11.1       pkgdown_2.2.0      
-#> [34] hexbin_1.28.5       jquerylib_0.1.4     tidyr_1.3.2        
-#> [37] cachem_1.1.0        RProtoBufLib_2.22.0 commonmark_2.0.0   
-#> [40] tidyselect_1.2.1    digest_0.6.39       stringi_1.8.7      
-#> [43] dplyr_1.2.1         purrr_1.2.2         bookdown_0.46      
-#> [46] labeling_0.4.3      flowClust_3.48.0    fastmap_1.2.0      
-#> [49] grid_4.5.3          cli_3.6.6           magrittr_2.0.5     
-#> [52] utf8_1.2.6          RBGL_1.86.0         XML_3.99-0.23      
-#> [55] withr_3.0.2         scales_1.4.0        timechange_0.4.0   
+#> [28] litedown_0.10       htmltools_0.5.9     sass_0.4.10        
+#> [31] yaml_2.3.12         pillar_1.11.1       pkgdown_2.2.1      
+#> [34] hexbin_1.28.6       jquerylib_0.1.4     tidyr_1.3.2        
+#> [37] cachem_1.1.0        RProtoBufLib_2.24.0 commonmark_2.0.0   
+#> [40] tidyselect_1.2.1    digest_0.6.39       stringi_1.8.9      
+#> [43] dplyr_1.2.1         purrr_1.2.2         bookdown_0.47      
+#> [46] labeling_0.4.3      flowClust_3.50.0    fastmap_1.2.0      
+#> [49] grid_4.6.1          cli_3.6.6           magrittr_2.0.5     
+#> [52] utf8_1.2.6          RBGL_1.88.0         XML_3.99-0.23      
+#> [55] withr_3.0.3         scales_1.4.0        timechange_0.4.0   
 #> [58] lubridate_1.9.5     rmarkdown_2.31      matrixStats_1.5.0  
-#> [61] gridExtra_2.3       cytolib_2.22.0      ragg_1.5.2         
-#> [64] evaluate_1.0.5      knitr_1.51          markdown_2.0       
-#> [67] rlang_1.2.0         Rcpp_1.1.1          glue_1.8.0         
-#> [70] xml2_1.5.2          Rgraphviz_2.54.0    BiocManager_1.30.27
-#> [73] BiocGenerics_0.56.0 jsonlite_2.0.0      R6_2.6.1           
-#> [76] plyr_1.8.9          systemfonts_1.3.2   fs_2.0.1
+#> [61] otel_0.2.0          gridExtra_2.3.1     cytolib_2.24.0     
+#> [64] ragg_1.5.2          evaluate_1.0.5      knitr_1.51         
+#> [67] markdown_2.0        rlang_1.3.0         Rcpp_1.1.2         
+#> [70] glue_1.8.1          xml2_1.6.0          Rgraphviz_2.56.0   
+#> [73] BiocManager_1.30.27 BiocGenerics_0.58.1 jsonlite_2.0.0     
+#> [76] R6_2.6.1            plyr_1.8.9          systemfonts_1.3.2  
+#> [79] fs_2.1.0
 ```
 
 ## References
